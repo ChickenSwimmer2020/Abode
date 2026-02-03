@@ -1,5 +1,7 @@
 package;
 
+import sys.io.File;
+import lime.graphics.Image;
 import flixel.util.FlxTimer;
 import flixel.FlxG;
 import flixel.tweens.FlxEase;
@@ -13,6 +15,7 @@ class Main extends Sprite {
     public function new() {
         super();
         addChild(new FlxGame(0, 0, SplashScreen, 60, 60, false, false));
+        Application.current.window.setIcon(Image.fromBytes(File.getBytes('assets/images/ICON512.png')));
         Application.current.window.borderless = true;
         Application.current.window.opacity = 0;
         Application.current.window.minimized = false;
