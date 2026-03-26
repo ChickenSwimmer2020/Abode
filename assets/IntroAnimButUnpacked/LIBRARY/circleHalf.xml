@@ -1,0 +1,34 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="circleHalf" itemID="69c593ff-00000083" lastModified="1774556159">
+  <timeline>
+    <DOMTimeline name="circleHalf" layerDepthEnabled="true">
+      <layers>
+        <DOMLayer name="Layer_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#24AFC4"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#9EDCE5"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!73 4S2[341 31 538 228!538 228[767 457 767 781!767 781[767 1105 538 1333!538 1333[342 1530 75 1558"/>
+                    <Edge fillStyle0="1" edges="!75 89S1[309 115 481 287!481 287[686 492 686 782!686 782[686 1071 481 1275!481 1275[309 1448 75 1475"/>
+                    <Edge fillStyle1="2" edges="!75 89S2[38 85 0 84!0 84|0 0!0 0[37 1 73 4"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!73 4S3|75 89"/>
+                    <Edge fillStyle0="2" edges="!75 1475S1[38 1479 0 1480!0 1480|0 1562!0 1562[38 1561 75 1558"/>
+                    <Edge fillStyle0="1" fillStyle1="2" edges="!75 1475S3|75 1558"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

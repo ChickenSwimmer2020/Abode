@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://lime.openfl.org/project/1.0.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://lime.openfl.org/project/1.0.4 http://lime.openfl.org/xsd/project-1.0.4.xsd">
-    <meta title="Abode" description="An HAXE based animation software made to rival Adobe Animate" package="com.chickenswimmer2020.abode" version="0.00.000" company="ChickenSwimmer2020" build-number="0"/>
+    <meta title="Abode" description="An HAXE/OPENFL based animation software made to rival Adobe Animate" package="com.chickenswimmer2020.abode" version="0.00.000" company="ChickenSwimmer2020" build-number="0"/>
     <app file="Abode" main="Main"/>
-    <window allow-high-dpi="true" minimized="true" title="Abode: Animation Suite" vsync="true" width="1280" height="720"/>
+    <window allow-high-dpi="true" minimized="true" title="Abode: Animation Suite" vsync="true" background="0x000000" width="1280" height="720"/>
 
 
     <source path="source"/>
-    <assets path="assets"/>
+    <assets path="assets" embed="true"/> <!--openfl doesnt seem to like non-embedded assets :/-->
 
-    <haxelib name="flixel"/>
-    <haxelib name="flixel-ui"/>
-    <haxelib name="flixel-addons"/>
-
-    <haxedef name="FLX_NO_TOUCH"/>
-    <haxedef name="FLX_NO_GAMEPAD"/>
-    <haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
-    <haxedef name="FLX_NO_DEBUG" unless="debug"/>
-
+    <haxelib name="openfl"/>
 
     <icon path="assets/images/ICON512.png" size="512" />
     <icon path="assets/images/ICON256.png" size="256" />
