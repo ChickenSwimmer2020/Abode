@@ -1,5 +1,7 @@
+//!! NEEDS CHECKS FOR MEMORY LEAKS
 package;
 
+import backend.utils.ATween.Tween;
 import backend.flashfile.FLAParser.FlashReader;
 import backend.LoadingIndicator;
 import openfl.display.BitmapData;
@@ -15,7 +17,7 @@ class SplashScreen extends State {
     var introSprite:ASprite;
     public function new() {
         super();
-        introSprite=new ASprite(0, 0).makeGraphic(100, 100, 0xFFFF0000);
+        introSprite=new ASprite(0, 0).makeGraphic(100, 100, 0x000000, 0);
         add(introSprite);
 
         ATimer.start(1.25, ()->{
@@ -28,7 +30,7 @@ class SplashScreen extends State {
 		introSprite.y = (360 / 2); //no clue how to get scaleY :/
         //FlxG.sound.load(FlxAssets.getSoundAddExtension("flixel/sounds/flixel")).play();
 
-        trace(FlashReader.parseFlaFile('IntroAnim.fla'));
+        //FlashReader.parseFlaFile('IntroAnim.fla');
 		for(i in 0...6){
             ATimer.start([0.041, 0.184, 0.334, 0.495, 0.636, 1.1253][i], [
                 ()->{
@@ -57,8 +59,9 @@ class SplashScreen extends State {
         var properSprite:ASprite = new ASprite(-640/2, -360/2, BitmapData.fromFile('assets/images/splash/art.png'));
         properSprite.alpha = 0;
         add(properSprite);
-        Main.tween.tween(properSprite, {alpha: 1}, 1.25, null, AEase.quadInOut);
-        Main.tween.tween(introSprite, {alpha: 0}, 1.25, ()->{
+        new Tween().tween(properSprite, {alpha: 1}, 1.25, null, AEase.quadInOut);
+        new Tween().tween(introSprite, {alpha: 0}, 1.25, ()->{
+            introSprite.destroy();
             remove(introSprite);
 
             var loadingIndicator:LoadingIndicator = new LoadingIndicator(300, 200);
@@ -66,15 +69,14 @@ class SplashScreen extends State {
 
 
             ATimer.start(5, ()->{ //placeholder for how long preloading will take.
-                Main.tween.tween(Application.current.window, {opacity: 0}, 1.25, ()->{
-                    Application.current.window.borderless = false;
-                    Application.current.window.opacity = 1;
+                Application.current.window.borderless = false;
+                ATimer.start(0.75, ()->{
                     Application.current.window.width = 1280;
                     Application.current.window.height = 720;
                     Application.current.window.x = Math.floor(Capabilities.screenResolutionX/2 - Application.current.window.width/2);
                     Application.current.window.y = Math.floor(Capabilities.screenResolutionY/2 - Application.current.window.height/2);
                     Main.StateSystem.switchState(InitState);
-                }, AEase.quadInOut);
+                });
             });
         }, AEase.quadInOut);
     }

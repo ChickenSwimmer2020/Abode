@@ -2,13 +2,19 @@
 <project xmlns="http://lime.openfl.org/project/1.0.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://lime.openfl.org/project/1.0.4 http://lime.openfl.org/xsd/project-1.0.4.xsd">
     <meta title="Abode" description="An HAXE/OPENFL based animation software made to rival Adobe Animate" package="com.chickenswimmer2020.abode" version="0.00.000" company="ChickenSwimmer2020" build-number="0"/>
     <app file="Abode" main="Main"/>
-    <window allow-high-dpi="true" minimized="true" title="Abode: Animation Suite" vsync="true" background="0x000000" width="1280" height="720"/>
+    <window allow-high-dpi="true" fps="60" minimized="true" title="Abode: Animation Suite" vsync="true" background="0x000000" width="1280" height="720"/>
 
 
     <source path="source"/>
-    <assets path="assets" embed="true"/> <!--openfl doesnt seem to like non-embedded assets :/-->
+    <assets path="assets"/> <!--openfl doesnt seem to like non-embedded assets :/-->
 
     <haxelib name="openfl"/>
+
+    <haxedef name="HXCPP_DEBUGGER" /> <!--alright. thats it, im debugging this properly.-->
+    <haxelib name="hxcpp-debugger" />
+    <haxedef name="HXCPP_STACK_TRACE"/>
+    <haxedef name="HXCPP_STACK_LINE"/>
+    <haxedef name="HXCPP_CHECK_POINTER"/>
 
     <icon path="assets/images/ICON512.png" size="512" />
     <icon path="assets/images/ICON256.png" size="256" />

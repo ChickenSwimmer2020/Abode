@@ -1,0 +1,46 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="1280" height="720" frameRate="30" currentTimeline="1" xflVersion="23.0" creatorInfo="Adobe Animate" platform="Windows" versionInfo="Saved by Animate Windows 23.0 build 407" majorVersion="23" buildNumber="407" viewAngle3D="100.925968316201" vanishingPoint3DX="640" vanishingPoint3DY="360" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" filetypeGUID="DD0DDBBF-5BEF-45B2-9F24-A3048D2A676F" fileGUID="8B4B5792B4C98C4799D83C4577932E3F">
+     <symbols>
+          <Include href="helloiamfiltertest.xml" loadImmediate="false" itemID="69c68f37-000000f7" lastModified="1774620471"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="Scene 1" layerDepthEnabled="true">
+               <layers>
+                    <DOMLayer name="Layer_1" color="#00FFFF" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="helloiamfiltertest">
+                                             <matrix>
+                                                  <Matrix tx="440.5" ty="251.25"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point x="149.65" y="95.6"/>
+                                             </transformationPoint>
+                                             <filters>
+                                                  <DropShadowFilter blurX="4" blurY="4" distance="4"/>
+                                                  <BlurFilter blurX="4" blurY="4"/>
+                                                  <GlowFilter blurX="4" blurY="4"/>
+                                                  <BevelFilter blurX="4" blurY="4" distance="4"/>
+                                                  <GradientGlowFilter blurX="4" blurY="4" distance="4" type="outer">
+                                                       <GradientEntry color="#FFFFFF" alpha="0" ratio="0"/>
+                                                       <GradientEntry ratio="1"/>
+                                                  </GradientGlowFilter>
+                                                  <GradientBevelFilter blurX="4" blurY="4" distance="4">
+                                                       <GradientEntry color="#FFFFFF" ratio="0"/>
+                                                       <GradientEntry color="#FF0000" alpha="0" ratio="0.501960784313725"/>
+                                                       <GradientEntry ratio="1"/>
+                                                  </GradientBevelFilter>
+                                                  <AdjustColorFilter/>
+                                             </filters>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <scripts/>
+     <PrinterSettings/>
+     <publishHistory/>
+</DOMDocument>

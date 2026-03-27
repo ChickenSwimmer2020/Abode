@@ -3,40 +3,47 @@ package backend.utils;
 import openfl.display.Sprite;
 
 class State extends Sprite {
-    public var members:Array<Dynamic>=[];
+    public var members:Array<Dynamic> = [];
 
     public function new() {
-        super(); //doesnt really do anything lol.
+        super();
     }
-    /**
-     * add an object to the members array
-     * @param basic object to add
-     * @return object (for chaining ic you like that i guess)
-     */
+
     public function add(basic:Dynamic):Dynamic {
         trace('added basic $basic');
         addChild(basic);
         members.push(basic);
-        return basic; // for chaining i guess.
+        return basic;
     }
-    /**
-     * remove a sprite from the members array
-     * @param basic object to remove
-     * @return Bif object was removed successfully.
-     */
+
     public function remove(basic:Dynamic):Bool {
-        if(basic!=null){
+        if (basic == null) return false;
+        if (contains(basic))
             removeChild(basic);
-            members.remove(basic);
-            return true;
-        }else return true;
-        return false;
+        members.remove(basic);
+        return true;
     }
 
     public function destroy() {
-        for(thing in members) {
-            remove(thing);
+        // iterate a copy so removing mid-loop doesnt cause skips
+        for (thing in members.copy()) {
+            // call destroy on children that support it
+            if (Std.isOfType(thing, State))
+                (cast thing:State).destroy();
+            else if (Reflect.hasField(thing, "destroy"))
+                Reflect.callMethod(thing, Reflect.field(thing, "destroy"), []);
+
+            // dispose BitmapData if it has any
+            if (Reflect.hasField(thing, "bitmapData") && Reflect.field(thing, "bitmapData") != null)
+                Reflect.callMethod(thing, Reflect.field(thing, "bitmapData"), []).dispose();
+
+            if (contains(thing))
+                removeChild(thing);
         }
-        members=[];
+        members = [];
+
+        // remove self from parent
+        if (parent != null)
+            parent.removeChild(this);
     }
 }

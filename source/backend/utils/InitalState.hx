@@ -7,20 +7,23 @@ class StateSystemInit extends Sprite {
 
     public function new(state:Null<Class<State>>) {
         super();
-        if(state==null){
-            this.state = new State(); //just init it. dont want a null state now do we.
-        }else{
+        if (state == null) {
+            this.state = new State();
+        } else {
             this.state = Type.createInstance(state, []);
-            addChild(this.state);
         }
+        addChild(this.state); // moved out — always add it
     }
 
     public function switchState(state:Class<State>) {
+        // clean up old state
         this.state.destroy();
-        removeChild(this.state); //because it clears items i think.
-        this.state = null;
-        this.state = new State();
-        this.state = Type.createInstance(state, []); //shouldnt need to readd the child.
-        if(!contains(this.state)) addChild(this.state); //fallback incase state didnt get added originally (from new)
+        if (contains(this.state))
+            removeChild(this.state);
+        this.state = null; // let GC collect it
+
+        // create and add new state
+        this.state = Type.createInstance(state, []);
+        addChild(this.state);
     }
 }

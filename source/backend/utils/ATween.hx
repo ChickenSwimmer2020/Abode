@@ -16,13 +16,24 @@ typedef TweenData = {
 
 class Tween extends Sprite {
     private var tweens:Array<TweenData> = [];
+	private var lastTime:Int = 0;
+	public var autoDestroy:Bool = true; // set false if you want it to persist
+	public static var globalParent:openfl.display.DisplayObjectContainer;
+	
 
     public function new() {
         super();
+		lastTime = openfl.Lib.getTimer();
+		if (globalParent != null) globalParent.addChild(this);
         addEventListener(Event.ENTER_FRAME, onEnterFrame);
     }
 
     public function tween(target:Dynamic, props:Dynamic, duration:Float, ?onComplete:Void->Void, ?ease:Float->Float):Void {
+		if (target != null && Std.isOfType(target, openfl.display.DisplayObject)) {
+			var targetSprite = cast(target, openfl.display.DisplayObjectContainer);
+			if (parent == null)
+				targetSprite.addChild(this);
+		}
         for (field in Reflect.fields(props)) {
             tweens.push({
                 target:     target,
@@ -37,10 +48,29 @@ class Tween extends Sprite {
         }
     }
 
-    private function onEnterFrame(e:Event):Void {
-        var dt = 1 / 60; // or use a real delta time if you have it
-        var done:Array<TweenData> = [];
+    // cancel all tweens on a specific target
+    public function cancelTweensOf(target:Dynamic):Void {
+        tweens = tweens.filter(t -> t.target != target);
+    }
 
+    // cancel everything
+    public function cancelAll():Void {
+        tweens = [];
+    }
+
+    public function destroy():Void {
+        removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+        cancelAll();
+        if (parent != null)
+            parent.removeChild(this);
+    }
+
+    private function onEnterFrame(e:Event):Void {
+		var now = openfl.Lib.getTimer();
+		var dt = (now - lastTime) / 1000.0; // real delta time in seconds
+		lastTime = now;
+
+		var done:Array<TweenData> = [];
         for (tween in tweens) {
             tween.elapsed += dt;
             var t = Math.min(tween.elapsed / tween.duration, 1.0);
@@ -60,6 +90,9 @@ class Tween extends Sprite {
 
         for (tween in done)
             tweens.remove(tween);
+
+		if (autoDestroy && tweens.length == 0)
+        	destroy();
     }
 }
 
