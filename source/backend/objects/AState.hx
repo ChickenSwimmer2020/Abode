@@ -1,8 +1,6 @@
-package backend.utils;
+package backend.objects;
 
-import openfl.display.Sprite;
-
-class State extends Sprite {
+class AState extends Sprite {
     public var members:Array<Dynamic> = [];
 
     public function new() {
@@ -28,8 +26,8 @@ class State extends Sprite {
         // iterate a copy so removing mid-loop doesnt cause skips
         for (thing in members.copy()) {
             // call destroy on children that support it
-            if (Std.isOfType(thing, State))
-                (cast thing:State).destroy();
+            if (Std.isOfType(thing, AState))
+                (cast thing:AState).destroy();
             else if (Reflect.hasField(thing, "destroy"))
                 Reflect.callMethod(thing, Reflect.field(thing, "destroy"), []);
 

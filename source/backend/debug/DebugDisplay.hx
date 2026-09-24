@@ -1,10 +1,4 @@
-package backend.utils;
-
-import openfl.display.Sprite;
-import openfl.events.Event;
-import openfl.system.System;
-import openfl.text.TextField;
-import openfl.text.TextFormat;
+package backend.debug;
 
 class DebugDisplay extends Sprite {
     private var label:TextField;
@@ -34,6 +28,10 @@ class DebugDisplay extends Sprite {
         addEventListener(Event.ENTER_FRAME, onEnterFrame);
     }
 
+
+
+    static var MSGS:Array<Dynamic> = [];
+    var finalMsg:String = "";
     private function onEnterFrame(e:Event):Void {
         var now = openfl.Lib.getTimer();
         var dt = (now - lastTime) / 1000.0;
@@ -50,11 +48,27 @@ class DebugDisplay extends Sprite {
 
         var mem = System.totalMemory / 1024 / 1024; // bytes to MB
 
-        label.text = 
-            'FPS:    ${Math.round(fps)}\n' +
-            'MEM:    ${Math.round(mem * 10) / 10} MB\n' +
-            'STAGE:  ${stage != null ? stage.numChildren : 0} children\n' +
-            'OBJ:    ${numChildren} children';
+        //terrible way to do it, TODO: optimize this. 
+        if(MSGS!=([{key: "FPS", value: Math.round(fps)},{key: "STA", value: Main.StateSystem.currentState},{key: "MEM||MB", value: (Math.round(mem * 10) / 10)},{key: "STG||children", value: ((stage!=null)?stage.numChildren:0)},{key: "OBJ||children", value: numChildren}]:Array<Dynamic>)){
+            MSGS = ([
+                {key: "FPS", value: Math.round(fps)},
+                {key: "STA", value: Main.StateSystem.currentState},
+                {key: "MEM||MB", value: (Math.round(mem * 10) / 10)},
+                {key: "STG||children", value: ((stage!=null)?stage.numChildren:0)},
+                {key: "OBJ||children", value: numChildren}
+            ]:Array<Dynamic>);
+        }
+
+        if(finalMsg!="") finalMsg="";
+        for(label in MSGS) finalMsg += '${label.key.split('||')[0]}:    ${label.value} ${label.key.split('||')[1]??""}\n';
+        if(label.height!=(0+(20*(MSGS.length-1)))){ //only update the graphics if we need too.
+            label.height=(0+(20*(MSGS.length-1)));
+            graphics.clear();
+            graphics.beginFill(0x000000, 0.6);
+                graphics.drawRect(0, 0, 200, label.height);
+            graphics.endFill();
+        }
+        label.text = finalMsg;
     }
 
     public function destroy():Void {
@@ -62,35 +76,3 @@ class DebugDisplay extends Sprite {
         if (parent != null) parent.removeChild(this);
     }
 }
-
-//for testing to make sure im not going fucking insane.
-class Heartbeat extends Sprite {
-    private var tick:Int = 0;
-    
-    public function new() {
-        super();
-        addEventListener(Event.ENTER_FRAME, onEnterFrame);
-    }
-
-    private var lastChildCount:Int = 0;
-    private function onEnterFrame(e:Event):Void {
-        tick++;
-        // prints every 60 frames so you can see its still alive
-        if (tick % 60 == 0) {
-            trace('heartbeat tick: $tick | time: ${openfl.Lib.getTimer()}ms');
-            var count = stage.numChildren;
-            if (count != lastChildCount) {
-                trace('!!! stage children changed: $lastChildCount -> $count');
-                lastChildCount = count;
-                for (i in 0...count)
-                    trace('  child $i: ${stage.getChildAt(i)}');
-            }
-        }
-    }
-}
-
-//crash timings (3/27/2026)
-/**
- * 7987ms
- * 
- */

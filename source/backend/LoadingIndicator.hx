@@ -1,9 +1,5 @@
 package backend;
 
-import backend.utils.ATween.AEase;
-import backend.utils.ATween.Tween;
-import openfl.geom.Matrix;
-
 class LoadingIndicator extends ASprite {
     public var loadingSpeed:Float = 0.4;
 
@@ -12,7 +8,7 @@ class LoadingIndicator extends ASprite {
     var bottomRight:LoadingSegment;
     var bottomLeft:LoadingSegment;
 
-    var tween:Tween;
+    var tween:ATween;
     var segments:Array<LoadingSegment>;
     var currentSegment:Int = 0;
 
@@ -21,7 +17,7 @@ class LoadingIndicator extends ASprite {
     public function new(x:Float, y:Float) {
         super(x, y, null);
 
-        tween = new Tween();
+        tween = new ATween();
         tween.autoDestroy=false;
         addChild(tween); // ← was missing, tween needs to be on stage to get ENTER_FRAME
 

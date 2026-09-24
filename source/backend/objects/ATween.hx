@@ -1,9 +1,6 @@
-package backend.utils;
+package backend.objects;
 
-import openfl.display.Sprite;
-import openfl.events.Event;
-
-typedef TweenData = {
+typedef ATweenData = {
     target:Dynamic,
     prop:String,
     startVal:Float,
@@ -14,8 +11,8 @@ typedef TweenData = {
     ?ease:Float->Float
 }
 
-class Tween extends Sprite {
-    private var tweens:Array<TweenData> = [];
+class ATween extends Sprite {
+    private var tweens:Array<ATweenData> = [];
 	private var lastTime:Int = 0;
 	public var autoDestroy:Bool = true; // set false if you want it to persist
 	public static var globalParent:openfl.display.DisplayObjectContainer;
@@ -54,45 +51,36 @@ class Tween extends Sprite {
     }
 
     // cancel everything
-    public function cancelAll():Void {
-        tweens = [];
-    }
+    public function cancelAll():Void tweens = [];
 
     public function destroy():Void {
         removeEventListener(Event.ENTER_FRAME, onEnterFrame);
         cancelAll();
-        if (parent != null)
-            parent.removeChild(this);
+        if (parent != null) parent.removeChild(this);
     }
 
     private function onEnterFrame(e:Event):Void {
 		var now = openfl.Lib.getTimer();
-		var dt = (now - lastTime) / 1000.0; // real delta time in seconds
+		//! CAUGHT YOU YOU FUCKING MEMORY LEAK!! (window movement was causing MAJOR leaks.)
+		var dt = Math.min((now-lastTime)/1000.0, 0.1); // real delta time in seconds 
 		lastTime = now;
 
-		var done:Array<TweenData> = [];
-        for (tween in tweens) {
-            tween.elapsed += dt;
-            var t = Math.min(tween.elapsed / tween.duration, 1.0);
+		var active = tweens;
+		tweens=[];
+		var callbacks:Array<Void->Void> = [];
 
-            if (tween.ease != null)
-                t = tween.ease(t);
+		for(tw in active) {
+			tw.elapsed+=dt;
+			var t = Math.min(tw.elapsed/tw.duration, 1.0);
+			if(tw.ease!=null) t=tw.ease(t);
+			Reflect.setProperty(tw.target, tw.prop, tw.startVal + (tw.endVal - tw.startVal) * t);
 
-            var val = tween.startVal + (tween.endVal - tween.startVal) * t;
-            Reflect.setProperty(tween.target, tween.prop, val);
-
-            if (tween.elapsed >= tween.duration) {
-                if (tween.onComplete != null)
-                    tween.onComplete();
-                done.push(tween);
-            }
-        }
-
-        for (tween in done)
-            tweens.remove(tween);
-
-		if (autoDestroy && tweens.length == 0)
-        	destroy();
+			if(tw.elapsed>=tw.duration) {
+				if(tw.onComplete!=null) callbacks.push(tw.onComplete);
+			}else tweens.push(tw);
+		}
+		for(cb in callbacks) cb();
+		if(autoDestroy && tweens.length==0) destroy();
     }
 }
 

@@ -1,15 +1,5 @@
 package backend.flashfile;
 
-import haxe.Json;
-import sys.io.File;
-import haxe.zip.Reader;
-import haxe.io.Bytes;
-import backend.utils.Type.OneOfTwo;
-import backend.utils.APoint;
-import openfl.geom.Matrix;
-
-using StringTools;
-
 typedef FlashMedia = {
     var name:String;
     var itemID:String;

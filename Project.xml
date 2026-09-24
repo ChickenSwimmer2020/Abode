@@ -2,13 +2,14 @@
 <project xmlns="http://lime.openfl.org/project/1.0.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://lime.openfl.org/project/1.0.4 http://lime.openfl.org/xsd/project-1.0.4.xsd">
     <meta title="Abode" description="An HAXE/OPENFL based animation software made to rival Adobe Animate" package="com.chickenswimmer2020.abode" version="0.00.000" company="ChickenSwimmer2020" build-number="0"/>
     <app file="Abode" main="Main"/>
-    <window allow-high-dpi="true" fps="60" minimized="true" title="Abode: Animation Suite" vsync="true" background="0x000000" width="1280" height="720"/>
+    <window hardware="true" allow-high-dpi="true" fps="60" title="Abode: Animation Suite" vsync="false" background="#000000" width="1280" height="720"/>
 
 
     <source path="source"/>
     <assets path="assets"/> <!--openfl doesnt seem to like non-embedded assets :/-->
 
-    <haxelib name="openfl"/>
+    <haxelib name="lime" version="8.3.2"/>
+    <haxelib name="openfl" version="9.5.2"/>
 
     <haxedef name="HXCPP_DEBUGGER" /> <!--alright. thats it, im debugging this properly.-->
     <haxelib name="hxcpp-debugger" />

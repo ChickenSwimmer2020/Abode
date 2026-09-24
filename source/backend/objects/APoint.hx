@@ -1,4 +1,4 @@
-package backend.utils;
+package backend.objects;
 
 /**
  * simply because openfl.geom.Point is INT based, and i need floating point number.
@@ -15,4 +15,7 @@ class APoint {
         this.x=x;
         this.y=y;
     }
+
+
+    public function toString():String return 'APoint: [$x, $y]';
 }

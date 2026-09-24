@@ -1,7 +1,4 @@
-package backend.utils;
-
-import openfl.events.TimerEvent;
-import openfl.utils.Timer;
+package backend.objects;
 
 class ATimer {
     /**
@@ -10,7 +7,7 @@ class ATimer {
      * @param onComplete what to do when done.
      */
     public static function start(time:Float, onComplete:Void->Void) {
-        var timer:Timer = new Timer(time * 1000, 1);
+        var timer:Timer = new Timer(time*1000, 1);
         var handler:TimerEvent->Void = null;
         handler = (_)->{
             timer.removeEventListener(TimerEvent.TIMER_COMPLETE, handler);
