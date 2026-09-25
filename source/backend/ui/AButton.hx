@@ -1,25 +1,31 @@
 package backend.ui;
 
-import backend.utils.AColor;
-import openfl.text.TextFormatAlign;
-import openfl.events.MouseEvent;
-
 class AButton extends ASprite {
+    public var disabled(default, set):Bool = false;
+    public function set_disabled(a:Bool):Bool {
+        disabled=a;
+        if(disabled==true){
+            removeEventListener(MouseEvent.CLICK, onMouseClick);
+            removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+            removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+            setGraphicColor(AColor.BUTTON_DISABLED);
+        }else{
+            setGraphicColor(AColor.BUTTON_IDLE);
+            if(!hasEventListener("click")) addEventListener(MouseEvent.CLICK, onMouseClick);
+            if(!hasEventListener("mouseOver")) addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+            if(!hasEventListener("mouseOut")) addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
+        }
+        return disabled;
+    }
     public var onC:Void->Void;
     public function new(text:String, rect:Rectangle, onClick:Void->Void) {
         super(rect.x, rect.y);
         onC=onClick;
-        makeGraphic(Math.floor(rect.width), Math.floor(rect.height), 0xFFFFFF, 1.0); //TODO: get windows accent color
+        makeGraphic(Math.floor(rect.width), Math.floor(rect.height), AColor.BUTTON_IDLE); //TODO: get windows accent color
 
-        var label = new TextField();
-        label.width = rect.width;
+        var label = new AText(0, 0, rect.width, text, 12);
         label.height = rect.height;
-        label.selectable = false;
-        label.mouseEnabled = false;
-        label.text = text;
-        var format = new TextFormat();
-        format.align = TextFormatAlign.CENTER;
-        label.setTextFormat(format); 
+        label.alignment = CENTER;
         addChild(label);
 
         addEventListener(MouseEvent.CLICK, onMouseClick);
@@ -27,16 +33,16 @@ class AButton extends ASprite {
         addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
     }
     public function onMouseClick(e:MouseEvent){
-        color = AColor.BUTTON_CLICK;
+        setGraphicColor(AColor.BUTTON_CLICK);
         if(onC!=null) onC();
     }
 
     public function onMouseOver(e:MouseEvent) {
-        color = AColor.BUTTON_HOVER;
+        setGraphicColor(AColor.BUTTON_HOVER);
     }
 
     public function onMouseOut(e:MouseEvent) {
-        color = AColor.BUTTON_IDLE;
+        setGraphicColor(AColor.BUTTON_IDLE);
     }
 
     override public function destroy() {

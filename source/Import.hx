@@ -14,10 +14,15 @@ import backend.LoadingIndicator;
         import backend.objects.APoint;
         import backend.objects.ATween.AEase;
         import backend.objects.ATween;
+        import backend.objects.AText;
         import backend.objects.InitalState.StateSystemInit;
     //utils
+        import backend.utils.IHasAttributes;
         import backend.utils.Type.OneOfThree;
         import backend.utils.Type.OneOfTwo;
+        import backend.utils.AColor;
+    //ui
+        import backend.ui.AMenuBar;
 import backend.flashfile.FLAParser.FlashReader;
 
 //openfl imports
@@ -27,6 +32,7 @@ import openfl.filters.BlurFilter;
 import openfl.filters.ShaderFilter;
 import openfl.ui.Mouse;
 import openfl.events.Event;
+import openfl.text.TextFormatAlign;
 import openfl.system.Capabilities;
 import openfl.geom.Matrix;
 import openfl.events.TimerEvent;
@@ -36,17 +42,21 @@ import openfl.text.TextField;
 import openfl.text.TextFormat;
 import openfl.geom.Rectangle;
 import openfl.display.StageAlign;
+import openfl.geom.Point;
 import openfl.display.StageScaleMode;
+import openfl.events.MouseEvent;
 import openfl.Lib;
 import openfl.events.UncaughtErrorEvent;
 import openfl.events.ErrorEvent;
 import openfl.filters.BitmapFilter;
 import openfl.ui.Keyboard;
 import openfl.events.KeyboardEvent;
+import openfl.geom.ColorTransform;
 
 //lime imports
 import lime.graphics.Image;
 import lime.app.Application;
+import lime.utils.AssetLibrary;
 
 //sys imports
 import sys.io.File;
@@ -58,13 +68,6 @@ import haxe.zip.Reader;
 import haxe.io.Bytes;
 
 //usings
+using backend.utils.DrawUtil;
+using backend.utils.ArrayUtil;
 using StringTools;
-
-
-
-
-
-
-
-
-

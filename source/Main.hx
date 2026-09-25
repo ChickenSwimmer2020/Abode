@@ -1,9 +1,5 @@
 package;
 
-import openfl.geom.Point;
-import openfl.events.MouseEvent;
-import backend.ui.AMenuBar;
-
 class Main extends Sprite {
     public static var pWidth:Int=1280; //programWidth //? these are seperate from the window w/h.
     public static var pHeight:Int=720; //programHeight //? since these calculate the internal size of state and such.
@@ -44,7 +40,43 @@ class Main extends Sprite {
     private function onKeyDown(e:KeyboardEvent) {
         #if debug if(e.keyCode == Keyboard.F1) stats.visible=!stats.visible; #end
 
-        if(AMenuBar.dropdownOpen && AMenuBar.canCloseInstace) AMenuBar.instance.closeDropdownMenu(); //force close any open instance.
+        if(AMenuBar.dropdownOpen){ //TODO: fix this.
+            for(keys=>targetOption in AMenuBar.instance.dropdownKeys) {
+
+                if(!keys.contains(e.keyCode) && (!e.shiftKey && (!e.altKey && !e.controlKey))) {
+                    if(AMenuBar.canCloseInstace) AMenuBar.instance.closeDropdownMenu(); //force close any open instance.
+                }else{
+                    var targetKeys:Array<Bool>=[]; 
+                    var allKeys:Array<Int> = keys;
+                    for(key in allKeys) {
+                        if(key == Keyboard.CONTROL){
+                            targetKeys.push(e.controlKey);
+                            allKeys.splice(allKeys.indexOf(17), 1);
+                            continue;
+                        }
+                        if(key == Keyboard.ALTERNATE){
+                            targetKeys.push(e.altKey);
+                            allKeys.splice(allKeys.indexOf(18), 1);
+                            continue;
+                        }
+                        if(key == Keyboard.SHIFT){
+                            targetKeys.push(e.shiftKey);
+                            allKeys.splice(allKeys.indexOf(16), 1); //remove the key from the array
+                            continue; //then skip over the index
+                        }
+                        //targetKeys.push((e.keyCode == e.));
+                        allKeys.splice(allKeys.indexOf(e.keyCode), 1); //remove the key from the array
+                    }
+
+                    trace(targetKeys);
+
+                    //if(targetKeys.allTrue())
+                    //AMenuBar.instance.buttons.get(targetOption).onC();
+                }
+            }
+        }
+
+        
     }
     private function onMouseClick(e:MouseEvent) {
         if(AMenuBar.dropdownOpen && AMenuBar.canCloseInstace){
@@ -52,8 +84,23 @@ class Main extends Sprite {
                 trace("Tried to close an instance of AMenuBar but instance is null!");
                 return;
             }
-            if(AMenuBar.instance.getRect(stage).containsPoint(new Point(e.stageX, e.stageY))){
+            if(!AMenuBar.instance.dropdownBG.containsPoint(new APoint(e.stageX, e.stageY))){ //if off the backing, then exit.
                 AMenuBar.instance.closeDropdownMenu(); //force close any open instance.
+            }else{
+                for(object in AMenuBar.instance.members) {
+                    if(object == AMenuBar.instance.dropdownBG) continue; //skip it and dont increase index
+                    if(object.containsPoint(new APoint(e.stageX, e.stageY))) {
+                        if(cast(object.getAttribute("isDropdownObject"), Bool) == true){
+                            if(cast(object.getAttribute("closeOnClick"), Bool) == true){
+                                AMenuBar.instance.closeDropdownMenu();
+                            }else{
+                                continue;
+                            }
+                        }else{
+                            continue;
+                        }
+                    }
+                }
             }
         }
     }

@@ -1,7 +1,6 @@
 package;
 
-import backend.utils.AColor;
-import backend.ui.AMenuBar;
+import backend.ui.ProjectBox;
 
 class InitState extends AState {
     var wallpaperBackground:ASprite;
@@ -15,15 +14,73 @@ class InitState extends AState {
         wallpaperBackground.applyLocalFilter(
             new Rectangle(wallpaperBackground.width-wallpaperBackground.width/2+150, 0, wallpaperBackground.width/3+200, wallpaperBackground.height),
             new BlurFilter(32, 8, 3),
-            {colorTransform: AColor.BGDARKEN, offsets: new Rectangle(50, -100, 200, 200)}
+            {colorTransform: AColor.MAINMENU_PROJECTSLIST_DARKEN, offsets: new Rectangle(50, -100, 200, 200)}
         );
             
-
         toolBar = new AMenuBar(TOP, [
             {
                 text: "File",
                 size: new APoint(50, 20),
-                onClick: ()->{trace("File Menu");}
+                onClick: ()->{
+                    toolBar.openDropdownMenu(0, [
+                        {text: "New...", keys:[Keyboard.CONTROL, Keyboard.N], func: ()->{
+                            trace("Make new project.");
+                        }},
+                        {text: "New from template...", func: ()->{
+                            trace("make new project with template.");
+                        }},
+                        {text: "Open", func: ()->{
+                            trace('Open project from file.');
+                        }},
+                        {text: "Open Recent > ", closeOnClick: false, func: ()->{
+                            trace('TODO: sub dropdown.');
+                        }},
+                        {text: "Close", disabled: true, func: ()->{
+                            trace('Close current project.');
+                        }},
+                        {text: "Close All", disabled: true, func: ()->{
+                            trace('Close all opened projects.');
+                        }},
+                        {text: "Save", disabled: true, func: ()->{
+                            trace('Save current project.');
+                        }},
+                        {text: "Save as...", disabled: true, func: ()->{
+                            trace('Save project as a different file.');
+                        }},
+                        {text: "Save as template...", disabled: true, func: ()->{
+                            trace('Save project as a new template.');
+                        }},
+                        {text: "Revert", disabled: true, func: ()->{
+                            trace('Unsure what this does. is it like an undo button?');
+                        }},
+                        {text: 'seperator', func: null},
+                        {text: "Import > ", closeOnClick: false, func: ()->{
+                            trace('TODO: sub dropdown');
+                        }},
+                        {text: "Export > ", closeOnClick: false, func: ()->{
+                            trace('TODO: sub dropdown');
+                        }},
+                        {text: 'seperator', func: null},
+                        {text: "Convert to > ", closeOnClick: false, func: ()->{
+                            trace('TODO: sub dropdown');
+                        }},
+                        {text: 'seperator', func: null},
+                        {text: "Distribution Settings...", func: ()->{
+                            trace('Publish settings but legally distinct');
+                        }},
+                        {text: "Distribute", func: ()->{
+                            trace('Publish legally distinct');
+                        }},
+                        {text: 'seperator', func: null},
+                        {text: "HScript Settings...", func: ()->{
+                            trace('ActionScript settings');
+                        }},
+                        {text: 'seperator', func: null},
+                        {text: "Exit", func: ()->{
+                            trace('Exit program');
+                        }},
+                    ], 200);
+                }
             },
             {
                 text: "Edit",
@@ -79,7 +136,7 @@ class InitState extends AState {
                         {text: "Submit bug report/feature request...", func: ()->{trace('Help menu dropdown object 2!');}},
                         {text: 'seperator', func: null},
                         {text: "Online Tutorial...", func: ()->{trace('Help menu dropdown object 2!');}},
-                        {text: "Hands on Tutorial  >", func: ()->{trace('TODO: sub dropdown');}},
+                        {text: "Hands on Tutorial  >", closeOnClick: false, func: ()->{trace('TODO: sub dropdown');}},
                         {text: 'seperator', func: null},
                         {text: "Manage Plugins", func: ()->{trace('TODO: sub dropdown');}},
                         {text: 'seperator', func: null},
@@ -91,5 +148,9 @@ class InitState extends AState {
             }
         ]);
         add(toolBar);
+
+
+        add(new ProjectBox(Main.pWidth-350, 35)); //for testing and getting it ready.
+
     }
 }

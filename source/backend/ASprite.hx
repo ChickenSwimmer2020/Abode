@@ -1,9 +1,5 @@
 package backend;
 
-import backend.utils.AColor;
-import openfl.geom.ColorTransform;
-import openfl.geom.Point;
-
 
 typedef ExtraFilterParams = {
     @:optional var colorTransform:Null<AColor>;
@@ -11,8 +7,27 @@ typedef ExtraFilterParams = {
 } 
 
 
-class ASprite extends Sprite {
-    public var color(default, set):AColor = 0xFFFFFFFF;
+class ASprite extends Sprite implements IHasAttributes<String, Dynamic>{
+    public var attributes:Map<String, Dynamic>;
+
+    public function setAttribute(a:String, b:Dynamic):String {
+        attributes.set(a, b);
+        return a;
+    }
+    public function getAttribute(a:String):Dynamic {
+        return attributes.get(a);
+    }
+    public function removeAttribute(a:String):Bool {
+        return attributes.remove(a);
+    }
+
+
+
+
+    /**
+     * Color transform of the Sprite, affects sub-objects as well.
+     */
+    public var color(default, set):AColor = AColor.TRANSPARENT;
     public function set_color(c:AColor):AColor {
         color = c;
         trace(c);
@@ -20,13 +35,31 @@ class ASprite extends Sprite {
         transform.colorTransform = AColor.toTransform(c);
         return c;
     }
+    /**
+     * scale of the sprite.
+     */
     public var scale(default, set):APoint = new APoint(1.0, 1.0);
+    /**
+     * should the sprite antialias
+     */
     public var antialiasing:Bool = true;
+    /**
+     * frame width of the sprite
+     */
     public var frameWidth:Float = 0;
+    /**
+     * frame height of the sprite
+     */
     public var frameHeight:Float = 0;
+    @:noCompletion private var gWidth:Int = 0;
+    @:noCompletion private var gHeight:Int = 0;
+    @:noCompletion private var _bitmapData:BitmapData = null; // track it so we can dispose it later
 
-    private var _bitmapData:BitmapData = null; // track it so we can dispose it later
-
+    /**
+     * set the scale of the sprite.
+     * @param value scale to set.
+     * @return APoint
+     */
     public function set_scale(value:APoint):APoint {
         @:bypassAccessor scale.x = value.x;
         @:bypassAccessor scale.y = value.y;
@@ -35,21 +68,43 @@ class ASprite extends Sprite {
         return scale;
     }
 
+    /**
+     * make a new sprite
+     * @param x position
+     * @param y position
+     * @param graphic image to load
+     */
     public function new(x:Float, y:Float, ?graphic:OneOfThree<String, Image, BitmapData>) {
         super();
+        attributes = new Map<String, Dynamic>();
         this.x = 0;
         this.y = 0;
         if (graphic != null) loadGraphic(graphic);
         setPosition(x, y);
     }
 
-    public function makeGraphic(width:Int, height:Int, color:Int, a:Float):ASprite {
-        graphics.beginFill(color, a);
+    /**
+     * make a graphic without loading bitmap data.
+     * @param width width
+     * @param height height
+     * @param color AColor
+     * @return ASprite
+     */
+    public function makeGraphic(width:Int, height:Int, color:AColor):ASprite {
+        graphics.beginFill(AColor.getRGB(color), color.a);
         graphics.drawRect(0, 0, width, height);
         graphics.endFill();
+        gWidth = width;
+        gHeight = height;
         return this;
     }
 
+    /**
+     * load a graphic
+     * @param graphic graphic to make 
+     * @param takeOwnership no clue what this does :/
+     * @return ASprite
+     */
     public function loadGraphic(graphic:OneOfThree<String, Image, BitmapData>, takeOwnership:Bool = false):ASprite {
         // dispose previous bitmap if we own it
         if (_bitmapData != null) {
@@ -58,7 +113,7 @@ class ASprite extends Sprite {
         }
         graphics.clear();
 
-        var Graphics:BitmapData = new BitmapData(1, 1, false, 0xFFFFFFFF);
+        var Graphics:BitmapData = new BitmapData(1, 1, false, AColor.WHITE);
         switch (Type.getClass(graphic)) {
             case String:
                 Graphics = BitmapData.fromFile(graphic);
@@ -76,10 +131,26 @@ class ASprite extends Sprite {
         graphics.endFill();
         frameWidth = Graphics.rect.width;
         frameHeight = Graphics.rect.height;
-
+        gWidth = Math.floor(Graphics.rect.width);
+        gHeight = Math.floor(Graphics.rect.height);
         return this;
     }
 
+    /**
+     * change the color of the sprite background without affecting sub-objects (hopefully)
+     * @param color AColor
+     * @return ASprite
+     */
+    public function setGraphicColor(color:AColor):ASprite {
+        makeGraphic(gWidth, gHeight, color);
+        return this;
+    }
+
+    /**
+     * change the graphic size.
+     * @param width 
+     * @param height 
+     */
     public function setGraphicSize(width:Float, height:Float) {
         if (width <= 0 && height <= 0) return;
         var newScaleX:Float = width / frameWidth;
@@ -87,13 +158,23 @@ class ASprite extends Sprite {
         scale.set(newScaleX, newScaleY);
         if (width <= 0) scale.x = newScaleY;
         else if (height <= 0) scale.y = newScaleX;
+        gWidth = Math.floor(width);
+        gHeight = Math.floor(height);
     }
 
+    /**
+     * set position
+     * @param x 
+     * @param y 
+     */
     public function setPosition(x:Float, y:Float) {
         this.x = x + width / 2;
         this.y = y + height / 2;
     }
 
+    /**
+     * self explanitory.
+     */
     public function destroy() {
         graphics.clear();
         // dispose our bitmap if we own it
@@ -106,6 +187,11 @@ class ASprite extends Sprite {
             parent.removeChild(this);
     }
 
+    /**
+     * apply a global filter to the entire sprite.
+     * @param filter 
+     * @return ASprite
+     */
     public function applyFilter(filter:BitmapFilter):ASprite{
         if(filters==null) filters=([]:Array<BitmapFilter>);
         var list = filters.copy(); // filters can be null on some versions, see below
@@ -114,10 +200,16 @@ class ASprite extends Sprite {
         trace('Added a global filter to sprite (SPRITE INDEX IN MEMBERS) with a filter index of ${filters.indexOf(filter)}');
         return this;
     }
+    /**
+     * Remove a global filter from the sprite
+     * @param index was filter.
+     * @return Bool was the filter removed
+     */
     public function removeGlobalFilter(index:Int):Bool return ((filters[index]!=null)?filters.remove(filters[index]):false);
 
     //these cant be cleared properly, once applied their applied.
     //TODO: find workaround for removing local baked filters.
+    //TODO: fix this.
     public function applyLocalFilter(size:Rectangle, filter:BitmapFilter, ?extraParams:ExtraFilterParams):ASprite {
         if (_bitmapData == null) {
             trace('applyLocalFilter: sprite does not own its bitmap, skipping');
@@ -166,6 +258,13 @@ class ASprite extends Sprite {
         graphics.endFill();
         return this;
     }
+
+    /**
+     * check if the sprite contains a point.
+     * @param point point to check.
+     * @return Bool return new Rectangle(x, y, width, height).containsPoint(point.toOpenflPoint())
+     */
+    public inline function containsPoint(point:APoint):Bool return new Rectangle(x, y, width, height).containsPoint(point.toOpenflPoint());
 
     #if sys
     public static function getDesktopWallpaper(maxWidth:Int, maxHeight:Int):BitmapData {

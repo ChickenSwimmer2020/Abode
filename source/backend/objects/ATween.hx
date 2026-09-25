@@ -25,25 +25,37 @@ class ATween extends Sprite {
         addEventListener(Event.ENTER_FRAME, onEnterFrame);
     }
 
-    public function tween(target:Dynamic, props:Dynamic, duration:Float, ?onComplete:Void->Void, ?ease:Float->Float):Void {
-		if (target != null && Std.isOfType(target, openfl.display.DisplayObject)) {
-			var targetSprite = cast(target, openfl.display.DisplayObjectContainer);
-			if (parent == null)
-				targetSprite.addChild(this);
+	public function tween(target:Dynamic, props:Dynamic, duration:Float, ?onComplete:Void->Void, ?ease:Float->Float):Void {
+		if (target != null) {
+			if(Std.isOfType(target, openfl.display.DisplayObjectContainer)){
+				var targetSprite = cast(target, openfl.display.DisplayObjectContainer);
+				if (parent != null) targetSprite.addChild(this);
+			}else stage.addChild(this);
 		}
-        for (field in Reflect.fields(props)) {
-            tweens.push({
-                target:     target,
-                prop:       field,
-                startVal:   Reflect.getProperty(target, field),
-                endVal:     Reflect.field(props, field),
-                duration:   duration,
-                elapsed:    0,
-                onComplete: onComplete,
-                ease:       ease
-            });
-        }
-    }
+
+		var fields = Reflect.fields(props);
+		var remaining = fields.length;
+		var wrappedComplete:Void->Void = null;
+		if (onComplete != null) {
+			wrappedComplete = function() {
+				remaining--;
+				if (remaining <= 0) onComplete();
+			};
+		}
+
+		for (field in fields) {
+			tweens.push({
+				target:     target,
+				prop:       field,
+				startVal:   Reflect.getProperty(target, field),
+				endVal:     Reflect.field(props, field),
+				duration:   duration,
+				elapsed:    0,
+				onComplete: wrappedComplete,
+				ease:       ease
+			});
+		}
+	}
 
     // cancel all tweens on a specific target
     public function cancelTweensOf(target:Dynamic):Void {
