@@ -7,7 +7,7 @@ interface IHasAttributes<T1, T2> {
     public function removeAttribute(a:T1):Bool;
 }
 
-class HasParamsUtil {
+class HasAttributesUtil {
 	public static inline function setAttribute<T1, T2>(object:Null<IHasAttributes<T1, T2>>, key:T1, value:T2):Null<T1> {
 		return object != null ? object.setAttribute(key, value) : null;
 	}

@@ -1,5 +1,7 @@
 package;
 
+import backend.objects.ASound;
+
 class SplashScreen extends AState {
     var introSprite:ASprite;
     public function new() {
@@ -13,15 +15,16 @@ class SplashScreen extends AState {
     }
 
     public function startIntro() {
-        Main.pWidth = 640; //basically, FlxG.width and FlxG.height but interchangable.
-        Main.pHeight = 360;
-        Lib.application.window.width = 640;
-        Lib.application.window.height = 360;
-        Lib.application.window.x = Math.floor(Capabilities.screenResolutionX/2-Lib.application.window.width/2);
-        Lib.application.window.y = Math.floor(Capabilities.screenResolutionY/2-Lib.application.window.height/2);
-        introSprite.x = (640 / 2)-introSprite.scaleX/2;
-		introSprite.y = (360 / 2)-introSprite.scaleY/2;
-        //FlxG.sound.load(FlxAssets.getSoundAddExtension("flixel/sounds/flixel")).play();
+        ASound.playSound("assets/sounds/Startup.wav", 1.0);
+        #if sys
+            Main.pWidth = 640; //basically, FlxG.width and FlxG.height but interchangable.
+            Main.pHeight = 360;
+            Lib.application.window.width = 640;
+            Lib.application.window.height = 360;
+            Lib.application.window.x = Math.floor(Capabilities.screenResolutionX/2-Lib.application.window.width/2);
+            Lib.application.window.y = Math.floor(Capabilities.screenResolutionY/2-Lib.application.window.height/2);
+        #end
+        introSprite.screenCenter();
 
         //FlashReader.parseFlaFile('IntroAnim.fla');
 		for(i in 0...2){
@@ -33,9 +36,10 @@ class SplashScreen extends AState {
     }
     
     public function beginBetterIntro() {
-        var properSprite:ASprite = new ASprite(-640/2, -360/2, BitmapData.fromFile('assets/images/splash/art.png'));
+        var properSprite:ASprite = new ASprite(-640/2, -360/2, 'assets/images/splash/art.png');
         properSprite.alpha = 0;
         add(properSprite);
+        #if html5 properSprite.setGraphicSize(Main.pWidth, Main.pHeight); #end
 
         new ATween().tween(properSprite, {alpha: 1}, 1.25, null, AEase.quadInOut);
         new ATween().tween(introSprite, {alpha: 0}, 1.25, ()->{
@@ -50,19 +54,22 @@ class SplashScreen extends AState {
 
             var loadingIndicator:LoadingIndicator = new LoadingIndicator(300, 200);
             add(loadingIndicator);
+            loadingIndicator.screenCenter();
             loadingIndicator.alpha = 0;
             loadingIndicator.y = 360;
-            new ATween().tween(loadingIndicator, {alpha: 1, x: 300, y: 200}, 1.25, AEase.expoOut);
+            new ATween().tween(loadingIndicator, {alpha: 1, y: (Main.pHeight/2-loadingIndicator.height/2)}, 1.25, AEase.expoOut);
 
 
             ATimer.start(5, ()->{ //placeholder for how long preloading will take.
                 ATimer.start(0.75, ()->{
-                    Main.pWidth = 1280;
-                    Main.pHeight = 720;
-                    Lib.application.window.width = 1280;
-                    Lib.application.window.height = 720;
-                    Lib.application.window.x = Math.floor(Capabilities.screenResolutionX/2-Lib.application.window.width/2);
-                    Lib.application.window.y = Math.floor(Capabilities.screenResolutionY/2-Lib.application.window.height/2);
+                    #if sys
+                        Main.pWidth = 1280;
+                        Main.pHeight = 720;
+                        Lib.application.window.width = 1280;
+                        Lib.application.window.height = 720;
+                        Lib.application.window.x = Math.floor(Capabilities.screenResolutionX/2-Lib.application.window.width/2);
+                        Lib.application.window.y = Math.floor(Capabilities.screenResolutionY/2-Lib.application.window.height/2);
+                    #end
                     Main.StateSystem.switchState(InitState);
                 });
             });

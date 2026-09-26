@@ -1,0 +1,33 @@
+package backend;
+
+class Network{
+    /**
+     * Check to see if abode needs an update
+     * @return Int is an update needed? 0 is yes, 1 is no, -1 is no connection, and -2 is error.
+     */
+    public static function checkForUpdates():Int {
+        var data:String = get("https://raw.githubusercontent.com/ChickenSwimmer2020/Abode/refs/heads/main/README.md");
+        if(data.startsWith("SysError(Unresolved host ")) return -1;
+        if(data.contains("#404")) return -4;
+        if(data == "THIS IS A PROBLEM!") return -5;
+        var newestVersion:String = data.split("\n")[0].split('-->')[0].replace('<!-- Version:', "").trim();
+        if(newestVersion != Application.current.meta.get("version")) {
+            return 0;
+        }else return 1;
+        
+        return -3;
+    }
+
+    private static function get(url:String):String {
+		var h = new Http(url);
+		var r = "THIS IS A PROBLEM!";
+		h.onData = function(d) {
+			r = d;
+		}
+		h.onError = function(e) {
+			r = e;
+		}
+		h.request(false);
+		return r;
+    }
+}

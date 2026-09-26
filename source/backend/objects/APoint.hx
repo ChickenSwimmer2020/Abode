@@ -22,6 +22,7 @@ class APoint {
         iY = Math.floor(y);
     }
     public function toOpenflPoint():Point return new Point(x, y);
+    public static function fromOpenflPoint(p:Point):APoint return new APoint(p.x, p.y);
 
 
     public function toString():String return 'APoint: [$x, $y]';

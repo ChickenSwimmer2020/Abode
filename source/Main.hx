@@ -1,9 +1,15 @@
 package;
 
+import openfl.Assets;
+import openfl.display.DisplayObject;
+import backend.objects.AWindowManager;
+
 class Main extends Sprite {
+    public static var instance:Main;
     public static var pWidth:Int=1280; //programWidth //? these are seperate from the window w/h.
     public static var pHeight:Int=720; //programHeight //? since these calculate the internal size of state and such.
-
+    public static var vMouse:APoint = new APoint(0, 0);
+    public static var windowManager:AWindowManager;
     #if debug
         public var stats:DebugDisplay;
     #end
@@ -11,19 +17,23 @@ class Main extends Sprite {
     public static var StateSystem:StateSystemInit = new StateSystemInit(null); //defaults to splashscreen since thats literally the only thing it does on init
     public function new() {
         super();
-        stage.scaleMode = StageScaleMode.NO_SCALE;
+        instance = this;
+        #if (hl && !debug) hl.UI.closeConsole(); #end
+        stage.scaleMode = #if html5 StageScaleMode.EXACT_FIT; #else StageScaleMode.NO_SCALE; #end
         stage.align = StageAlign.TOP_LEFT;
         scrollRect = new Rectangle(0, 0, 1280, 720);
         stage.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onUncaughtError);
         stage.addEventListener(ErrorEvent.ERROR, onError);
         Lib.application.window.onClose.add(onClosing);
+        stage.addEventListener(MouseEvent.MOUSE_MOVE, onStageMouseMove);
         stage.addEventListener(Event.RESIZE, onStageResize);
         stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
         stage.addEventListener(MouseEvent.CLICK, onMouseClick);
         onStageResize(null); // apply once at startup
+        Application.current.window.title = '${Application.current.window.title}: [${Application.current.meta.get("version")}]';
 
         ATween.globalParent = this; //so that new Tween() will auto-destroy and not cause memory leaks.
-        
+        windowManager = new AWindowManager();
 
         addChild(StateSystem);
         StateSystem.switchState(SplashScreen); //wait fuck this might work!
@@ -84,6 +94,7 @@ class Main extends Sprite {
                 trace("Tried to close an instance of AMenuBar but instance is null!");
                 return;
             }
+            //TODO: fix clicking in certain spots makes dropdown close in fullscreen.
             if(!AMenuBar.instance.dropdownBG.containsPoint(new APoint(e.stageX, e.stageY))){ //if off the backing, then exit.
                 AMenuBar.instance.closeDropdownMenu(); //force close any open instance.
             }else{
@@ -109,14 +120,33 @@ class Main extends Sprite {
 
     //OPENFL's actual scale mode for Stage is ASS AF. so we're gonna do it properly.
     private function onStageResize(_:Event):Void {
-        var w = stage.stageWidth;
-        var h = stage.stageHeight;
-        var s = Math.min(w / pWidth, h / pHeight);
+        #if sys
+            var w = stage.stageWidth;
+            var h = stage.stageHeight;
+            var s = Math.min(w / pWidth, h / pHeight);
 
 
-        scaleX = scaleY = s;
-        x = (w - pWidth * s) / 2;
-        y = (h - pHeight * s) / 2;
+            scaleX = scaleY = s;
+            x = (w - pWidth * s) / 2;
+            y = (h - pHeight * s) / 2;
+        #elseif html5
+            pWidth = Application.current.window.width;
+            pHeight = Application.current.window.height;
+        #end
+        updateVirtualMouse();
+    }
+    private function onStageMouseMove(_:MouseEvent):Void {
+        updateVirtualMouse();
+    }
+    private inline function updateVirtualMouse():Void {
+        vMouse.x = (stage.mouseX - x) / scaleX;
+        vMouse.y = (stage.mouseY - y) / scaleY;
+    }
+    public function addToMainStage(a:DisplayObject) {
+        addChild(a);
+    }
+    public function removeFromMainStage(a:DisplayObject) {
+        removeChild(a);
     }
 
     public function onError(event:ErrorEvent) {
@@ -143,6 +173,7 @@ class Main extends Sprite {
             
         #end
 
+        stage.removeEventListener(MouseEvent.MOUSE_MOVE, onStageMouseMove);
         stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
         stage.removeEventListener(Event.RESIZE, onStageResize);
         Lib.application.window.onClose.remove(onClosing);

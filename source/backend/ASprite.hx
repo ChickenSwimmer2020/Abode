@@ -1,5 +1,8 @@
 package backend;
 
+import openfl.Assets;
+import backend.utils.IDestroyable;
+
 
 typedef ExtraFilterParams = {
     @:optional var colorTransform:Null<AColor>;
@@ -7,9 +10,8 @@ typedef ExtraFilterParams = {
 } 
 
 
-class ASprite extends Sprite implements IHasAttributes<String, Dynamic>{
+class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implements IDestroyable{
     public var attributes:Map<String, Dynamic>;
-
     public function setAttribute(a:String, b:Dynamic):String {
         attributes.set(a, b);
         return a;
@@ -90,7 +92,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic>{
      * @param color AColor
      * @return ASprite
      */
-    public function makeGraphic(width:Int, height:Int, color:AColor):ASprite {
+    public function makeGraphic(width:Int, height:Int, color:AColor=AColor.TRANSPARENT):ASprite {
         graphics.beginFill(AColor.getRGB(color), color.a);
         graphics.drawRect(0, 0, width, height);
         graphics.endFill();
@@ -116,7 +118,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic>{
         var Graphics:BitmapData = new BitmapData(1, 1, false, AColor.WHITE);
         switch (Type.getClass(graphic)) {
             case String:
-                Graphics = BitmapData.fromFile(graphic);
+                Graphics = Assets.getBitmapData(graphic);
                 _bitmapData = Graphics; // we own this, so we dispose it later
             case Image:
                 Graphics = BitmapData.fromImage(graphic);
@@ -146,6 +148,12 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic>{
         return this;
     }
 
+    public function screenCenter():ASprite {
+        x = Main.pWidth/2-width/2;
+        y = Main.pHeight/2-height/2;
+        return this;
+    }
+
     /**
      * change the graphic size.
      * @param width 
@@ -155,7 +163,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic>{
         if (width <= 0 && height <= 0) return;
         var newScaleX:Float = width / frameWidth;
         var newScaleY:Float = height / frameHeight;
-        scale.set(newScaleX, newScaleY);
+        scale = new APoint(newScaleX, newScaleY);
         if (width <= 0) scale.x = newScaleY;
         else if (height <= 0) scale.y = newScaleX;
         gWidth = Math.floor(width);
@@ -265,12 +273,15 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic>{
      * @return Bool return new Rectangle(x, y, width, height).containsPoint(point.toOpenflPoint())
      */
     public inline function containsPoint(point:APoint):Bool return new Rectangle(x, y, width, height).containsPoint(point.toOpenflPoint());
+    public inline function containsMouse():Bool return containsPoint(Main.vMouse);
 
-    #if sys
     public static function getDesktopWallpaper(maxWidth:Int, maxHeight:Int):BitmapData {
         #if windows
             var original = BitmapData.fromFile('C:\\Users\\${Sys.getEnv("USERNAME")}\\AppData\\Roaming\\Microsoft\\Windows\\Themes\\TranscodedWallpaper');
-            if (original == null) return null;
+            if (original == null) return BitmapData.fromFile('assets/images/FbutteRautah.png');
+
+            //if the bitmap isnt 16:9
+            if(!(Math.abs((original.width/original.height)-(16/9))<0.01)) return BitmapData.fromFile('assets/images/FbutteRautah.png');
 
             var scaleX = maxWidth / original.width;
             var scaleY = maxHeight / original.height;
@@ -284,7 +295,6 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic>{
             original.dispose(); // always dispose the 4k original
             return scaled;
         #end
-        return BitmapData.fromFile('assets/images/FbutteRautah.png'); //return this as a default fallback.
+        return Assets.getBitmapData('assets/images/FbutteRAUtah.png'); //return this as a default fallback.
     }
-    #end
 }

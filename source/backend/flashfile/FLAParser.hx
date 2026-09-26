@@ -146,7 +146,7 @@ class FlashReader {
         var toReturn:DOMDocument;
         var internalXmls:Map<String,String>=[];
         if(input=="IntroAnim.fla" || input=="IntroAnim") {
-            var file = File.read('assets/IntroAnim.fla', true);
+            var file = #if html5 null; #elseif sys File.read('assets/IntroAnim.fla', true); #end
             var reader:Reader = new Reader(file);
             var entries = reader.read();
             for (entry in entries) {
@@ -241,7 +241,7 @@ class FlashReader {
                 }
             };
 
-            #if debug File.saveContent('assets/${input}_DEBUGLOG.json', Json.stringify(toReturn, null, "    ")); #end
+            #if (debug && sys) File.saveContent('assets/${input}_DEBUGLOG.json', Json.stringify(toReturn, null, "    ")); #end
             return toReturn;
         }else{
 

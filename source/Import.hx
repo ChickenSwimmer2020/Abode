@@ -59,8 +59,13 @@ import lime.app.Application;
 import lime.utils.AssetLibrary;
 
 //sys imports
-import sys.io.File;
-import sys.FileSystem;
+#if sys
+    import sys.io.File;
+    import sys.FileSystem;
+    import sys.Http;
+#elseif html5
+    import haxe.Http;
+#end
 
 //haxe imports
 import haxe.Json;

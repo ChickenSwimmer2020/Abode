@@ -25,7 +25,7 @@ class ATween extends Sprite {
         addEventListener(Event.ENTER_FRAME, onEnterFrame);
     }
 
-	public function tween(target:Dynamic, props:Dynamic, duration:Float, ?onComplete:Void->Void, ?ease:Float->Float):Void {
+	public function tween(target:Dynamic, props:Dynamic, duration:Float, ?onComplete:Void->Void, ?ease:Float->Float):ATween {
 		if (target != null) {
 			if(Std.isOfType(target, openfl.display.DisplayObjectContainer)){
 				var targetSprite = cast(target, openfl.display.DisplayObjectContainer);
@@ -55,6 +55,7 @@ class ATween extends Sprite {
 				ease:       ease
 			});
 		}
+		return this;
 	}
 
     // cancel all tweens on a specific target

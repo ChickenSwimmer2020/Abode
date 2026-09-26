@@ -3,8 +3,8 @@ package backend;
 class LoadingIndicator extends ASprite {
     public var loadingSpeed:Float = 0.4;
 
-    var segment:LoadingSegment;
-    var bg:ASprite;
+    public var segment:LoadingSegment;
+    public var bg:ASprite;
     var destroyed:Bool = false;
 
     public function new(x:Float, y:Float) {
@@ -37,7 +37,7 @@ class LoadingIndicator extends ASprite {
     private function spinBG() {
         if(destroyed) return;
         bg.rotation = 0;
-        new ATween().tween(bg, {rotation: -90}, loadingSpeed * 2, ()->{spinBG();}, AEase.expoOut);
+        new ATween().tween(bg, {rotation: -90}, loadingSpeed * 2, ()->{spinBG();}, AEase.expoInOut);
     }
 
     override public function destroy() {

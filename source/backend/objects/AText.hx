@@ -1,5 +1,7 @@
 package backend.objects;
 
+import backend.utils.IDestroyable;
+
 enum abstract ATextAlign(String) {
     var LEFT;
     var RIGHT;
@@ -15,7 +17,7 @@ enum abstract ATextAlign(String) {
     }
 }
 
-class AText extends TextField {
+class AText extends TextField implements IDestroyable {
     @:noCompletion private var format:TextFormat; //dumb way to do it but yeahh
     //stuffs
     public var alignment(default, set):ATextAlign = LEFT;
@@ -44,5 +46,9 @@ class AText extends TextField {
         this.mouseEnabled = false;
         this.text = text; 
         this.fontSize = fontSize;
+    }
+
+    public function destroy() {
+        if(parent!=null) parent.removeChild(this);
     }
 }

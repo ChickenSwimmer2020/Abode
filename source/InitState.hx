@@ -1,5 +1,12 @@
 package;
 
+import backend.ui.ScrollableArea;
+import backend.Network;
+import backend.ui.AButton;
+import lime.graphics.RenderContext;
+import lime.ui.Window;
+import backend.objects.AWindowManager;
+import backend.objects.ASound;
 import backend.ui.ProjectBox;
 
 class InitState extends AState {
@@ -7,15 +14,19 @@ class InitState extends AState {
     var toolBar:AMenuBar;
     public function new() {
         super();
+        ASound.playMusic("assets/sounds/Vectors.wav", 0.35);
         Mouse.show();
         wallpaperBackground = new ASprite(0, 0).loadGraphic(ASprite.getDesktopWallpaper(1280, 720), true);
         add(wallpaperBackground);
+        #if html5 wallpaperBackground.setGraphicSize(Main.pWidth, Main.pHeight); #end
         
         wallpaperBackground.applyLocalFilter(
             new Rectangle(wallpaperBackground.width-wallpaperBackground.width/2+150, 0, wallpaperBackground.width/3+200, wallpaperBackground.height),
             new BlurFilter(32, 8, 3),
             {colorTransform: AColor.MAINMENU_PROJECTSLIST_DARKEN, offsets: new Rectangle(50, -100, 200, 200)}
         );
+
+        
             
         toolBar = new AMenuBar(TOP, [
             {
@@ -75,10 +86,12 @@ class InitState extends AState {
                         {text: "HScript Settings...", func: ()->{
                             trace('ActionScript settings');
                         }},
-                        {text: 'seperator', func: null},
-                        {text: "Exit", func: ()->{
-                            trace('Exit program');
-                        }},
+                        #if sys
+                            {text: 'seperator', func: null},
+                            {text: "Exit", func: ()->{
+                                trace('Exit program');
+                            }},
+                        #end
                     ], 200);
                 }
             },
@@ -122,16 +135,18 @@ class InitState extends AState {
                 size: new APoint(50, 20),
                 onClick: ()->{trace("Debug menu");}
             },
-            {
-                text: "Window",
-                size: new APoint(50, 20),
-                onClick: ()->{trace("Window menu");}
-            },
+            #if sys
+                {
+                    text: "Window",
+                    size: new APoint(50, 20),
+                    onClick: ()->{trace("Window menu");}
+                },
+            #end
             {
                 text: "Help",
                 size: new APoint(50, 20),
                 onClick: ()->{
-                    toolBar.openDropdownMenu(10, [
+                    toolBar.openDropdownMenu(#if(html5)9#else 10#end, [
                         {text: "Abode Help", func: ()->{trace('Help menu dropdown object 1!');}},
                         {text: "Submit bug report/feature request...", func: ()->{trace('Help menu dropdown object 2!');}},
                         {text: 'seperator', func: null},
@@ -140,17 +155,99 @@ class InitState extends AState {
                         {text: 'seperator', func: null},
                         {text: "Manage Plugins", func: ()->{trace('TODO: sub dropdown');}},
                         {text: 'seperator', func: null},
-                        {text: "Check for Updates...", func: ()->{trace('TODO: sub dropdown');}},
+                        {text: "Check for Updates...", func: ()->{
+                            var value:Int = Network.checkForUpdates();
+
+                            var darkenSprite:ASprite = new ASprite(0, 0).makeGraphic(Main.pWidth, Main.pHeight, 0x6E000000);
+                            Main.instance.addToMainStage(darkenSprite);
+                            var loader:LoadingIndicator = new LoadingIndicator(0, 0);
+                            Main.instance.addToMainStage(loader);
+                            loader.screenCenter();
+
+                            final time:Float = 5.0;
+                            ATimer.start(time/2, ()->{
+                                if(value<=-1){
+                                    loader.destroy();
+                                    darkenSprite.setGraphicColor(0x6EFF0000);
+                                    var text:AText = new AText(0, 0, Main.pWidth, "", 48);
+                                    Main.instance.addToMainStage(text);
+                                    text.height = 200; //TODO: make this automatic properly.
+                                    text.text = switch(value) {
+                                        case -1: "Couldnt connect to URL";
+                                        case -4: "404 Couldnt find requested file\nor no connection";
+                                        case -5: "Something went wrong.\nWe dont know what.\n:/";
+                                        default: "Generic error message\nWe have no clue what just happened.";
+                                    }
+                                    text.alignment = CENTER;
+                                    text.x = Main.pWidth/2-text.width/2;
+                                    text.y = Main.pHeight/2-text.height/2;
+
+                                    ATimer.start(2.5, ()->{
+                                        new ATween().tween(darkenSprite, {alpha: 0}, 1.15, ()->{
+                                            darkenSprite.destroy();
+                                        }, AEase.expoInOut);
+
+                                        new ATween().tween(text, {alpha: 0}, 1.15, ()->{
+                                            text.destroy();
+                                        }, AEase.expoInOut);
+                                    });
+                                }
+                            });
+
+                            ATimer.start(time, ()->{
+                                switch(value){
+                                    case 1:
+                                        loader.destroy();
+                                        darkenSprite.setGraphicColor(0x6E00FF00);
+                                        var text:AText = new AText(0, 0, Main.pWidth, "", 48);
+                                        Main.instance.addToMainStage(text);
+                                        text.text = "Runing latest version!";
+                                        text.alignment = CENTER;
+                                        text.x = Main.pWidth/2-text.width/2;
+                                        text.y = Main.pHeight/2-text.height/2;
+
+                                        ATimer.start(0.75, ()->{
+                                            new ATween().tween(darkenSprite, {alpha: 0}, 0.575, ()->{
+                                                darkenSprite.destroy();
+                                            }, AEase.expoInOut);
+
+                                            new ATween().tween(text, {alpha: 0}, 0.575, ()->{
+                                                text.destroy();
+                                            }, AEase.expoInOut);
+                                        });
+                                    case 0:
+                                        new ATween().tween(darkenSprite, {alpha: 0}, 0.575, ()->{
+                                            darkenSprite.destroy();
+                                            var updateWindow:AWindow = Main.windowManager.makeWindow("Update Available!", Math.floor(Main.pWidth/2-640/2), Math.floor(Main.pHeight/2-360/2), 640, 360, false, false);
+                                        }, AEase.expoIn);
+
+                                        new ATween().tween(loader, {alpha: 0}, 0.575, ()->{
+                                            loader.destroy();
+                                        }, AEase.expoIn);
+                                }
+                                trace('Waited long enough, canceling.');
+                            });
+                        }},
                         {text: 'seperator', func: null},
-                        {text: "About Abode", func: ()->{trace('TODO: about program popup');}},
+                        {text: "About Abode", func: ()->{
+                            var infoWindow:AWindow = Main.windowManager.makeWindow("tomfuckery!", 0, 0, 400, 200, false, true);
+                            var testSprite:ASprite = new ASprite(0, 0).makeGraphic(100, 100, AColor.RED);
+                            var testButton:AButton = new AButton("fucking text", new Rectangle(0, 380, 50, 20), ()->{
+                                trace("Fuck you, world!");
+                            });
+                            infoWindow.addContent(testSprite);
+                            infoWindow.addContent(testButton);
+                        }},
                     ], 200);
                 }
             }
         ]);
         add(toolBar);
 
-
-        add(new ProjectBox(Main.pWidth-350, 35)); //for testing and getting it ready.
-
+        var projectScroller:ScrollableArea = new ScrollableArea(Main.pWidth-350, 35);
+        add(projectScroller);
+        for(i in 0...15) {
+            projectScroller.add(new ProjectBox(0, 0+((75+15)*i))); //for testing and getting it ready.
+        }
     }
 }
