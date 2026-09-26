@@ -1,3 +1,4 @@
+<!-- Version: 0.0.1 -->
 <h1 align="center">ABODE</h1>
 <p>An animation software designed to look and feel like adobe animate down to a T, while still allowing for editing long past when adobe animate fails.<br>Planned Features</p>
 <l>
