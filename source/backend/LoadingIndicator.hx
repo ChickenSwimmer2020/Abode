@@ -65,8 +65,8 @@ class LoadingIndicator extends ASprite {
         m.translate(w / 2, h / 2);
 
         // shift every drawn point by (-cx, -cy) so the shape is centered on bg's local (0,0)
-        bg.graphics.lineStyle(2, AColor.getRGB(AColor.BLACK), 1);
-        bg.graphics.beginFill(AColor.getRGB(AColor.LOADINGIND_MAINCOLOR), AColor.LOADINGIND_MAINCOLOR.a);
+        bg.graphics.lineStyle(2, AColor.BLACK.rgb, 1);
+        bg.graphics.beginFill(AColor.LOADINGIND_MAINCOLOR.rgb, AColor.LOADINGIND_MAINCOLOR.a);
         bg.graphics.moveTo(tx(0, 0)-cx,   ty(0, 0)-cy);
         bg.graphics.lineTo(tx(w, 0)-cx,   ty(w, 0)-cy);
         bg.graphics.lineTo(tx(w, h)-cx,   ty(w, h)-cy);
@@ -104,8 +104,8 @@ class LoadingSegment extends ASprite {
             {x: PURPLE_SIZE - cx, y: HALF - cy}
         ];
 
-        graphics.lineStyle(1, AColor.getRGB(AColor.BLACK), 1);
-        graphics.beginFill(AColor.getRGB(AColor.LOADINGIND_MAINCOLOR), AColor.LOADINGIND_MAINCOLOR.a);
+        graphics.lineStyle(1, AColor.BLACK.rgb, 1);
+        graphics.beginFill(AColor.LOADINGIND_MAINCOLOR.rgb, AColor.LOADINGIND_MAINCOLOR.a);
         graphics.moveTo(points[0].x+(W/5), points[0].y+(H/5));
         for (i in 1...points.length)
             graphics.lineTo(points[i].x+(W/5), points[i].y+(H/5));

@@ -1,5 +1,61 @@
+<!--markdownlint-disable MD024-->
+<!--markdownlint-disable MD033 -->
 # CHANGELOG
 
+> ## 0.00.002 (The Flixeling)
+>
+><!---->
+>> ## ASound
+>>
+>> * Complete rewrite to use `FlxSound`'s backend
+>> * > Literally just `FlxSound` atp.
+>
+>> ## AMath
+>>
+>> * Added `bound()` (From `FlxMath`)
+>> * Added `even()`
+>> * `lerp()` now uses Flixel style
+>
+>> ## New Tools Folder
+>>
+>> * New tool for generating `ADrawableIconCommand` arrays.
+>
+>> ## DrawUtil
+>>
+>> * New system for drawing icons on buttons
+>> * Added `DrawIcon()`
+>> * New Enum! `ADrawableIconCommandType`
+>> * New TypeDef! `ADrawableIconCommand`
+>> * New Class! `ADrawableIcons`
+>> * * `SOUND`
+>> * * `MUTE`
+>> * * `WIN_CLOSE`
+>> * * `WIN_MAX`
+>> * * `WIN_MIN`
+>>
+>> ## ASprite
+>>
+>> * New Variable! `gColor:Acolor`
+>> * `makeGraphic` now clears graphic before starting
+>> * New Function! `reRender():ASprite`
+>>
+>> ## AColor
+>>
+>> * Finally fixed alpha being buggy
+>> * Removed `getRGB()`
+>> * `.rgb` is now an accessible field of `AColor`
+>> * `.a` is now an accessible field of `AColor`
+>>
+>> ## AButton
+>>
+>> * New Icon System!
+>> * `onClick` now returns `AButton`
+>> * New Function! `changeSymbol`
+>>
+>> ## InitState
+>>
+>> * Added a mute button for the music
+<!---->
 > ## 0.00.001 (New stuff!)
 >
 > * New startup sound.
@@ -13,7 +69,7 @@
 > * Added new `AMath` class.
 > * Added new `IDestroyable` interface.
 >
->>>> BASIC support for HTML5 <br> <!--markdownlint-disable-line MD033 -->
+>>>> BASIC support for HTML5 <br>
 >>>> but PLEASE dont compile to it yet.
 >
 >> ## Main

@@ -10,7 +10,7 @@ enum AMenuBarAlignment {
 typedef AButtonIdentifier = {
     var text:String;
     var size:APoint;
-    var onClick:Void->Void;
+    var onClick:AButton->Void;
 } 
 
 class AMenuBar extends ASprite {
@@ -65,7 +65,7 @@ class AMenuBar extends ASprite {
     var dropdownButtons:Array<OneOfTwo<ASprite, AButton>> = [];
     var increment:Float = 0.0;
     public var dropdownKeys:Map<Array<Int>, String>=[];
-    public function openDropdownMenu(index:Int, options:Array<{text:String, ?closeOnClick:Bool, ?keys:Array<Int>, ?disabled:Bool, func:Void->Void}>, ?overWidth:Int) {
+    public function openDropdownMenu(index:Int, options:Array<{text:String, ?closeOnClick:Bool, ?keys:Array<Int>, ?disabled:Bool, func:AButton->Void}>, ?overWidth:Int) {
         if(dropdownOpen) return;
         var targetPosition:APoint = new APoint(buttons[index].button.x, buttons[index].button.y+TBHeight);
 

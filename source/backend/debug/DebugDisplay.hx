@@ -11,7 +11,7 @@ package backend.debug;
             super();
 
             // background
-            graphics.beginFill(AColor.getRGB(AColor.DEBUGGER_BACKGROUND), AColor.DEBUGGER_BACKGROUND.a);
+            graphics.beginFill(AColor.DEBUGGER_BACKGROUND.rgb, AColor.DEBUGGER_BACKGROUND.a);
             graphics.drawRect(0, 0, 200, 80);
             graphics.endFill();
 
@@ -61,7 +61,7 @@ package backend.debug;
             if(label.height!=(0+(20*(MSGS.length-1)))){ //only update the graphics if we need too.
                 label.height=(0+(20*(MSGS.length-1)));
                 graphics.clear();
-                graphics.beginFill(AColor.getRGB(AColor.DEBUGGER_BACKGROUND), AColor.DEBUGGER_BACKGROUND.a);
+                graphics.beginFill(AColor.DEBUGGER_BACKGROUND.rgb, AColor.DEBUGGER_BACKGROUND.a);
                     graphics.drawRect(0, 0, 200, label.height);
                 graphics.endFill();
             }

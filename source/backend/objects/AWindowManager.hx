@@ -67,14 +67,14 @@ class AWindow extends AGroup<DisplayObject> {
             add(windowTitle);
             dragBarButtons = [];
             for(i in 0...3) {
-                var b:AButton = new AButton(["X", "[]", "-"][i], new Rectangle(dragBar.width-(20+(20*i)), 0, 20, 20), [
-                    () -> {
+                var b:AButton = new AButton('[SYM: ${["WIN_CLOSE", "WIN_MAX", "WIN_MIN"][i]}]', new Rectangle(dragBar.width-(20+(20*i)), 0, 20, 20), [
+                    (_:AButton) -> {
                         destroy();
                     },
-                    () -> {
+                    (_:AButton) -> {
                         trace("maximize");
                     },
-                    () -> {
+                    (_:AButton) -> {
                         trace("minimize");
                     }
                 ][i]);

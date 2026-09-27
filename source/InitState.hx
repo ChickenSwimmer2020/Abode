@@ -14,7 +14,7 @@ class InitState extends AState {
     var toolBar:AMenuBar;
     public function new() {
         super();
-        ASound.playMusic("assets/sounds/Vectors.wav", 0.35);
+        ASoundManager.playMusic("assets/sounds/Vectors.wav", 0.35);
         Mouse.show();
         wallpaperBackground = new ASprite(0, 0).loadGraphic(ASprite.getDesktopWallpaper(1280, 720), true);
         add(wallpaperBackground);
@@ -32,63 +32,63 @@ class InitState extends AState {
             {
                 text: "File",
                 size: new APoint(50, 20),
-                onClick: ()->{
+                onClick: (_:AButton)->{
                     toolBar.openDropdownMenu(0, [
-                        {text: "New...", keys:[Keyboard.CONTROL, Keyboard.N], func: ()->{
+                        {text: "New...", keys:[Keyboard.CONTROL, Keyboard.N], func: (butt:AButton)->{
                             trace("Make new project.");
                         }},
-                        {text: "New from template...", func: ()->{
+                        {text: "New from template...", func: (butt:AButton)->{
                             trace("make new project with template.");
                         }},
-                        {text: "Open", func: ()->{
+                        {text: "Open", func: (butt:AButton)->{
                             trace('Open project from file.');
                         }},
-                        {text: "Open Recent > ", closeOnClick: false, func: ()->{
+                        {text: "Open Recent > ", closeOnClick: false, func: (butt:AButton)->{
                             trace('TODO: sub dropdown.');
                         }},
-                        {text: "Close", disabled: true, func: ()->{
+                        {text: "Close", disabled: true, func: (butt:AButton)->{
                             trace('Close current project.');
                         }},
-                        {text: "Close All", disabled: true, func: ()->{
+                        {text: "Close All", disabled: true, func: (butt:AButton)->{
                             trace('Close all opened projects.');
                         }},
-                        {text: "Save", disabled: true, func: ()->{
+                        {text: "Save", disabled: true, func: (butt:AButton)->{
                             trace('Save current project.');
                         }},
-                        {text: "Save as...", disabled: true, func: ()->{
+                        {text: "Save as...", disabled: true, func: (butt:AButton)->{
                             trace('Save project as a different file.');
                         }},
-                        {text: "Save as template...", disabled: true, func: ()->{
+                        {text: "Save as template...", disabled: true, func: (butt:AButton)->{
                             trace('Save project as a new template.');
                         }},
-                        {text: "Revert", disabled: true, func: ()->{
+                        {text: "Revert", disabled: true, func: (butt:AButton)->{
                             trace('Unsure what this does. is it like an undo button?');
                         }},
                         {text: 'seperator', func: null},
-                        {text: "Import > ", closeOnClick: false, func: ()->{
+                        {text: "Import > ", closeOnClick: false, func: (butt:AButton)->{
                             trace('TODO: sub dropdown');
                         }},
-                        {text: "Export > ", closeOnClick: false, func: ()->{
-                            trace('TODO: sub dropdown');
-                        }},
-                        {text: 'seperator', func: null},
-                        {text: "Convert to > ", closeOnClick: false, func: ()->{
+                        {text: "Export > ", closeOnClick: false, func: (butt:AButton)->{
                             trace('TODO: sub dropdown');
                         }},
                         {text: 'seperator', func: null},
-                        {text: "Distribution Settings...", func: ()->{
+                        {text: "Convert to > ", closeOnClick: false, func: (butt:AButton)->{
+                            trace('TODO: sub dropdown');
+                        }},
+                        {text: 'seperator', func: null},
+                        {text: "Distribution Settings...", func: (butt:AButton)->{
                             trace('Publish settings but legally distinct');
                         }},
-                        {text: "Distribute", func: ()->{
+                        {text: "Distribute", func: (butt:AButton)->{
                             trace('Publish legally distinct');
                         }},
                         {text: 'seperator', func: null},
-                        {text: "HScript Settings...", func: ()->{
+                        {text: "HScript Settings...", func: (butt:AButton)->{
                             trace('ActionScript settings');
                         }},
                         #if sys
                             {text: 'seperator', func: null},
-                            {text: "Exit", func: ()->{
+                            {text: "Exit", func: (butt:AButton)->{
                                 trace('Exit program');
                             }},
                         #end
@@ -98,64 +98,64 @@ class InitState extends AState {
             {
                 text: "Edit",
                 size: new APoint(50, 20),
-                onClick: ()->{trace("Edit menu");}
+                onClick: (_:AButton)->{trace("Edit menu");}
             },
             {
                 text: "View",
                 size: new APoint(50, 20),
-                onClick: ()->{trace("View menu");}
+                onClick: (_:AButton)->{trace("View menu");}
             },
             {
                 text: "Insert",
                 size: new APoint(50, 20),
-                onClick: ()->{trace("Insert menu");}
+                onClick: (_:AButton)->{trace("Insert menu");}
             },
             {
                 text: "Modify",
                 size: new APoint(50, 20),
-                onClick: ()->{trace("Modify menu");}
+                onClick: (_:AButton)->{trace("Modify menu");}
             },
             {
                 text: "Text",
                 size: new APoint(50, 20),
-                onClick: ()->{trace("Text menu");}
+                onClick: (_:AButton)->{trace("Text menu");}
             },
             {
                 text: "Commands",
                 size: new APoint(50, 20),
-                onClick: ()->{trace("Commands menu");}
+                onClick: (_:AButton)->{trace("Commands menu");}
             },
             {
                 text: "Control",
                 size: new APoint(50, 20),
-                onClick: ()->{trace("Controls menu");}
+                onClick: (_:AButton)->{trace("Controls menu");}
             },
             {
                 text: "Debug",
                 size: new APoint(50, 20),
-                onClick: ()->{trace("Debug menu");}
+                onClick: (_:AButton)->{trace("Debug menu");}
             },
             #if sys
                 {
                     text: "Window",
                     size: new APoint(50, 20),
-                    onClick: ()->{trace("Window menu");}
+                    onClick: (_:AButton)->{trace("Window menu");}
                 },
             #end
             {
                 text: "Help",
                 size: new APoint(50, 20),
-                onClick: ()->{
+                onClick: (_:AButton)->{
                     toolBar.openDropdownMenu(#if(html5)9#else 10#end, [
-                        {text: "Abode Help", func: ()->{trace('Help menu dropdown object 1!');}},
-                        {text: "Submit bug report/feature request...", func: ()->{trace('Help menu dropdown object 2!');}},
+                        {text: "Abode Help", func: (butt:AButton)->{trace('Help menu dropdown object 1!');}},
+                        {text: "Submit bug report/feature request...", func: (butt:AButton)->{trace('Help menu dropdown object 2!');}},
                         {text: 'seperator', func: null},
-                        {text: "Online Tutorial...", func: ()->{trace('Help menu dropdown object 2!');}},
-                        {text: "Hands on Tutorial  >", closeOnClick: false, func: ()->{trace('TODO: sub dropdown');}},
+                        {text: "Online Tutorial...", func: (butt:AButton)->{trace('Help menu dropdown object 2!');}},
+                        {text: "Hands on Tutorial  >", closeOnClick: false, func: (butt:AButton)->{trace('TODO: sub dropdown');}},
                         {text: 'seperator', func: null},
-                        {text: "Manage Plugins", func: ()->{trace('TODO: sub dropdown');}},
+                        {text: "Manage Plugins", func: (butt:AButton)->{trace('TODO: sub dropdown');}},
                         {text: 'seperator', func: null},
-                        {text: "Check for Updates...", func: ()->{
+                        {text: "Check for Updates...", func: (butt:AButton)->{
                             var value:Int = Network.checkForUpdates();
 
                             var darkenSprite:ASprite = new ASprite(0, 0).makeGraphic(Main.pWidth, Main.pHeight, 0x6E000000);
@@ -229,10 +229,10 @@ class InitState extends AState {
                             });
                         }},
                         {text: 'seperator', func: null},
-                        {text: "About Abode", func: ()->{
+                        {text: "About Abode", func: (butt:AButton)->{
                             var infoWindow:AWindow = Main.windowManager.makeWindow("tomfuckery!", 0, 0, 400, 200, false, true);
                             var testSprite:ASprite = new ASprite(0, 0).makeGraphic(100, 100, AColor.RED);
-                            var testButton:AButton = new AButton("fucking text", new Rectangle(0, 380, 50, 20), ()->{
+                            var testButton:AButton = new AButton("fucking text", new Rectangle(0, 380, 50, 20), (_buttt)->{
                                 trace("Fuck you, world!");
                             });
                             infoWindow.addContent(testSprite);
@@ -243,6 +243,14 @@ class InitState extends AState {
             }
         ]);
         add(toolBar);
+
+        var isMuted:Bool=false;
+        var muteButton:AButton = new AButton("[SYM: SOUND]", new Rectangle(toolBar.width-20, 0, 20, 20), (_:AButton)->{
+            isMuted=!isMuted;
+            _.changeSymbol(isMuted?"MUTE":"SOUND");
+            ASoundManager.music.volume = isMuted?0.0:0.35;
+        });
+        add(muteButton);
 
         var projectScroller:ScrollableArea = new ScrollableArea(Main.pWidth-350, 35);
         add(projectScroller);

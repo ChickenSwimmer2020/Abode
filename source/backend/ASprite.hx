@@ -53,6 +53,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
      * frame height of the sprite
      */
     public var frameHeight:Float = 0;
+    @:noCompletion private var gColor:AColor;
     @:noCompletion private var gWidth:Int = 0;
     @:noCompletion private var gHeight:Int = 0;
     @:noCompletion private var _bitmapData:BitmapData = null; // track it so we can dispose it later
@@ -93,11 +94,17 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
      * @return ASprite
      */
     public function makeGraphic(width:Int, height:Int, color:AColor=AColor.TRANSPARENT):ASprite {
-        graphics.beginFill(AColor.getRGB(color), color.a);
+        graphics.clear();
+        graphics.beginFill(color.rgb, color.a);
         graphics.drawRect(0, 0, width, height);
         graphics.endFill();
+        gColor = color;
         gWidth = width;
         gHeight = height;
+        return this;
+    }
+    public function reRender():ASprite{
+        makeGraphic(gWidth, gHeight, gColor); 
         return this;
     }
 

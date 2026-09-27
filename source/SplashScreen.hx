@@ -15,7 +15,7 @@ class SplashScreen extends AState {
     }
 
     public function startIntro() {
-        ASound.playSound("assets/sounds/Startup.wav", 1.0);
+        ASoundManager.playSound("assets/sounds/Startup.wav");
         #if sys
             Main.pWidth = 640; //basically, FlxG.width and FlxG.height but interchangable.
             Main.pHeight = 360;

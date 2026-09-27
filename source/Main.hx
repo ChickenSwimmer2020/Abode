@@ -1,5 +1,6 @@
 package;
 
+import backend.objects.ASound.ASoundManager;
 import openfl.Assets;
 import openfl.display.DisplayObject;
 import backend.objects.AWindowManager;
