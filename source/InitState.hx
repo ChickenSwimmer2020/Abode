@@ -1,5 +1,7 @@
 package;
 
+import backend.Locale;
+import backend.UPrefs;
 import backend.ui.ScrollableArea;
 import backend.Network;
 import backend.ui.AButton;
@@ -14,7 +16,8 @@ class InitState extends AState {
     var toolBar:AMenuBar;
     public function new() {
         super();
-        ASoundManager.playMusic("assets/sounds/Vectors.wav", 0.35);
+        ASoundManager.playMusic("assets/sounds/Vectors.wav", UPrefs.mainMenuMuted.value?0.0:0.35);
+
         Mouse.show();
         wallpaperBackground = new ASprite(0, 0).loadGraphic(ASprite.getDesktopWallpaper(1280, 720), true);
         add(wallpaperBackground);
@@ -25,137 +28,136 @@ class InitState extends AState {
             new BlurFilter(32, 8, 3),
             {colorTransform: AColor.MAINMENU_PROJECTSLIST_DARKEN, offsets: new Rectangle(50, -100, 200, 200)}
         );
-
-        
             
         toolBar = new AMenuBar(TOP, [
             {
-                text: "File",
+                text: Locale.get("title.menuBar.File"),
                 size: new APoint(50, 20),
                 onClick: (_:AButton)->{
                     toolBar.openDropdownMenu(0, [
-                        {text: "New...", keys:[Keyboard.CONTROL, Keyboard.N], func: (butt:AButton)->{
+                        {text: '${Locale.get("title.menuBar.File.New")}...', keys:[Keyboard.CONTROL, Keyboard.N], func: (butt:AButton)->{
                             trace("Make new project.");
                         }},
-                        {text: "New from template...", func: (butt:AButton)->{
+                        {text: '${Locale.get("title.menuBar.File.NewFromTemplate")}...', func: (butt:AButton)->{
                             trace("make new project with template.");
                         }},
-                        {text: "Open", func: (butt:AButton)->{
+                        {text: Locale.get("title.menuBar.File.Open"), func: (butt:AButton)->{
                             trace('Open project from file.');
                         }},
-                        {text: "Open Recent > ", closeOnClick: false, func: (butt:AButton)->{
+                        {text: '${Locale.get("title.menuBar.File.OpenRecent")} > ', closeOnClick: false, func: (butt:AButton)->{
                             trace('TODO: sub dropdown.');
                         }},
-                        {text: "Close", disabled: true, func: (butt:AButton)->{
+                        {text: Locale.get("title.menuBar.File.Close"), disabled: true, func: (butt:AButton)->{
                             trace('Close current project.');
                         }},
-                        {text: "Close All", disabled: true, func: (butt:AButton)->{
+                        {text: Locale.get("title.menuBar.File.CloseAll"), disabled: true, func: (butt:AButton)->{
                             trace('Close all opened projects.');
                         }},
-                        {text: "Save", disabled: true, func: (butt:AButton)->{
+                        {text: Locale.get("title.menuBar.File.Save"), disabled: true, func: (butt:AButton)->{
                             trace('Save current project.');
                         }},
-                        {text: "Save as...", disabled: true, func: (butt:AButton)->{
+                        {text: '${Locale.get("title.menuBar.File.SaveAs")}...', disabled: true, func: (butt:AButton)->{
                             trace('Save project as a different file.');
                         }},
-                        {text: "Save as template...", disabled: true, func: (butt:AButton)->{
+                        {text: '${Locale.get("title.menuBar.File.SaveAsTemplate")}...', disabled: true, func: (butt:AButton)->{
                             trace('Save project as a new template.');
                         }},
-                        {text: "Revert", disabled: true, func: (butt:AButton)->{
+                        {text: Locale.get("title.menuBar.File.Revert"), disabled: true, func: (butt:AButton)->{
                             trace('Unsure what this does. is it like an undo button?');
                         }},
                         {text: 'seperator', func: null},
-                        {text: "Import > ", closeOnClick: false, func: (butt:AButton)->{
+                        {text: '${Locale.get("title.menuBar.File.Import")} > ', closeOnClick: false, func: (butt:AButton)->{
                             trace('TODO: sub dropdown');
                         }},
-                        {text: "Export > ", closeOnClick: false, func: (butt:AButton)->{
-                            trace('TODO: sub dropdown');
-                        }},
-                        {text: 'seperator', func: null},
-                        {text: "Convert to > ", closeOnClick: false, func: (butt:AButton)->{
+                        {text: '${Locale.get("title.menuBar.File.Export")} > ', closeOnClick: false, func: (butt:AButton)->{
                             trace('TODO: sub dropdown');
                         }},
                         {text: 'seperator', func: null},
-                        {text: "Distribution Settings...", func: (butt:AButton)->{
+                        {text: '${Locale.get("title.menuBar.File.ConvertTo")} > ', closeOnClick: false, func: (butt:AButton)->{
+                            trace('TODO: sub dropdown');
+                        }},
+                        {text: 'seperator', func: null},
+                        {text: '${Locale.get("title.menuBar.File.DistrobutionSettings")}...', func: (butt:AButton)->{
                             trace('Publish settings but legally distinct');
                         }},
-                        {text: "Distribute", func: (butt:AButton)->{
+                        {text: Locale.get("title.menuBar.File.Distrobute"), func: (butt:AButton)->{
                             trace('Publish legally distinct');
                         }},
                         {text: 'seperator', func: null},
-                        {text: "HScript Settings...", func: (butt:AButton)->{
+                        {text: '${Locale.get("title.menuBar.File.HScriptSettings")}...', func: (butt:AButton)->{
                             trace('ActionScript settings');
                         }},
                         #if sys
                             {text: 'seperator', func: null},
-                            {text: "Exit", func: (butt:AButton)->{
-                                trace('Exit program');
+                            {text: Locale.get("title.menuBar.File.Exit"), func: (butt:AButton)->{
+                                //TODO: check for open projects and prompt user to save before actually closing
+                                Sys.exit(0);
                             }},
                         #end
                     ], 200);
                 }
             },
             {
-                text: "Edit",
+                text: Locale.get("title.menuBar.Edit"),
                 size: new APoint(50, 20),
                 onClick: (_:AButton)->{trace("Edit menu");}
             },
             {
-                text: "View",
+                text: Locale.get("title.menuBar.View"),
                 size: new APoint(50, 20),
                 onClick: (_:AButton)->{trace("View menu");}
             },
             {
-                text: "Insert",
+                text: Locale.get("title.menuBar.Insert"),
                 size: new APoint(50, 20),
                 onClick: (_:AButton)->{trace("Insert menu");}
             },
             {
-                text: "Modify",
+                text: Locale.get("title.menuBar.Modify"),
                 size: new APoint(50, 20),
                 onClick: (_:AButton)->{trace("Modify menu");}
             },
             {
-                text: "Text",
+                text: Locale.get("title.menuBar.Text"),
                 size: new APoint(50, 20),
                 onClick: (_:AButton)->{trace("Text menu");}
             },
             {
-                text: "Commands",
+                text: Locale.get("title.menuBar.Commands"),
                 size: new APoint(50, 20),
                 onClick: (_:AButton)->{trace("Commands menu");}
             },
             {
-                text: "Control",
+                text: Locale.get("title.menuBar.Control"),
                 size: new APoint(50, 20),
                 onClick: (_:AButton)->{trace("Controls menu");}
             },
             {
-                text: "Debug",
+                text: Locale.get("title.menuBar.Debug"),
                 size: new APoint(50, 20),
                 onClick: (_:AButton)->{trace("Debug menu");}
             },
             #if sys
                 {
-                    text: "Window",
+                    text: Locale.get("title.menuBar.Window"),
                     size: new APoint(50, 20),
                     onClick: (_:AButton)->{trace("Window menu");}
                 },
             #end
             {
-                text: "Help",
+                text: Locale.get("title.menuBar.Help"),
                 size: new APoint(50, 20),
                 onClick: (_:AButton)->{
                     toolBar.openDropdownMenu(#if(html5)9#else 10#end, [
-                        {text: "Abode Help", func: (butt:AButton)->{trace('Help menu dropdown object 1!');}},
-                        {text: "Submit bug report/feature request...", func: (butt:AButton)->{trace('Help menu dropdown object 2!');}},
+                        {text: Locale.get("title.menuBar.Help.Help"), func: (butt:AButton)->{trace('Help menu dropdown object 1!');}},
+                        {text: '${Locale.get("title.menuBar.Help.ReportBug")}...', func: (butt:AButton)->{trace('Help menu dropdown object 2!');}},
                         {text: 'seperator', func: null},
-                        {text: "Online Tutorial...", func: (butt:AButton)->{trace('Help menu dropdown object 2!');}},
-                        {text: "Hands on Tutorial  >", closeOnClick: false, func: (butt:AButton)->{trace('TODO: sub dropdown');}},
+                        {text: '${Locale.get("title.menuBar.Help.OnlineTutorial")}...', func: (butt:AButton)->{trace('Help menu dropdown object 2!');}},
+                        {text: '${Locale.get("title.menuBar.Help.HandsOnTutorial")}  >', closeOnClick: false, func: (butt:AButton)->{trace('TODO: sub dropdown');}},
                         {text: 'seperator', func: null},
-                        {text: "Manage Plugins", func: (butt:AButton)->{trace('TODO: sub dropdown');}},
+                        {text: '${Locale.get("title.menuBar.Help.ManagePlugins")}...', disabled: #if(html5)true#else false#end, func: (butt:AButton)->{trace('TODO: sub dropdown');}},
                         {text: 'seperator', func: null},
-                        {text: "Check for Updates...", func: (butt:AButton)->{
+                        {text: '${Locale.get("title.menuBar.Help.CheckforUpdates")}...', func: (butt:AButton)->{
                             var value:Int = Network.checkForUpdates();
 
                             var darkenSprite:ASprite = new ASprite(0, 0).makeGraphic(Main.pWidth, Main.pHeight, 0x6E000000);
@@ -173,10 +175,10 @@ class InitState extends AState {
                                     Main.instance.addToMainStage(text);
                                     text.height = 200; //TODO: make this automatic properly.
                                     text.text = switch(value) {
-                                        case -1: "Couldnt connect to URL";
-                                        case -4: "404 Couldnt find requested file\nor no connection";
-                                        case -5: "Something went wrong.\nWe dont know what.\n:/";
-                                        default: "Generic error message\nWe have no clue what just happened.";
+                                        case -1: Locale.get("error.networking.ConnectionFailed", ["{URL}"=>Network.updateCheckLocation]);
+                                        case -4: Locale.get("error.networking.NxDomain");
+                                        case -5: Locale.get("error.networking.UnknownError");
+                                        default: Locale.get("error.default");
                                     }
                                     text.alignment = CENTER;
                                     text.x = Main.pWidth/2-text.width/2;
@@ -201,7 +203,7 @@ class InitState extends AState {
                                         darkenSprite.setGraphicColor(0x6E00FF00);
                                         var text:AText = new AText(0, 0, Main.pWidth, "", 48);
                                         Main.instance.addToMainStage(text);
-                                        text.text = "Runing latest version!";
+                                        text.text = Locale.get("autoupdater.check.runningLatest");
                                         text.alignment = CENTER;
                                         text.x = Main.pWidth/2-text.width/2;
                                         text.y = Main.pHeight/2-text.height/2;
@@ -218,25 +220,20 @@ class InitState extends AState {
                                     case 0:
                                         new ATween().tween(darkenSprite, {alpha: 0}, 0.575, ()->{
                                             darkenSprite.destroy();
-                                            var updateWindow:AWindow = Main.windowManager.makeWindow("Update Available!", Math.floor(Main.pWidth/2-640/2), Math.floor(Main.pHeight/2-360/2), 640, 360, false, false);
+                                            var updateWindow:AWindow = Main.windowManager.makeWindow(Locale.get("autoupdater.window.title"), Math.floor(Main.pWidth/2-640/2), Math.floor(Main.pHeight/2-360/2), 640, 360, false, false);
                                         }, AEase.expoIn);
 
                                         new ATween().tween(loader, {alpha: 0}, 0.575, ()->{
                                             loader.destroy();
                                         }, AEase.expoIn);
                                 }
-                                trace('Waited long enough, canceling.');
                             });
                         }},
                         {text: 'seperator', func: null},
-                        {text: "About Abode", func: (butt:AButton)->{
-                            var infoWindow:AWindow = Main.windowManager.makeWindow("tomfuckery!", 0, 0, 400, 200, false, true);
-                            var testSprite:ASprite = new ASprite(0, 0).makeGraphic(100, 100, AColor.RED);
-                            var testButton:AButton = new AButton("fucking text", new Rectangle(0, 380, 50, 20), (_buttt)->{
-                                trace("Fuck you, world!");
-                            });
-                            infoWindow.addContent(testSprite);
-                            infoWindow.addContent(testButton);
+                        {text: Locale.get("title.menuBar.Help.AboutAbode"), func: (butt:AButton)->{
+                            var infoWindow:AWindow = Main.windowManager.makeWindow("If you can see this, a mistake was made.", 0, 0, 400, 200, false, true);
+                                var testSprite:ASprite = new ASprite(0, 0).makeGraphic(100, 100, AColor.RED);
+                                infoWindow.addContent(testSprite);
                         }},
                     ], 200);
                 }
@@ -249,13 +246,20 @@ class InitState extends AState {
             isMuted=!isMuted;
             _.changeSymbol(isMuted?"MUTE":"SOUND");
             ASoundManager.music.volume = isMuted?0.0:0.35;
+            UPrefs.mainMenuMuted.value = isMuted;
         });
+        if(UPrefs.mainMenuMuted.value) { //auto mute and shtuff.
+            isMuted=true;
+            muteButton.changeSymbol("MUTE");
+        }
         add(muteButton);
 
         var projectScroller:ScrollableArea = new ScrollableArea(Main.pWidth-350, 35);
         add(projectScroller);
         for(i in 0...15) {
-            projectScroller.add(new ProjectBox(0, 0+((75+15)*i))); //for testing and getting it ready.
+            var pBox:ProjectBox = new ProjectBox(0, 0+((75+15)*i));
+            pBox.loadData(i%2==0?"TestFlashProject":"TestAbodeProjet", i%2==0?"Flash":"AbodeProjectFormat", "Yesterday");
+            projectScroller.add(pBox); //for testing and getting it ready.
         }
     }
 }

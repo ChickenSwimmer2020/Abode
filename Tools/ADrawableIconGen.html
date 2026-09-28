@@ -51,8 +51,7 @@ button.primary:hover{ background:#79e0d1; }
 .toolbar .sep{ width:1px; align-self:stretch; background:var(--line); margin:0 4px; }
 .toolbar label{ display:flex; align-items:center; gap:5px; color:var(--sub); font-size:12.5px; }
 .toolbar input[type=range]{ width:80px; }
-#stage-holder{ flex:1; position:relative; overflow:auto; background:
-  radial-gradient(circle at 1px 1px, #232a38 1px, transparent 1px) 0 0/22px 22px, var(--bg); }
+#stage-holder{ flex:1; position:relative; overflow:auto; background:var(--bg); }
 canvas{ display:block; cursor:crosshair; }
 .hint{ position:absolute; bottom:10px; left:12px; font-size:11.5px; color:var(--sub); background:rgba(24,28,36,.85); padding:5px 9px; border-radius:6px; border:1px solid var(--line); font-family:'JetBrains Mono',monospace; }
 aside{
@@ -116,19 +115,18 @@ footer{ padding:10px 20px; padding-bottom:calc(10px + env(safe-area-inset-bottom
 <main>
   <div class="canvas-wrap">
     <div class="toolbar">
-      <button id="modeMove" class="active">+ MOVE</button>
-      <button id="modeLine">+ LINE</button>
-      <button id="modeSelect">Select / drag</button>
-      <div class="sep"></div>
       <label><input type="checkbox" id="snapGrid" checked> snap to grid</label>
-      <label>zoom <input type="range" id="zoom" min="6" max="32" value="16"></label>
+      <label><input type="checkbox" id="showGrid" checked> show grid</label>
+      <div class="sep"></div>
+      <span id="zoomReadout" style="color:var(--sub); font-size:12.5px; font-family:'JetBrains Mono',monospace;">100%</span>
+      <button id="resetViewBtn">Reset view</button>
       <div class="sep"></div>
       <button id="undoBtn">Undo</button>
       <button id="clearBtn" class="danger">Clear all</button>
     </div>
     <div id="stage-holder">
       <canvas id="stage" width="1000" height="800"></canvas>
-      <div class="hint" id="coordHint">x: 0, y: 0</div>
+      <div class="hint" id="coordHint">click: MOVE · drag: LINE · right-drag: move point · wheel: zoom · middle-drag: pan</div>
     </div>
   </div>
 
@@ -142,7 +140,7 @@ footer{ padding:10px 20px; padding-bottom:calc(10px + env(safe-area-inset-bottom
     <div class="tabpane active" id="tab-commands">
       <p class="section-title">Command sequence</p>
       <div id="cmdList"></div>
-      <div class="small-note">Click the canvas in MOVE or LINE mode to append a point, or edit x/y directly here. First command should usually be MOVE.</div>
+      <div class="small-note">Click the canvas to append a MOVE, click-and-drag to append a LINE, or edit x/y directly here. Right-drag moves an existing point; middle-drag pans; scroll to zoom.</div>
     </div>
 
     <div class="tabpane" id="tab-style">
@@ -190,13 +188,26 @@ footer{ padding:10px 20px; padding-bottom:calc(10px + env(safe-area-inset-bottom
   const coordHint = document.getElementById('coordHint');
 
   let commands = []; // {t:'MOVE'|'LINE', x, y}
-  let mode = 'MOVE';
-  let px = 16; // pixels per unit
+  let px = 16; // pixels per unit (zoom)
   let snap = true;
-  let dragIndex = -1;
+  let dragIndex = -1;   // index of a point being moved via right-drag
   let history = [];
 
-  const originX = 40, originY = 40; // px offset for origin within canvas
+  let originX = 40, originY = 40; // px offset for origin within canvas - mutable, panned by middle-drag
+
+  // left-click drag-to-draw state
+  let drawing = false;
+  let drawStartWorld = null;   // [x,y] where the left button went down
+  let drawStartScreen = null;  // raw screen px, to tell a click from a drag
+  let previewEnd = null;       // [x,y] live drag endpoint, for the rubber-band preview
+
+  // middle-click pan state
+  let panning = false;
+  let panStartScreen = null;
+  let panStartOrigin = null;
+
+  const CLICK_THRESHOLD_PX = 5; // movement under this = a click, not a drag
+  const MIN_PX = 0.5, MAX_PX = 4000; // effectively infinite zoom range
 
   function pushHistory(){
     history.push(JSON.stringify(commands));
@@ -210,10 +221,67 @@ footer{ padding:10px 20px; padding-bottom:calc(10px + env(safe-area-inset-bottom
   }
 
   function toScreen(x,y){ return [originX + x*px, originY + y*px]; }
-  function toWorld(sx,sy){
+
+  function drawGrid(){
+    // pick a "nice" world-unit step so lines never get overwhelmingly dense or sparse,
+    // however far zoomed in/out (1, 2, 5, 10, 20, 50 ... pattern)
+    const targetPx = 28; // aim for roughly this many screen px between lines
+    const rawStep = targetPx / px;
+    const mag = Math.pow(10, Math.floor(Math.log10(rawStep)));
+    const norm = rawStep / mag;
+    const niceNorm = norm < 1.5 ? 1 : norm < 3.5 ? 2 : norm < 7.5 ? 5 : 10;
+    const step = niceNorm * mag;
+    const majorEvery = 5; // every 5th line drawn brighter, as a sub-grid landmark
+
+    const worldLeft   = (0 - originX) / px;
+    const worldRight  = (canvas.width - originX) / px;
+    const worldTop    = (0 - originY) / px;
+    const worldBottom = (canvas.height - originY) / px;
+
+    const startI = Math.floor(worldLeft / step);
+    const endI   = Math.ceil(worldRight / step);
+    const startJ = Math.floor(worldTop / step);
+    const endJ   = Math.ceil(worldBottom / step);
+
+    ctx.save();
+    ctx.lineWidth = 1;
+    ctx.font = '9px JetBrains Mono, monospace';
+
+    for(let i = startI; i <= endI; i++){
+      const wx = i * step;
+      const [sx] = toScreen(wx, 0);
+      const isMajor = i % majorEvery === 0;
+      ctx.strokeStyle = isMajor ? '#2c3342' : '#1e232d';
+      ctx.beginPath();
+      ctx.moveTo(sx, 0); ctx.lineTo(sx, canvas.height);
+      ctx.stroke();
+      if(isMajor && wx !== 0){
+        ctx.fillStyle = '#4a5266';
+        ctx.fillText(fmt(wx), sx + 3, 11);
+      }
+    }
+    for(let j = startJ; j <= endJ; j++){
+      const wy = j * step;
+      const [,sy] = toScreen(0, wy);
+      const isMajor = j % majorEvery === 0;
+      ctx.strokeStyle = isMajor ? '#2c3342' : '#1e232d';
+      ctx.beginPath();
+      ctx.moveTo(0, sy); ctx.lineTo(canvas.width, sy);
+      ctx.stroke();
+      if(isMajor && wy !== 0){
+        ctx.fillStyle = '#4a5266';
+        ctx.fillText(fmt(wy), 3, sy - 3);
+      }
+    }
+    ctx.restore();
+  }
+  function toWorld(sx,sy,applySnap=true){
     let x = (sx - originX)/px, y = (sy - originY)/px;
-    if(snap){ x = Math.round(x); y = Math.round(y); }
+    if(applySnap && snap){ x = Math.round(x); y = Math.round(y); }
     return [x,y];
+  }
+  function updateZoomReadout(){
+    document.getElementById('zoomReadout').textContent = Math.round(px/16*100) + '%';
   }
 
   function hexToRgb(hex){
@@ -228,9 +296,13 @@ footer{ padding:10px 20px; padding-bottom:calc(10px + env(safe-area-inset-bottom
   function draw(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
 
+    if(document.getElementById('showGrid').checked){
+      drawGrid();
+    }
+
     // axes
-    ctx.strokeStyle = '#2a3040';
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#3a4152';
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(originX, 0); ctx.lineTo(originX, canvas.height);
     ctx.moveTo(0, originY); ctx.lineTo(canvas.width, originY);
@@ -276,6 +348,21 @@ footer{ padding:10px 20px; padding-bottom:calc(10px + env(safe-area-inset-bottom
       ctx.font = '10px JetBrains Mono, monospace';
       ctx.fillText(i, sx+7, sy-6);
     });
+
+    // live preview while dragging out a new LINE
+    if(drawing && drawStartWorld && previewEnd){
+      const [sx1,sy1] = toScreen(drawStartWorld[0], drawStartWorld[1]);
+      const [sx2,sy2] = toScreen(previewEnd[0], previewEnd[1]);
+      ctx.save();
+      ctx.setLineDash([4,4]);
+      ctx.strokeStyle = '#5fa8e8';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(sx1,sy1);
+      ctx.lineTo(sx2,sy2);
+      ctx.stroke();
+      ctx.restore();
+    }
   }
 
   function renderList(){
@@ -346,54 +433,123 @@ footer{ padding:10px 20px; padding-bottom:calc(10px + env(safe-area-inset-bottom
     return [(e.clientX - r.left) * scaleX, (e.clientY - r.top) * scaleY];
   }
 
+  function nearestPointIndex(sx, sy, threshold=12){
+    let closest = -1, closestDist = threshold;
+    commands.forEach((c,i)=>{
+      const [px_,py_] = toScreen(c.x,c.y);
+      const d = Math.hypot(px_-sx, py_-sy);
+      if(d < closestDist){ closest = i; closestDist = d; }
+    });
+    return closest;
+  }
+
+  // right-click's default context menu would otherwise block right-drag
+  canvas.addEventListener('contextmenu', e=> e.preventDefault());
+
   canvas.addEventListener('mousemove', e=>{
     const [sx,sy] = getMousePos(e);
     const [wx,wy] = toWorld(sx,sy);
     coordHint.textContent = `x: ${wx}, y: ${wy}`;
+
+    if(panning){
+      const dx = sx - panStartScreen[0], dy = sy - panStartScreen[1];
+      originX = panStartOrigin[0] + dx;
+      originY = panStartOrigin[1] + dy;
+      draw();
+      return;
+    }
     if(dragIndex >= 0){
       commands[dragIndex].x = wx; commands[dragIndex].y = wy;
       renderAll();
+      return;
+    }
+    if(drawing){
+      previewEnd = [wx, wy];
+      draw();
     }
   });
 
   canvas.addEventListener('mousedown', e=>{
     const [sx,sy] = getMousePos(e);
-    if(mode === 'select'){
-      let closest = -1, closestDist = 12;
-      commands.forEach((c,i)=>{
-        const [px_,py_] = toScreen(c.x,c.y);
-        const d = Math.hypot(px_-sx, py_-sy);
-        if(d < closestDist){ closest = i; closestDist = d; }
-      });
-      if(closest >= 0){ pushHistory(); dragIndex = closest; }
+
+    if(e.button === 1){ // middle click: pan
+      e.preventDefault();
+      panning = true;
+      panStartScreen = [sx,sy];
+      panStartOrigin = [originX, originY];
+      canvas.style.cursor = 'grabbing';
+      return;
+    }
+
+    if(e.button === 2){ // right click: move an existing point, no matter what
+      const idx = nearestPointIndex(sx, sy);
+      if(idx >= 0){ pushHistory(); dragIndex = idx; }
+      return;
+    }
+
+    if(e.button === 0){ // left click: start of a click-or-drag draw gesture
+      const [wx,wy] = toWorld(sx,sy);
+      drawing = true;
+      drawStartWorld = [wx,wy];
+      drawStartScreen = [sx,sy];
+      previewEnd = [wx,wy];
     }
   });
-  canvas.addEventListener('mouseup', ()=>{ dragIndex = -1; });
-  canvas.addEventListener('mouseleave', ()=>{ dragIndex = -1; });
 
-  canvas.addEventListener('click', e=>{
-    if(mode === 'select') return;
-    const [sx,sy] = getMousePos(e);
-    const [wx,wy] = toWorld(sx,sy);
-    pushHistory();
-    commands.push({t: mode, x: wx, y: wy});
-    renderAll();
+  canvas.addEventListener('mouseup', e=>{
+    if(panning){ panning = false; canvas.style.cursor = 'crosshair'; return; }
+    if(dragIndex >= 0){ dragIndex = -1; return; }
+
+    if(drawing){
+      const [sx,sy] = getMousePos(e);
+      const movedPx = Math.hypot(sx - drawStartScreen[0], sy - drawStartScreen[1]);
+      const [wx,wy] = toWorld(sx,sy);
+
+      pushHistory();
+      if(movedPx < CLICK_THRESHOLD_PX){
+        // plain click -> MOVE
+        commands.push({t:'MOVE', x: drawStartWorld[0], y: drawStartWorld[1]});
+      } else {
+        // drag -> LINE (auto-insert a MOVE first, unless continuing from the last point)
+        const last = commands.length ? commands[commands.length-1] : null;
+        const continuesPath = last && last.x === drawStartWorld[0] && last.y === drawStartWorld[1];
+        if(!continuesPath) commands.push({t:'MOVE', x: drawStartWorld[0], y: drawStartWorld[1]});
+        commands.push({t:'LINE', x: wx, y: wy});
+      }
+      drawing = false; drawStartWorld = null; previewEnd = null;
+      renderAll();
+    }
+  });
+  canvas.addEventListener('mouseleave', ()=>{
+    panning = false; dragIndex = -1; drawing = false; previewEnd = null;
+    canvas.style.cursor = 'crosshair';
   });
 
-  // --- toolbar ---
-  document.getElementById('modeMove').addEventListener('click', ()=> setMode('MOVE'));
-  document.getElementById('modeLine').addEventListener('click', ()=> setMode('LINE'));
-  document.getElementById('modeSelect').addEventListener('click', ()=> setMode('select'));
-  function setMode(m){
-    mode = m;
-    document.getElementById('modeMove').classList.toggle('active', m==='MOVE');
-    document.getElementById('modeLine').classList.toggle('active', m==='LINE');
-    document.getElementById('modeSelect').classList.toggle('active', m==='select');
-    canvas.style.cursor = m==='select' ? 'grab' : 'crosshair';
-  }
+  canvas.addEventListener('wheel', e=>{
+    e.preventDefault();
+    const [sx,sy] = getMousePos(e);
+    const [wx,wy] = toWorld(sx, sy, false); // world point under cursor, unsnapped
+
+    const factor = Math.pow(1.0015, -e.deltaY); // smooth, ~infinite range
+    const newPx = Math.min(MAX_PX, Math.max(MIN_PX, px * factor));
+
+    // keep the point under the cursor fixed on screen while zooming
+    originX = sx - wx * newPx;
+    originY = sy - wy * newPx;
+    px = newPx;
+
+    updateZoomReadout();
+    draw();
+  }, { passive:false });
+
+  document.getElementById('resetViewBtn').addEventListener('click', ()=>{
+    px = 16; originX = 40; originY = 40;
+    updateZoomReadout();
+    draw();
+  });
 
   document.getElementById('snapGrid').addEventListener('change', e=> snap = e.target.checked);
-  document.getElementById('zoom').addEventListener('input', e=>{ px = +e.target.value; renderAll(); });
+  document.getElementById('showGrid').addEventListener('change', draw);
   document.getElementById('undoBtn').addEventListener('click', undo);
   document.getElementById('clearBtn').addEventListener('click', ()=>{
     if(commands.length && !confirm('Clear all commands?')) return;
@@ -474,6 +630,7 @@ footer{ padding:10px 20px; padding-bottom:calc(10px + env(safe-area-inset-bottom
   window.addEventListener('resize', fitCanvas);
   setTimeout(fitCanvas, 50);
 
+  updateZoomReadout();
   renderAll();
 })();
 </script>

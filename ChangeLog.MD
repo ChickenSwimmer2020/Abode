@@ -2,6 +2,41 @@
 <!--markdownlint-disable MD033 -->
 # CHANGELOG
 
+> ## 0.00.003 (Locales, Preferences, and project boxes)
+>
+> * Added user preferences system.
+> * Added en_US.locale
+> * `ADrawableIconGen.html` was updated with new controls
+>
+>> ## Main
+>>
+>> * `Lime.utils.Log` no longer crashes game if it cant find an asset
+>>
+>> ## InitState
+>>
+>> * Removed a random unneeded trace message
+>> * Music can now be muted
+>>
+>> ## Network
+>>
+>> * New Variable! `updateCheckLocation:String`
+>>
+>> ## ProjectBox
+>>
+>> * New Function! `loadData()`
+>> * `Kind:AText` -> `Desc:AText`
+>>
+>> ## ScrollableArea
+>>
+>> * Delta fix for HTML5, no longer goes at light speed.
+>>
+>> ## DrawUtil
+>>
+>> * `ADrawableIconCommand` now uses `Float` instead of `Int`
+>> * New Icons!
+>> * * `FILE_FLASH`
+>> * * `FILE_ABODEPROJECTFORMAT`
+<!---->
 > ## 0.00.002 (The Flixeling)
 >
 ><!---->

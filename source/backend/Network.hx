@@ -1,12 +1,13 @@
 package backend;
 
 class Network{
+    public static final updateCheckLocation:String = "https://raw.githubusercontent.com/ChickenSwimmer2020/Abode/refs/heads/main/README.md";
     /**
      * Check to see if abode needs an update
      * @return Int is an update needed? 0 is yes, 1 is no, -1 is no connection, and -2 is error.
      */
     public static function checkForUpdates():Int {
-        var data:String = get("https://raw.githubusercontent.com/ChickenSwimmer2020/Abode/refs/heads/main/README.md");
+        var data:String = get(updateCheckLocation);
         if(data.startsWith("SysError(Unresolved host ")) return -1;
         if(data.contains("#404")) return -4;
         if(data == "THIS IS A PROBLEM!") return -5;

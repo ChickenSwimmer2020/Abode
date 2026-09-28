@@ -1,5 +1,7 @@
 package;
 
+import lime.utils.Log;
+import backend.UPrefs;
 import backend.objects.ASound.ASoundManager;
 import openfl.Assets;
 import openfl.display.DisplayObject;
@@ -18,6 +20,7 @@ class Main extends Sprite {
     public static var StateSystem:StateSystemInit = new StateSystemInit(null); //defaults to splashscreen since thats literally the only thing it does on init
     public function new() {
         super();
+        Log.throwErrors = false; //STOP CRASHING MAH GAME!
         instance = this;
         #if (hl && !debug) hl.UI.closeConsole(); #end
         stage.scaleMode = #if html5 StageScaleMode.EXACT_FIT; #else StageScaleMode.NO_SCALE; #end
@@ -49,7 +52,7 @@ class Main extends Sprite {
         Mouse.hide();
     }
     private function onKeyDown(e:KeyboardEvent) {
-        #if debug if(e.keyCode == Keyboard.F1) stats.visible=!stats.visible; #end
+        #if debug if(e.keyCode == Keyboard.F1) stats.visible=!stats.visible; UPrefs.debuggerVisible.value=stats.visible; #end
 
         if(AMenuBar.dropdownOpen){ //TODO: fix this.
             for(keys=>targetOption in AMenuBar.instance.dropdownKeys) {

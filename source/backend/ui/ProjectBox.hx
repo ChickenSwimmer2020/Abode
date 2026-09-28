@@ -7,7 +7,7 @@ class ProjectBox extends ASprite {
     public var title:AText;
     public var lastUsed:AText;
     public var size:AText;
-    public var kind:AText;
+    public var desc:AText;
     public function new(x:Float, y:Float) {
         super(x, y);
 
@@ -27,9 +27,25 @@ class ProjectBox extends ASprite {
         lastUsed.height = height-title.textHeight;
         addChild(lastUsed);
 
-        kind = new AText(0+SIZE.y, 0, width, "(Abode/Animate) [symbol of program in custom font]", 12);
-        kind.height = height;
-        kind.y = SIZE.y-(kind.textHeight+5);
-        addChild(kind);
+        desc = new AText(0+SIZE.y, 0, width, "Description go brrrr", 12);
+        desc.height = height;
+        desc.y = SIZE.y-(desc.textHeight+5);
+        addChild(desc);
+    }
+
+    public function loadData(name:String, type:String, lastModded:String, ?description:String) {
+        title.text = '$name.${type=="Flash"?"Fla":"APF"}';
+        if(type=="Flash"){
+            title.textColor = 0xFFFFFFFF;
+            lastUsed.textColor = 0xFFFFFFFF; 
+        } 
+        lastUsed.text = lastModded;
+        desc.text = description??"";//show nothing if its null.
+
+        makeGraphic(gWidth, gHeight, type=="Flash"?0xFF1b1b1b:0xFF5a5a5a); //FF1b1b1b is fron animate directly, thanks Windows+shift+c!
+        switch(type) { //graphic, *then* icon.
+            case "Flash": DrawUtil.drawIcon(this, "FILE_FLASH", 1, 0xFF9999FF, 0xFF00005B);
+            case "AbodeProjectFormat": DrawUtil.drawIcon(this, "FILE_ABODEPROJECTFORMAT", 1, 0xFF9173B5, 0xFF89B2B7);
+        }
     }
 }

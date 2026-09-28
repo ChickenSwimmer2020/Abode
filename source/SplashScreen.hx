@@ -1,5 +1,6 @@
 package;
 
+import backend.Locale;
 import backend.objects.ASound;
 
 class SplashScreen extends AState {
@@ -46,7 +47,7 @@ class SplashScreen extends AState {
             introSprite.destroy();
             remove(introSprite);
 
-            var nameText:AText = new AText(0, 0, 640, "Abode\nHome of animators", 24);
+            var nameText:AText = new AText(0, 0, 640, Locale.get("Splash"), 24);
             add(nameText);
             nameText.alignment = CENTER;
             nameText.y = -100;
