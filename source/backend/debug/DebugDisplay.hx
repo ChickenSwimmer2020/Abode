@@ -18,7 +18,7 @@ package backend.debug;
             // text field
             label = new AText(0, 0, 200, "", 11);
             label.defaultTextFormat = new TextFormat("_typewriter", 11, AColor.DEBUGGER_CONSOLE_TEXT);
-            label.height = 80;
+            label.setFieldSize(-1, 80);
             addChild(label);
 
             lastTime = openfl.Lib.getTimer();
@@ -28,6 +28,7 @@ package backend.debug;
 
 
         static var MSGS:Array<Dynamic> = [];
+        static var lastMsgs:Array<Dynamic> = ["this is so it actually changes the first time."];
         var finalMsg:String = "";
         private function onEnterFrame(e:Event):Void {
             var now = openfl.Lib.getTimer();
@@ -45,8 +46,7 @@ package backend.debug;
 
             var mem = System.totalMemory / 1024 / 1024; // bytes to MB
 
-            //terrible way to do it, TODO: optimize this. 
-            if(MSGS!=([{key: "FPS", value: Math.round(fps)},{key: "STA", value: Main.StateSystem.currentState},{key: "MEM||MB", value: (Math.round(mem * 10) / 10)},{key: "STG||children", value: ((stage!=null)?stage.numChildren:0)},{key: "OBJ||children", value: numChildren}]:Array<Dynamic>)){
+            if(MSGS!=lastMsgs){
                 MSGS = ([
                     {key: "FPS", value: Math.round(fps)},
                     {key: "STA", value: Main.StateSystem.currentState},
@@ -66,6 +66,7 @@ package backend.debug;
                 graphics.endFill();
             }
             label.text = finalMsg;
+            lastMsgs = MSGS;
         }
 
         public function destroy():Void {

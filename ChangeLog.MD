@@ -2,6 +2,85 @@
 <!--markdownlint-disable MD033 -->
 # CHANGELOG
 
+<!---->
+> ## 0.00.004 (Debugging, Symbol maker, and sub-dropdowns)
+>
+> * New ui debugging system.
+> * `DebugDisplay` only updates fields when needed
+>
+>> * New Class `SymbolEditor`
+>>
+>>> this is being used to replace the stupid ai generated html5 one.
+>
+>> * New Class `UIDebugger`
+>>
+>>> Used for testing UI features, not much else.
+>
+> * Many classes now use `try` `catch(e)` loops to prevent crashes
+> * `Locale` no longer imports `openfl.Assets`
+>
+>> * New Class `Native`
+>>
+>>> For accessing native system elements, like accent color!
+>>>
+>>> Also the reason that Hashlink compilation was removed :/
+>
+> * `AGroup` no longer importrs `backend.ui.AButton` or `openfl.display.DisplayObject`
+> * `ASound` has unused imports removed and a `TODO` added.
+>
+>> * Added a (non-functional) `canInteract` system to `AState`
+>> * Also added a `TODO` for auto-removal of `eventListeners`
+>>
+>>> Solar please fix.
+>
+> * `AWindowManager` had unused imports removed.
+> * Untested styling system for `AButton`
+> * New Class `ACheckBox`
+> * New Class `AColorPicker` (unfinished and non-functional ATM)
+> * `ADropdown` is now its own class, and can attach to any `ASprite` instead of being limited to `AButton`/`AMenuBar`
+> * Removed code pertaining to `ADropdown` from `AMenuBar`
+> * New Class `ATabMenu`
+> * New Class `ATextInputBox` (unfinished and non-functional ATM)
+> * `Uprefs` no longer imports `openfl.Assets`
+> * `DrawUtil` has a new icon: `"UICHECK"`.
+> * `DrawUtil` now reset `lineStyle` after drawing an icon.
+> * Added a `TODO` to `DrawUtil`.
+> * `InitState` now enables the `F11` key to toggle fullscreen.
+> * `InitState`'s entire `new` function is now a `try`-`catch(e)` system.
+> * More keys in `en_US.locale`
+> * Added the `general` preferences section from `Adobe animate` to `uPrefs`
+> * `InitState` big updates
+>
+>> ## Main
+>>
+>> * New Static Final! `desktopBackgroundImage` (Used for caching)
+>> * New Static Variable! `onKeyPressed:Map<String, {String, Bool, KeyboardEvent->Void}>`
+>> * New Public Static Function! `addKeyPressed(String, Dynamic, Bool, KeyboardEvent->Void)`
+>> * New Public Static Function! `removeKeyPressed(String):Bool`
+>> * `New()` is now in a `try`-`catch(e)` system
+>> * Support for Sub-Dropdowns.
+>>
+>> ## ASprite
+>>
+>> * New Function! `SetPositionRaw(x, y)`
+>> * Removed some unneeded imports
+>>
+>> ## AText
+>>
+>> * Full Rewrite, now extends `ASprite`
+>> * New Function! `setFieldSize(w, h)`
+>>
+>> ## AMath
+>>
+>> * New Function! `floor(a)`
+>> * New Function! `random(a,b,c)`
+>>
+>> ## AColor
+>>
+>> * New Systems!
+>>
+>>> r, g, b, rgb, and a now have `get` and `set` functions.
+<!---->
 > ## 0.00.003 (Locales, Preferences, and project boxes)
 >
 > * Added user preferences system.

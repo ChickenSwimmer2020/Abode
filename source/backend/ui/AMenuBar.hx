@@ -6,25 +6,36 @@ enum AMenuBarAlignment {
     LEFT;
     RIGHT;
 }
-
-typedef AButtonIdentifier = {
-    var text:String;
-    var size:APoint;
-    var onClick:AButton->Void;
-} 
+enum AMenuBarObjectType {
+    ATEXT;
+    ASPRITE;
+    ABUTTON;
+    ACHECKBOX;
+    //todo: support more if needbe
+}
+typedef AMenuBarObjectIdentifier = {
+    var type:AMenuBarObjectType;
+    @:optional var text:String;
+    @:optional var size:APoint;
+    @:optional var enabled:Bool;
+    @:optional var color:AColor;
+    @:optional var onClick:(Dynamic)->Void;
+};
 
 class AMenuBar extends ASprite {
     public var members:Array<ASprite> = [];
     public static final TBHeight:Int = 20;
-    public static var dropdownOpen:Bool = false;
-    public static var instance:Null<AMenuBar> = null;
-    public static var canCloseInstace:Bool=false;
 
     public var backing:ASprite;
-    public var buttons:Array<{key:String, button:AButton}>=[];
-    public function new(align:AMenuBarAlignment, butts:Array<AButtonIdentifier>) {
+    public var objects:Array<{key:String, object:ASprite}>=[];
+    public var align(default, set):AMenuBarAlignment = TOP;
+    public function set_align(a:AMenuBarAlignment):AMenuBarAlignment {
+        align = a;
+        return align;
+    }
+    public function new(align:AMenuBarAlignment, butts:Array<AMenuBarObjectIdentifier>) {
         super(0, 0);
-
+        this.align = align;
         var targetPos:APoint = new APoint(0, 0);
         var targetSize:APoint = new APoint(Lib.application.window.width, TBHeight);
         switch(align){
@@ -37,7 +48,7 @@ class AMenuBar extends ASprite {
                 targetSize.set(TBHeight, Lib.application.window.height);
 
             case BOTTOM:
-                targetPos.set(Lib.application.window.height-TBHeight, 0);
+                targetPos.set(0, Lib.application.window.height-TBHeight);
                 targetSize.set(Lib.application.window.width, TBHeight);
 
             default:
@@ -47,78 +58,36 @@ class AMenuBar extends ASprite {
         backing = new ASprite(targetPos.x, targetPos.y).makeGraphic(Math.floor(targetSize.x), Math.floor(targetSize.y), AColor.MENUBAR_BACKGROUND);
         add(backing);
 
-        var index:Int = 0;
-        for(possibleButton in butts){
-            if(possibleButton.onClick!=null && possibleButton.size!=null) {
-                var newButton:AButton = new AButton(possibleButton.text, new Rectangle(0+(possibleButton.size.x*index)+(5*index), 0, possibleButton.size.x, possibleButton.size.y), possibleButton.onClick);
-                buttons.push({key: possibleButton.text, button: newButton});
-                add(newButton);
-                index++;
-            }else{
-                trace('Malformed button data $possibleButton.');
-                continue;
+        var offset:Float = 0;
+        for(i=>possibleButton in butts){
+            switch(possibleButton.type) {
+                case ABUTTON: 
+                    var newButton:AButton = new AButton(possibleButton.text, new Rectangle(0+offset, targetPos.y, possibleButton.size.x, possibleButton.size.y), possibleButton.onClick);
+                    objects.push({key: possibleButton.text, object: newButton});
+                    add(newButton);
+                    offset += newButton.width+5;
+                case ATEXT:
+                    var newText:AText = new AText(0+offset, targetPos.y, possibleButton.size.x, possibleButton.text, 12);
+                    objects.push({key: possibleButton.text, object: newText});
+                    add(newText);
+                    offset += newText.width+5;
+                case ASPRITE:
+                    var newSprite:ASprite = new ASprite(0+offset, targetPos.y).makeGraphic(possibleButton.size.iX, possibleButton.size.iY, possibleButton.color);
+                    objects.push({key: possibleButton.text, object: newSprite});
+                    add(newSprite);
+                    offset += newSprite.width+5;
+                case ACHECKBOX:
+                    var newCheckbox:ACheckBox = new ACheckBox(0+offset, targetPos.y, possibleButton.text, possibleButton.onClick);
+                    objects.push({key: possibleButton.text, object: newCheckbox});
+                    add(newCheckbox);
+                    if(possibleButton.enabled) newCheckbox.value = possibleButton.enabled;
+                    offset += newCheckbox.width+5;
+                default:
+                    trace('Unknown AMenuBar object type "${possibleButton.type}".');
+                    continue; //skip over the invalid one.
             }
         }
     }
-
-    public var dropdownBG:ASprite;
-    var dropdownButtons:Array<OneOfTwo<ASprite, AButton>> = [];
-    var increment:Float = 0.0;
-    public var dropdownKeys:Map<Array<Int>, String>=[];
-    public function openDropdownMenu(index:Int, options:Array<{text:String, ?closeOnClick:Bool, ?keys:Array<Int>, ?disabled:Bool, func:AButton->Void}>, ?overWidth:Int) {
-        if(dropdownOpen) return;
-        var targetPosition:APoint = new APoint(buttons[index].button.x, buttons[index].button.y+TBHeight);
-
-        dropdownBG = new ASprite(targetPosition.x, targetPosition.y).makeGraphic(Math.floor(overWidth??buttons[index].button.width), Math.floor(buttons[index].button.height*Lambda.count(options)), AColor.MENUBAR_DROPDOWN_BACKGROUND);
-        add(dropdownBG);
-        var ind:Int = 0;
-        increment = 0.0;
-        for(t in options) {
-            var shouldCloseWhenClicked:Bool = t.closeOnClick??true;
-            var disabled = t.disabled??false;
-            var text = t.text;
-            if(t.keys!=null) dropdownKeys.set(t.keys, text);
-
-            if(text == 'seperator') {
-                var seperator:ASprite = new ASprite(targetPosition.x, targetPosition.y+(buttons[index].button.height*ind));
-                seperator.makeGraphic(Math.floor(overWidth!=null?(overWidth/2):(buttons[index].button.width/2)), Math.floor(buttons[index].button.height/4), AColor.MENUBAR_DROPDOWN_SEPERATOR);
-                dropdownButtons.push(seperator);
-                add(seperator);
-                seperator.setAttribute("isDropdownObject", true);
-                seperator.setAttribute("closeOnClick", false);
-                increment += seperator.height;
-            }else{
-                var func = t.func;
-                var button:AButton = new AButton(text, new Rectangle(targetPosition.x, targetPosition.y+increment, overWidth??buttons[index].button.width, buttons[index].button.height), func);
-                dropdownButtons.push(button);
-                add(button);
-                button.setAttribute("isDropdownObject", true);
-                button.setAttribute("closeOnClick", disabled?false:shouldCloseWhenClicked);
-                button.disabled = disabled;
-                increment += button.height;
-            }
-            ind++;
-        }
-
-        instance = this;
-        dropdownOpen = true;
-        ATimer.start(0.02, ()->{
-            canCloseInstace = true;
-        });
-    }
-    public function closeDropdownMenu() {
-        trace("Destroying the instance of ADropdownMenu");
-        for(button in dropdownButtons){ //stupid casting requirements.
-            if(button is ASprite) remove((button:ASprite));
-            if(button is AButton) remove((button:AButton));
-        }
-        for(keys=>key in dropdownKeys) dropdownKeys.remove(keys);
-        remove(dropdownBG);
-        instance = null;
-        dropdownOpen = false;
-        canCloseInstace=false;
-    }
-
 
     private inline function add(a:ASprite):ASprite {
         members.push(a);
@@ -127,7 +96,7 @@ class AMenuBar extends ASprite {
     }
     private inline function remove(a:ASprite):Bool {
         members.remove(a);
-        a.destroy(); //auto calls `removeChild` from it.
+        cast(a, ASprite).destroy(); //auto calls `removeChild` from it.
         return a==null;
     }
 }

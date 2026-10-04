@@ -1,9 +1,7 @@
 package backend.ui;
 
-import backend.utils.AMath;
-import backend.objects.AGroup;
-
 class ScrollableArea extends AGroup<ASprite> {
+    public var interactable:Bool = true;
     public var index:Int = 0;
     public var target:Float = 0.0;
     public function new(x:Float, y:Float) {
@@ -18,9 +16,11 @@ class ScrollableArea extends AGroup<ASprite> {
     }
 
     public function onMouseScroll(e:MouseEvent) {
-        if(containsMouse()){
-            index+=(#if(html5)e.delta #else e.delta*40#end); //delta is fucky on html.
-            if(index<0) index=0;
+        if(interactable) {
+            if(containsMouse()){
+                index+=(#if(html5)e.delta #else e.delta*40#end); //delta is fucky on html.
+                if(index<0) index=0;
+            }
         }
     }
 

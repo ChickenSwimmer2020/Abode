@@ -1,11 +1,5 @@
 package backend.objects;
 
-import openfl.display.BlendMode;
-import openfl.display.DisplayObject;
-import openfl.events.MouseEvent;
-import openfl.geom.Rectangle;
-import backend.ui.AButton;
-
 class AWindowManager {
     public static var heldWindow:Null<AWindow> = null;
     public static var windows:Array<AWindow> = [];

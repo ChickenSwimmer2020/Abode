@@ -1,7 +1,5 @@
 package backend.objects;
 
-import backend.utils.IDestroyable;
-
 enum abstract ATextAlign(String) {
     var LEFT;
     var RIGHT;
@@ -17,38 +15,60 @@ enum abstract ATextAlign(String) {
     }
 }
 
-class AText extends TextField implements IDestroyable {
+class AText extends ASprite implements IDestroyable {
     @:noCompletion private var format:TextFormat; //dumb way to do it but yeahh
+    @:noCompletion private var field:TextField; //dumb way to do it but yeahh
     //stuffs
     public var alignment(default, set):ATextAlign = LEFT;
     public function set_alignment(a:ATextAlign):ATextAlign {
         alignment = a;
         format.align = ATextAlign.toOpenflAlign(a);
-        setTextFormat(format);
+        field.setTextFormat(format);
         return a;
     }
     public var fontSize(default, set):Int = 12;
     public function set_fontSize(a:Int):Int {
         fontSize = a;
         format.size = a;
-        setTextFormat(format);
+        field.setTextFormat(format);
         return a;
     }
 
+    //gets and setters so that this *acts* like a TextField when its actuall a ASprite
+    public var text(get, set):String;
+    public function get_text():String return field.text;
+    public function set_text(t:String):String return (field.text=t);
+    public var textWidth(get, never):Float;
+    public function get_textWidth():Float return field.textWidth;
+    public var textHeight(get, never):Float;
+    public function get_textHeight():Float return field.textHeight;
+    public var textColor(get, set):AColor;
+    public function get_textColor():AColor return AColor.fromInt(field.textColor);
+    public function set_textColor(a:AColor):AColor return (field.textColor=a);
+    public var defaultTextFormat(get, set):TextFormat;
+    public function get_defaultTextFormat():TextFormat return field.defaultTextFormat;
+    public function set_defaultTextFormat(f:TextFormat):TextFormat return field.defaultTextFormat = f;
+
     //funcs
     public function new(x:Float=0, y:Float=0, width:Float=0, text:String="", fontSize:Int=12) {
-        super();
+        super(x, y);
+        if(field==null) field = new TextField();
         if(format==null) format = new TextFormat();
-        this.width = width;
-        this.x = x; //whoops forgot about this.
-        this.y = y;
-        this.selectable = false;
-        this.mouseEnabled = false;
-        this.text = text; 
+        field.width = width;
+        field.selectable = false;
+        field.mouseEnabled = false;
+        field.text = text; 
         this.fontSize = fontSize;
+        addChild(field);
     }
 
-    public function destroy() {
+    public function setFieldSize(x:Float, y:Float) {
+        if(x!=-1) field.width = x;
+        if(y!=-1) field.height = y;
+    }
+
+    override public function destroy() {
+        super.destroy();
         if(parent!=null) parent.removeChild(this);
     }
 }

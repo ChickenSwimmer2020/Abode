@@ -1,7 +1,27 @@
 package backend.objects;
 
+
 class AState extends Sprite {
     public var members:Array<Dynamic> = [];
+    public var canInteract(default, set):Bool = true;
+    private var lastButtonStates:Map<AButton, Bool> = new Map<AButton, Bool>();
+    public function set_canInteract(a:Bool):Bool {
+        canInteract = a;
+        for(member in members){
+            if(member is AButton) {
+                if(a) {
+                    (member:AButton).disabled = lastButtonStates.get((member:AButton));
+                    (member:AButton).doDisabledColor = false;
+                    lastButtonStates.remove((member:AButton));
+                }else{
+                    lastButtonStates.set((member:AButton), (member:AButton).disabled);
+                    (member:AButton).doDisabledColor = false;
+                    (member:AButton).disabled=true;
+                }
+            }
+        }
+        return canInteract;
+    }
 
     public function new() {
         super();
@@ -34,6 +54,8 @@ class AState extends Sprite {
             // dispose BitmapData if it has any
             if (Reflect.hasField(thing, "bitmapData") && Reflect.field(thing, "bitmapData") != null)
                 Reflect.callMethod(thing, Reflect.field(thing, "bitmapData"), []).dispose();
+
+            //TODO: auto-remove event listeners added via in-line event listening.
 
             if (contains(thing))
                 removeChild(thing);

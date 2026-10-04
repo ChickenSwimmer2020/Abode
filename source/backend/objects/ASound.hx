@@ -1,17 +1,8 @@
 package backend.objects;
 
-import backend.utils.AMath;
-import openfl.net.URLRequest;
-import backend.utils.IDestroyable;
-import openfl.media.SoundChannel;
-import openfl.media.SoundTransform;
-import openfl.media.Sound;
-import openfl.Assets;
-
-
 class ASoundManager {
     public function new() {}; //not really needed but yeah
-    public static var music:Null<ASound>;
+    public static var music:Null<ASound>; //TODO: make fade in/out based on if the window is focused or not.
     public static function playMusic(asset:String, ?vol:Float=1.0):ASound {
         if(music == null) music = new ASound();
         music.load(asset, true);

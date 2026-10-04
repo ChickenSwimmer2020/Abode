@@ -1,8 +1,5 @@
 package backend.objects;
 
-import backend.ui.AButton;
-import openfl.display.DisplayObject;
-
 class AGroup<T:DisplayObject> extends ASprite {
     public var members:Array<T>;
     public var maxSize(default, set):Int=-1;

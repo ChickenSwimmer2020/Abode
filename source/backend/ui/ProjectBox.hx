@@ -15,20 +15,20 @@ class ProjectBox extends ASprite {
         this.addRect(new Rectangle(0, 0, SIZE.y, SIZE.y), AColor.MAGENTA); //debug fallback if the image cant load
         
         title = new AText(0+SIZE.y, 0, width, "[project].(apf/fla)", 12);
-        title.height = height;
+        title.setFieldSize(-1, height);
         addChild(title);
 
         size = new AText(0, 0, width, "---.--- (KB/MB/GB)", 12); //why will we support gb? idfk lmfao.
-        size.height = height;
+        size.setFieldSize(-1, height);
         size.x = SIZE.x-(size.textWidth+5);
         addChild(size);
 
         lastUsed = new AText(0+SIZE.y, 0+title.textHeight, width, "[yesterday, [last | week/month/year], ~ /days/weeks/months/years | ago]", 12);
-        lastUsed.height = height-title.textHeight;
+        lastUsed.setFieldSize(-1, height-title.textHeight);
         addChild(lastUsed);
 
         desc = new AText(0+SIZE.y, 0, width, "Description go brrrr", 12);
-        desc.height = height;
+        desc.setFieldSize(-1, height);
         desc.y = SIZE.y-(desc.textHeight+5);
         addChild(desc);
     }
@@ -36,8 +36,8 @@ class ProjectBox extends ASprite {
     public function loadData(name:String, type:String, lastModded:String, ?description:String) {
         title.text = '$name.${type=="Flash"?"Fla":"APF"}';
         if(type=="Flash"){
-            title.textColor = 0xFFFFFFFF;
-            lastUsed.textColor = 0xFFFFFFFF; 
+            title.textColor = AColor.WHITE;
+            lastUsed.textColor = AColor.WHITE;
         } 
         lastUsed.text = lastModded;
         desc.text = description??"";//show nothing if its null.

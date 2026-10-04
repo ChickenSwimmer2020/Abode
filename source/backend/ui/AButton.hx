@@ -1,14 +1,20 @@
 package backend.ui;
 
+enum ButtonStyle {
+    DEFAULT;
+    ACCENT;
+}
+
 class AButton extends ASprite {
     public var disabled(default, set):Bool = false;
+    public var doDisabledColor:Bool = true;
     public function set_disabled(a:Bool):Bool {
         disabled=a;
         if(disabled==true){
             removeEventListener(MouseEvent.CLICK, onMouseClick);
             removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
             removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
-            setGraphicColor(AColor.BUTTON_DISABLED);
+            if(doDisabledColor) setGraphicColor(AColor.BUTTON_DISABLED);
         }else{
             setGraphicColor(AColor.BUTTON_IDLE);
             if(!hasEventListener("click")) addEventListener(MouseEvent.CLICK, onMouseClick);
@@ -21,10 +27,10 @@ class AButton extends ASprite {
     public var hasSymbol:Bool=false;
     public var targetSymbol:String= "";
     public var symbolParams:Array<Dynamic> = [];
-    public function new(text:String, rect:Rectangle, onClick:AButton->Void) {
+    public function new(text:String, rect:Rectangle, onClick:AButton->Void, ?buttonStyle:ButtonStyle=DEFAULT) {
         super(rect.x, rect.y);
         onC=onClick;
-        makeGraphic(Math.floor(rect.width), Math.floor(rect.height), AColor.BUTTON_IDLE); //TODO: get windows accent color
+        makeGraphic(Math.floor(rect.width), Math.floor(rect.height), buttonStyle==ACCENT?Native.getAccentColor():AColor.BUTTON_IDLE);
 
         if(text.trim().startsWith("[SYM:") && text.trim().endsWith(']')) {
             this.drawIcon(text.split(':')[1].replace("]", "").trim(), 1, AColor.BLACK, AColor.TRANSPARENT);
@@ -34,7 +40,7 @@ class AButton extends ASprite {
             symbolParams = [1, AColor.BLACK, AColor.TRANSPARENT];
         }else{
             var label = new AText(0, 0, rect.width, text, 12);
-            label.height = rect.height;
+            label.setFieldSize(rect.width, rect.height);
             label.alignment = CENTER;
             addChild(label);
         }
@@ -43,6 +49,9 @@ class AButton extends ASprite {
         addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
         addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
     }
+
+    //TODO: add system to fix text width when button is resized. or to uniformly scale the text proportionately
+
     public function onMouseClick(e:MouseEvent){
         setGraphicColor(AColor.BUTTON_CLICK);
         if(hasSymbol){

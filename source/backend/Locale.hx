@@ -1,7 +1,5 @@
 package backend;
 
-import openfl.Assets;
-
 class Locale { //overrall, very simple system. for now.
     public static var lang:String = "en_US"; //en_US  
     public static function get(key:String, ?replacer:Map<String, Dynamic>, ?overrideLanguage:String):String{

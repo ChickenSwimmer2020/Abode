@@ -8,21 +8,23 @@ class DrawUtil {
         return spr;
     }
 
+    //TODO: support scaling on the graphic.
     public static function drawIcon(spr:ASprite, icon:String, thickness:Int, outlineColor:AColor, fillColor:AColor):ASprite {
         if(!Reflect.hasField(ADrawableIcons, icon)) {
             trace('Unrecognized icon $icon, aborting!');
             return spr;
         }
-        spr.reRender(); //reRender graphic so that the icon is cleared.
-        spr.graphics.lineStyle(thickness, outlineColor.rgb, outlineColor.a);
-        spr.graphics.beginFill(fillColor.rgb, fillColor.a);
-            for(command in (Reflect.field(ADrawableIcons, icon):Array<ADrawableIconCommand>)) {
-                switch(command.t) {
-                    case MOVE: spr.graphics.moveTo(command.a.x, command.a.y);
-                    case LINE: spr.graphics.lineTo(command.a.x, command.a.y);
+        if(!(spr is backend.ui.ACheckBox)) spr.reRender(); //reRender graphic so that the icon is cleared. but only if it isnt a checkbox.
+        spr.graphics.lineStyle(thickness, outlineColor.rgb??AColor.BLACK.rgb, outlineColor.a??1.0); //set line style
+            spr.graphics.beginFill(fillColor.rgb, fillColor.a);
+                for(command in (Reflect.field(ADrawableIcons, icon):Array<ADrawableIconCommand>)) {
+                    switch(command.t) {
+                        case MOVE: spr.graphics.moveTo(command.a.x, command.a.y);
+                        case LINE: spr.graphics.lineTo(command.a.x, command.a.y);
+                    }
                 }
-            }
-        spr.graphics.endFill();
+            spr.graphics.endFill();
+        spr.graphics.lineStyle(null, 0, 1); //reset linestyle to default.
         return spr;
     }
 }
@@ -291,5 +293,14 @@ class ADrawableIcons {
         {t:LINE, a:{x:26, y:49}},
         {t:LINE, a:{x:22, y:46}},
         {t:LINE, a:{x:20, y:56}},
+    ];
+    public static final UICHECK:Array<ADrawableIconCommand> = [
+        {t:MOVE, a:{x:5, y:10}},
+        {t:LINE, a:{x:10, y:14}},
+        {t:LINE, a:{x:20, y:0}},
+        {t:LINE, a:{x:19, y:0}},
+        {t:LINE, a:{x:10, y:12}},
+        {t:LINE, a:{x:4, y:8}},
+        {t:LINE, a:{x:5, y:10}}
     ];
 }

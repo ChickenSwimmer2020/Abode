@@ -1,9 +1,5 @@
 package backend;
 
-import openfl.Assets;
-import backend.utils.IDestroyable;
-
-
 typedef ExtraFilterParams = {
     @:optional var colorTransform:Null<AColor>;
     @:optional var offsets:Null<Rectangle>;
@@ -188,6 +184,16 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
     }
 
     /**
+     * set the position without doing +width/2
+     * @param x 
+     * @param y 
+     */
+    public function setPositionRaw(x:Float, y:Float) {
+        this.x = x;
+        this.y = y;
+    }
+
+    /**
      * self explanitory.
      */
     public function destroy() {
@@ -215,6 +221,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
         trace('Added a global filter to sprite (SPRITE INDEX IN MEMBERS) with a filter index of ${filters.indexOf(filter)}');
         return this;
     }
+
     /**
      * Remove a global filter from the sprite
      * @param index was filter.

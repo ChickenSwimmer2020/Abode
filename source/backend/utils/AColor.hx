@@ -25,16 +25,42 @@ abstract AColor(Int) from Int from UInt to Int to UInt{
 
 
     public function new(v:Int=0xFF000000) this=v;
-    public var rgb(get, never):Int;
-    public var r(get, never):Float;
-    public var g(get, never):Float;
-    public var b(get, never):Float;
-    public var a(get, never):Float;
-    public inline function get_rgb():Int return this&0xFFFFFF; //bitwise is weird.
-    public inline function get_r():Float return ((this>>16)&0xFF);
-    public inline function get_g():Float return ((this>>8)&0xFF);
-    public inline function get_b():Float return (this&0xFF);
-    public inline function get_a():Float return ((this>>24)&0xFF)/255;
+    public var rgb(get, set):Int;
+    public var r(get, set):Float;
+    public var g(get, set):Float;
+    public var b(get, set):Float;
+    public var a(get, set):Float;
+
+    public inline function get_rgb():Int return this & 0xFFFFFF;
+    public inline function get_r():Float return (this >> 16) & 0xFF;
+    public inline function get_g():Float return (this >> 8) & 0xFF;
+    public inline function get_b():Float return this & 0xFF;
+    public inline function get_a():Float return ((this >> 24) & 0xFF) / 255;
+
+    public inline function set_rgb(v:Int):Int {
+        this = (this & 0xFF000000) | (v & 0xFFFFFF); // keep alpha
+        return v;
+    }
+    public inline function set_r(v:Float):Float {
+        this = (this & 0xFF00FFFF) | (_ch(v) << 16);
+        return v;
+    }
+    public inline function set_g(v:Float):Float {
+        this = (this & 0xFFFF00FF) | (_ch(v) << 8);
+        return v;
+    }
+    public inline function set_b(v:Float):Float {
+        this = (this & 0xFFFFFF00) | _ch(v);
+        return v;
+    }
+    public inline function set_a(v:Float):Float {
+        this = (this & 0x00FFFFFF) | (Math.round(Math.max(0, Math.min(1, v)) * 255) << 24);
+        return v;
+    }
+
+    // clamp a 0-255 channel value and round to an Int
+    static inline function _ch(v:Float):Int
+        return Math.round(Math.max(0, Math.min(255, v)));
 
     public static inline function fromInt(v:Int):AColor return new AColor(v);
     public static inline function toTransform(c:AColor):ColorTransform return new ColorTransform(0,0,0,((c>>24)&0xFF)/255,((c>>16)&0xFF),((c>>8)&0xFF),(c&0xFF),0);
