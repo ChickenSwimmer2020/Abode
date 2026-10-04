@@ -2,6 +2,15 @@
 <!--markdownlint-disable MD033 -->
 # CHANGELOG
 
+> ## 0.00.005 (No Clue what to name this update. :/)
+>
+> * Added popup for asking how the user wants to be referred to on first launch.
+> * Added a lot of new language keys to the locale system
+> * `ADropdown` was slightly fixed, backgrounds are still fucky.
+> * `UPrefs` can actually read maps properly now.
+> * `InitState` edit dropdown implementation
+> * New popup on Splash screen for first launch to ask what you wanna be referred to.
+
 <!---->
 > ## 0.00.004 (Debugging, Symbol maker, and sub-dropdowns)
 >

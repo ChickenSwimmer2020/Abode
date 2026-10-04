@@ -200,7 +200,125 @@ class InitState extends AState {
                     type: ABUTTON,
                     text: Locale.get("title.menuBar.Edit"),
                     size: new APoint(50, 20),
-                    onClick: (_:AButton)->{trace("Edit menu");}
+                    onClick: (_:AButton)->{
+                        ADropdown.openDropdownMenu(_, [
+                            {text: '${Locale.get("title.menuBar.Edit.Undo")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                trace("Undo last edit (in-project)");
+                            }},
+                            {text: '${Locale.get("title.menuBar.Edit.Redo")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                trace("Undo the last undo (in-project");
+                            }},
+                            {text: 'seperator', func: null},
+                            {text: '${Locale.get("title.menuBar.Edit.Cut")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                trace("Cut (in-project)");
+                            }},
+                            {text: '${Locale.get("title.menuBar.Edit.Copy")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                trace("Copy (in-project)");
+                            }},
+                            {text: '${Locale.get("title.menuBar.Edit.PasteCenter")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                trace("Paste in Center (in-project)");
+                            }},
+                            {text: '${Locale.get("title.menuBar.Edit.PastePlace")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                trace("Paste in Place (in-project)");
+                            }},
+                            {text: '${Locale.get("title.menuBar.Edit.Clear")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                trace("Clear (in-project)");
+                            }},
+                            {text: 'seperator', func: null},
+                            {text: '${Locale.get("title.menuBar.Edit.Duplicate")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                trace("Duplicate (in-project)");
+                            }},
+                            {text: '${Locale.get("title.menuBar.Edit.SelectAll")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                trace("Select All (in-project)");
+                            }},
+                            {text: '${Locale.get("title.menuBar.Edit.DeselectAll")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                trace("Deselect All (in-project)");
+                            }},
+                            {text: '${Locale.get("title.menuBar.Edit.InvertSelection")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                trace("Invert Selection (in-project)");
+                            }},
+                            {text: 'seperator', func: null},
+                            {text: '${Locale.get("title.menuBar.Edit.FindandReplace")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                trace("Find and Replace (in-project)");
+                            }},
+                            {text: '${Locale.get("title.menuBar.Edit.FindNext")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                trace("Find Next (in-project)");
+                            }},
+                            {text: 'seperator', func: null},
+                            {text: '${Locale.get("title.menuBar.Edit.TimeLine")} > ', keys:[], closeOnClick: false, func: (butt:AButton)->{
+                                ADropdown.openSubDropdownMenu(butt, [
+                                    {text: '${Locale.get("title.menuBar.Edit.TimeLine.RemoveFrames")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                        trace("Remove Frames Timeline (in-project)");
+                                    }},
+                                    {text: 'seperator', func: null},
+                                    {text: '${Locale.get("title.menuBar.Edit.TimeLine.CutFrames")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                        trace("Cut Frames Timeline (in-project)");
+                                    }},
+                                    {text: '${Locale.get("title.menuBar.Edit.TimeLine.CopyFrames")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                        trace("Copy Frames Timeline (in-project)");
+                                    }},
+                                    {text: '${Locale.get("title.menuBar.Edit.TimeLine.PasteFrames")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                        trace("Paste Frames Timeline (in-project)");
+                                    }},
+                                    {text: '${Locale.get("title.menuBar.Edit.TimeLine.PasteOverwriteFrames")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                        trace("Paste and Overwrite Frames Timeline (in-project)");
+                                    }},
+                                    {text: '${Locale.get("title.menuBar.Edit.TimeLine.ClearFrames")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                        trace("Clear Frames Timeline (in-project)");
+                                    }},
+                                    {text: '${Locale.get("title.menuBar.Edit.TimeLine.SelectAllFrames")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                        trace("Select All Frames Timeline (in-project)");
+                                    }},
+                                    {text: 'seperator', func: null},
+                                    {text: '${Locale.get("title.menuBar.Edit.TimeLine.CutLayers")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                        trace("Cut Layers Timeline (in-project)");
+                                    }},
+                                    {text: '${Locale.get("title.menuBar.Edit.TimeLine.CopyLayers")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                        trace("Copy Layers Timeline (in-project)");
+                                    }},
+                                    {text: '${Locale.get("title.menuBar.Edit.TimeLine.PasteLayers")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                        trace("Paste Layers Timeline (in-project)");
+                                    }},
+                                    {text: '${Locale.get("title.menuBar.Edit.TimeLine.DuplicateLayers")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                        trace("Duplicate Layers Timeline (in-project)");
+                                    }},
+                                    {text: '${Locale.get("title.menuBar.Edit.TimeLine.MergeLayers")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                        trace("Merge Layers Timeline (in-project)");
+                                    }},
+                                    {text: 'seperator', func: null},
+                                    {text: '${Locale.get("title.menuBar.Edit.TimeLine.CopyMotion")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                        trace("Copy Motion Timeline (in-project)");
+                                    }},
+                                    {text: '${Locale.get("title.menuBar.Edit.TimeLine.PasteMotion")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                        trace("Paste Motion Timeline (in-project)");
+                                    }},
+                                    {text: '${Locale.get("title.menuBar.Edit.TimeLine.PasteMotionSpecial")}...', keys:[], disabled: true, func: (butt:AButton)->{
+                                        trace("Paste Motion Special Timeline (in-project)");
+                                    }},
+                                ]);
+                            }},
+                            {text: 'seperator', func: null},
+                            {text: '${Locale.get("title.menuBar.Edit.EditObjects")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                trace("Edit Objects(Symbols) (in-project)");
+                            }},
+                            {text: '${Locale.get("title.menuBar.Edit.EditSelected")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                trace("Edit Selected (in-project)");
+                            }},
+                            {text: '${Locale.get("title.menuBar.Edit.EditRig")}', keys:[], disabled: true, func: (butt:AButton)->{
+                                trace("Edit Rig (in-project)");
+                            }},
+                            {text: 'seperator', func: null},
+                            {text: '${Locale.get("title.menuBar.Edit.Preferences")} > ', keys:[], func: (butt:AButton)->{
+                                trace("Edit Rig (in-project)");
+                            }},
+                            {text: '${Locale.get("title.menuBar.Edit.FontMapping")}...', keys:[], func: (butt:AButton)->{
+                                trace("Font Mappings");
+                            }},
+                            {text: '${Locale.get("title.menuBar.Edit.KeyboardShortcuts")}', keys:[], func: (butt:AButton)->{
+                                trace("Keyboard Shortcuts (in-project)");
+                            }},
+                        ], 200);
+                    }
                 },
                 {
                     type: ABUTTON,

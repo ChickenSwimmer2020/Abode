@@ -14,12 +14,13 @@ class ADropdown extends ASprite {
     static var subIncrement:Float = 0.0;
     public static var dropdownKeys:Map<Array<Int>, String>=[];
     public static var subDropdownKeys:Map<Array<Int>, String>=[];
+    //TODO: fix the backgrounds extending past the total ammount of buttons.
     public static function openDropdownMenu(target:ASprite, ?isSub:Bool=false, options:Array<{text:String, ?closeOnClick:Bool, ?keys:Array<Int>, ?disabled:Bool, func:AButton->Void}>, ?overWidth:Int) {
         if(dropdownOpen) return;
         var button = target;
         var targetPosition:APoint = new APoint(button.x+(isSub?button.width:0), button.y+(isSub?0:button.height));
 
-        dropdownBG = new ASprite(targetPosition.x, targetPosition.y).makeGraphic(Math.floor(overWidth??button.width), Math.floor(button.height*Lambda.count(options)), AColor.MENUBAR_DROPDOWN_BACKGROUND);
+        dropdownBG = new ASprite(targetPosition.x, targetPosition.y).makeGraphic(Math.floor(overWidth??button.width), Math.floor(button.height*(options.length-1)), AColor.MENUBAR_DROPDOWN_BACKGROUND);
         addM(dropdownBG);
         var ind:Int = 0;
         increment = 0.0;
@@ -30,13 +31,13 @@ class ADropdown extends ASprite {
             if(t.keys!=null) dropdownKeys.set(t.keys, text);
 
             if(text == 'seperator') {
-                var seperator:ASprite = new ASprite(targetPosition.x, targetPosition.y+(button.height*ind));
+                var seperator:ASprite = new ASprite(targetPosition.x, targetPosition.y+increment);
                 seperator.makeGraphic(Math.floor(overWidth!=null?(overWidth/2):(button.width/2)), Math.floor(button.height/4), AColor.MENUBAR_DROPDOWN_SEPERATOR);
                 dropdownButtons.push(seperator);
                 addM(seperator);
                 seperator.setAttribute("isDropdownObject", true);
                 seperator.setAttribute("closeOnClick", false);
-                increment += seperator.height;
+                increment += seperator.gHeight;
             }else{
                 var func = t.func;
                 var button:AButton = new AButton(text, new Rectangle(targetPosition.x, targetPosition.y+increment, overWidth??button.width, button.height), func);
@@ -45,7 +46,7 @@ class ADropdown extends ASprite {
                 button.setAttribute("isDropdownObject", true);
                 button.setAttribute("closeOnClick", disabled?false:shouldCloseWhenClicked);
                 button.disabled = disabled;
-                increment += button.height;
+                increment += button.gHeight;
             }
             ind++;
         }
@@ -60,7 +61,7 @@ class ADropdown extends ASprite {
         var button = target;
         var targetPosition:APoint = new APoint(button.x+button.width, button.y);
 
-        subDropdownBG = new ASprite(targetPosition.x, targetPosition.y).makeGraphic(Math.floor(overWidth??button.width), Math.floor(button.height*Lambda.count(options)), AColor.MENUBAR_DROPDOWN_BACKGROUND);
+        subDropdownBG = new ASprite(targetPosition.x, targetPosition.y).makeGraphic(Math.floor(overWidth??button.width), Math.floor(button.height*(options.length-1)), AColor.MENUBAR_DROPDOWN_BACKGROUND);
         addM(subDropdownBG);
         var ind:Int = 0;
         subIncrement = 0.0;
@@ -72,7 +73,7 @@ class ADropdown extends ASprite {
             if(t.keys!=null) subDropdownKeys.set(t.keys, text);
 
             if(text == 'seperator') {
-                var seperator:ASprite = new ASprite(targetPosition.x, targetPosition.y+(button.height*ind));
+                var seperator:ASprite = new ASprite(targetPosition.x, targetPosition.y+subIncrement);
                 seperator.makeGraphic(Math.floor(overWidth!=null?(overWidth/2):(button.width/2)), Math.floor(button.height/4), AColor.MENUBAR_DROPDOWN_SEPERATOR);
                 subDropdownButtons.push(seperator);
                 addM(seperator);

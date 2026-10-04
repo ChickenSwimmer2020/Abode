@@ -65,15 +65,45 @@ class SplashScreen extends AState {
 
                 ATimer.start(5, ()->{ //placeholder for how long preloading will take.
                     ATimer.start(0.75, ()->{
-                        #if sys
-                            Main.pWidth = 1280;
-                            Main.pHeight = 720;
-                            Lib.application.window.width = 1280;
-                            Lib.application.window.height = 720;
-                            Lib.application.window.x = Math.floor(Capabilities.screenResolutionX/2-Lib.application.window.width/2);
-                            Lib.application.window.y = Math.floor(Capabilities.screenResolutionY/2-Lib.application.window.height/2);
-                        #end
-                        Main.StateSystem.switchState(InitState);
+                        final onWindowComplete:Void->Void = ()->{
+                            Mouse.hide();
+                            #if sys
+                                Main.pWidth = 1280;
+                                Main.pHeight = 720;
+                                Lib.application.window.width = 1280;
+                                Lib.application.window.height = 720;
+                                Lib.application.window.x = Math.floor(Capabilities.screenResolutionX/2-Lib.application.window.width/2);
+                                Lib.application.window.y = Math.floor(Capabilities.screenResolutionY/2-Lib.application.window.height/2);
+                            #end
+                            Main.StateSystem.switchState(InitState);
+                        };
+                        try{
+                            Mouse.show(); //so you can see what ur doing.
+                            if(UPrefs.perferredReference.value["NOT SELECTED"]!=true) onWindowComplete(); //if its been selected before, then we want to skip all this.
+                            var referallWindow:AWindow = Main.windowManager.makeWindow(Locale.get("splash.referall.windowTitle"), (640/2-320/2).floor(), (360/2-180/2).floor(), 320, 180, false, false);
+                                for(button in referallWindow.dragBarButtons){
+                                    button.disabled = true; //disable the dragbar buttons.
+                                    button.visible = false;
+                                }
+                                referallWindow.addContent(new AText(0, 0, referallWindow.width, "We noticed this is your first time launching!\nSince we don't use an account system, you have the choice!\nwhat should we call you?", 12));
+                                var customtextInput:ATextInputBox = cast(referallWindow.addContent(new ATextInputBox(0, 105, 20, 320, null, "{Custom Name Here}", 12, null)), ATextInputBox);
+                                referallWindow.addContent(new AButton("\"{PCNAME}\"", new Rectangle(0, 145, 106, 20), (_:AButton)->{
+                                    trace("TODO: make this work");
+                                    referallWindow.destroy();
+                                    onWindowComplete();
+                                }));
+                                referallWindow.addContent(new AButton("\"{WinUser}\"", new Rectangle(106, 145, 106, 20), (_:AButton)->{
+                                    trace("TODO: make this work");
+                                    referallWindow.destroy();
+                                    onWindowComplete();
+                                }));
+                                referallWindow.addContent(new AButton("\"Custom\"", new Rectangle(214, 145, 106, 20), (_:AButton)->{
+                                    trace('TODO: text input to make this actually work');
+                                    trace('text output from input is ${customtextInput.text}');
+                                    referallWindow.destroy();
+                                    onWindowComplete();
+                                }));
+                        }catch(e:Exception) Main.traceError(e);
                     });
                 });
             }, AEase.quadInOut);

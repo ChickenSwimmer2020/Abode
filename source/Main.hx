@@ -240,6 +240,6 @@ class Main extends Sprite {
 
     public static function traceError(e:Exception) {
         trace('AN ERROR OCCURED: ${e.message}');
-        trace('WITH STACK: ${e.stack}');
+        trace('WITH STACK: ${e.stack.toString()}');
     }
 }
