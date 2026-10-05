@@ -2,6 +2,33 @@
 <!--markdownlint-disable MD033 -->
 # CHANGELOG
 
+> ## 0.00.006 (sounds and input)
+>
+> * New Sounds! (Thanks [HarukaStudios](https://github.com/HarukaStudios)!)
+> * * `buttonClick.wav`
+> * * `buttonClick2X.wav` (currently unused)
+> * * `ObjectClick.wav` (currently unused)
+> * * `ObjectClick2X.wav` (currently unused)
+> * * `popup.wav`
+> * * `Printer Sound [Begin Export].wav` (currently unused)
+>
+> * Added `Contributors.MD` (this is a placeholder until the `About Abode` window is finished)
+> * Fixed `DebugDisplay`, it also now shows if a dropdown/subdropdown is open, and if a text input is selected
+> * `SymbolEditor` got closer to being usable
+> * `AText` now has access to `.selectable`
+> * New premade system for `AWindowManager`
+> * `AButton` has click sounds now.
+> * `AColorPicker` got slightly updated
+> * New Class! `ATabStack` its literally just `ATabMenu` but vertical.
+> * `ATextInputBox` is ***somewhat*** functional now
+> * `UPrefs` is now functional on `HTML5`
+> * `AColor` now has `.toString`
+> * `InitState` preferences button now opens unfinished preferences window.
+> * `Main` Debugger opening logic is now properly only tied to `F11` being pressed
+> * `SplashScreen` referall window updated slightly
+> * `TODO` finally has an entry
+>
+><!---->
 > ## 0.00.005 (No Clue what to name this update. :/)
 >
 > * Added popup for asking how the user wants to be referred to on first launch.
@@ -10,7 +37,7 @@
 > * `UPrefs` can actually read maps properly now.
 > * `InitState` edit dropdown implementation
 > * New popup on Splash screen for first launch to ask what you wanna be referred to.
-
+>
 <!---->
 > ## 0.00.004 (Debugging, Symbol maker, and sub-dropdowns)
 >

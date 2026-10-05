@@ -46,20 +46,23 @@ package backend.debug;
 
             var mem = System.totalMemory / 1024 / 1024; // bytes to MB
 
-            if(MSGS!=lastMsgs){
+            //if(MSGS!=){ //TODO: optimize and make it only update if it needs to.
                 MSGS = ([
                     {key: "FPS", value: Math.round(fps)},
                     {key: "STA", value: Main.StateSystem.currentState},
                     {key: "MEM||MB", value: (Math.round(mem * 10) / 10)},
                     {key: "STG||children", value: ((stage!=null)?stage.numChildren:0)},
-                    {key: "OBJ||children", value: numChildren}
+                    {key: "OBJ||children", value: numChildren},
+                    {key: "CST", value: ATextInputBox.selectedTextBox},
+                    {key: "DDO", value: ADropdown.dropdownOpen},
+                    {key: "SSD", value: ADropdown.subDropdownOpen},
                 ]:Array<Dynamic>);
-            }
+            //}
 
             if(finalMsg!="") finalMsg="";
             for(label in MSGS) finalMsg += '${label.key.split('||')[0]}:    ${label.value} ${label.key.split('||')[1]??""}\n';
             if(label.height!=(0+(20*(MSGS.length-1)))){ //only update the graphics if we need too.
-                label.height=(0+(20*(MSGS.length-1)));
+                label.setFieldSize(-1, 0+(20*(MSGS.length-1)));
                 graphics.clear();
                 graphics.beginFill(AColor.DEBUGGER_BACKGROUND.rgb, AColor.DEBUGGER_BACKGROUND.a);
                     graphics.drawRect(0, 0, 200, label.height);

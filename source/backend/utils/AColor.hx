@@ -61,7 +61,8 @@ abstract AColor(Int) from Int from UInt to Int to UInt{
     // clamp a 0-255 channel value and round to an Int
     static inline function _ch(v:Float):Int
         return Math.round(Math.max(0, Math.min(255, v)));
-
+    public inline function toString():String return '[AColor]: rgb:$rgb, r:$r, g:$g, b:$b, a:$a';
+    public inline function toHexString():String return '#${Std.string(this).substr(3, Std.string(this).length)}'; //string manip :3
     public static inline function fromInt(v:Int):AColor return new AColor(v);
     public static inline function toTransform(c:AColor):ColorTransform return new ColorTransform(0,0,0,((c>>24)&0xFF)/255,((c>>16)&0xFF),((c>>8)&0xFF),(c&0xFF),0);
 }

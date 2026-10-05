@@ -41,7 +41,7 @@ class InitState extends AState {
             add(welcomeText);
             welcomeText.textColor = AColor.WHITE;
             add(new AButton(Locale.get("title.newProject"), new Rectangle(5, 235, 80, 20), (_:AButton)->{
-                trace("TODO: new Project window.");
+                Main.windowManager.makePrefabWindow("makeProject");
             }));
             add(new AButton(Locale.get("title.loadProject"), new Rectangle(90, 235, 80, 20), (_:AButton)->{
                 trace("TODO: Open project file popup");
@@ -308,8 +308,8 @@ class InitState extends AState {
                                 trace("Edit Rig (in-project)");
                             }},
                             {text: 'seperator', func: null},
-                            {text: '${Locale.get("title.menuBar.Edit.Preferences")} > ', keys:[], func: (butt:AButton)->{
-                                trace("Edit Rig (in-project)");
+                            {text: '${Locale.get("title.menuBar.Edit.Preferences")}', keys:[], func: (butt:AButton)->{
+                                var returnEater:AWindow = Main.windowManager.makePrefabWindow("preferences"); //only has a variable because otherwise the compiler complains.
                             }},
                             {text: '${Locale.get("title.menuBar.Edit.FontMapping")}...', keys:[], func: (butt:AButton)->{
                                 trace("Font Mappings");
@@ -413,8 +413,8 @@ class InitState extends AState {
                                         loader.destroy();
                                         darkenSprite.setGraphicColor(0x6EFF0000);
                                         var text:AText = new AText(0, 0, Main.pWidth, "", 48);
+                                        text.setFieldSize(Main.pWidth, Main.pHeight);
                                         Main.instance.addToMainStage(text);
-                                        text.height = 200; //TODO: make this automatic properly.
                                         text.text = switch(value) {
                                             case -1: Locale.get("error.networking.ConnectionFailed", ["{URL}"=>Network.updateCheckLocation]);
                                             case -4: Locale.get("error.networking.NxDomain");

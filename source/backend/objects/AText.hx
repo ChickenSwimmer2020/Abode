@@ -48,6 +48,9 @@ class AText extends ASprite implements IDestroyable {
     public var defaultTextFormat(get, set):TextFormat;
     public function get_defaultTextFormat():TextFormat return field.defaultTextFormat;
     public function set_defaultTextFormat(f:TextFormat):TextFormat return field.defaultTextFormat = f;
+    public var selectable(get, set):Bool;
+    public function get_selectable():Bool return field.selectable;
+    public function set_selectable(a:Bool):Bool return field.selectable=a;
 
     //funcs
     public function new(x:Float=0, y:Float=0, width:Float=0, text:String="", fontSize:Int=12) {

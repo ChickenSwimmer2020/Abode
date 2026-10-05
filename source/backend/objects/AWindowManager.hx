@@ -1,5 +1,7 @@
 package backend.objects;
 
+import backend.ui.ATabStack;
+
 class AWindowManager {
     public static var heldWindow:Null<AWindow> = null;
     public static var windows:Array<AWindow> = [];
@@ -8,13 +10,67 @@ class AWindowManager {
         if(windows == null) windows = [];
     }
 
-    public function makeWindow(title:String, x:Int, y:Int, w:Int, h:Int, borderless:Bool=false, resizeable:Bool=false):AWindow {
-        var win:AWindow = new AWindow(title, x, y, w, h, borderless, resizeable);
+    public function addWindow(win:AWindow):AWindow {
         windows.push(win);
-        Main.instance.addToMainStage(win); //adds it to main
+        Main.instance.addToMainStage(win);
         focusWindow(win);
+        ASoundManager.playSound("assets/sounds/popup.wav", 1.0); //TODO: implement volume
         return win;
     }
+
+    public inline function makeWindow(title:String, x:Int, y:Int, w:Int, h:Int, borderless:Bool=false, resizeable:Bool=false):AWindow return addWindow(new AWindow(title, x, y, w, h, borderless, resizeable));
+
+    final prefabWindows:Map<String, Void->AWindow> = [
+        "makeProject"=>()->{
+            final width:Int = 775;
+            final height:Int = (740/2).floor();
+            var premade:AWindow = new AWindow("New Project", Main.pWidth/2-width/2, Main.pHeight/2-height/2, width, height, false, false);
+            var tabGroup:ATabMenu = new ATabMenu(0, 0, new APoint(width/2, height));
+                tabGroup.addGroup("Character Animation", new AGroup(0, 0)); //we dont use locales yet, fuck you copilot.
+                tabGroup.addGroup("Social", new AGroup(0, 0));
+                tabGroup.addGroup("Game", new AGroup(0, 0));
+                tabGroup.addGroup("Web", new AGroup(0, 0));
+                tabGroup.addGroup("Advanced", new AGroup(0, 0));
+            premade.addContent(tabGroup);
+            var detailsArea:ASprite = premade.addContent(new ASprite(width/2, 0).makeGraphic((width/2).floor(), height, AColor.BUTTON_DISABLED));
+            premade.addContent(new AText(detailsArea.x+2, 2, detailsArea.width-10, "Details", 12));
+
+            //TODO: if advanced, the units dropdown can be changed between
+            /**
+             * Inches,
+             * Inches (decimal)
+             * Points,
+             * Centimeters,
+             * Millimeters,
+             * Pixels.
+             */
+
+            return premade;
+        },
+        "preferences"=>()->{
+            final width:Int = (775/2).floor();
+            final height:Int = (775/2).floor();
+            var premade:AWindow = new AWindow(Locale.get("prefsWindow.title"), Main.pWidth/2-width/2, Main.pHeight/2-height/2, width, height, false, false);
+            var tabGroup:ATabStack = new ATabStack(0, 0, new APoint(width, height));
+                tabGroup.addGroup("General", new AGroup(0, 0)); //we dont use locales yet, fuck you copilot.
+                tabGroup.addGroup("Code Editor", new AGroup(0, 0));
+                tabGroup.addGroup("Scripter", new AGroup(0, 0));
+                tabGroup.addGroup("Compiler", new AGroup(0, 0));
+                tabGroup.addGroup("Text", new AGroup(0, 0));
+                tabGroup.addGroup("Drawing", new AGroup(0, 0));
+            premade.addContent(tabGroup);
+
+            premade.addContent(new AButton(Locale.get("prefsWindow.cancel"), new Rectangle(width-85, height-45, 80, 20), (_:AButton)->{
+                premade.destroy(); //cuz it cancels, so we dont save anything.
+            }));
+            premade.addContent(new AButton(Locale.get("prefsWindow.accept"), new Rectangle(width-170, height-45, 80, 20), (_:AButton)->{
+                trace("TODO: save preferences");
+            }));
+            return premade;
+        }
+    ];
+
+    public function makePrefabWindow(type:String):AWindow return addWindow(prefabWindows.get(type)());
 
 
     public static function focusWindow(w:AWindow):Void {

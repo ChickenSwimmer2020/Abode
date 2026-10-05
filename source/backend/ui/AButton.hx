@@ -57,7 +57,10 @@ class AButton extends ASprite {
         if(hasSymbol){
             this.drawIcon(targetSymbol, symbolParams[0], symbolParams[1], symbolParams[2]);
         }
-        if(onC!=null) onC(this);
+        if(onC!=null){
+            ASoundManager.playSound("assets/sounds/buttonClick.wav", 1.0); //TODO: implement volume
+            onC(this);
+        }
     }
 
     public function onMouseOver(e:MouseEvent) {

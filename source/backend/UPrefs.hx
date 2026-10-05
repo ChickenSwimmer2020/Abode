@@ -1,6 +1,11 @@
 package backend;
 
+import haxe.DynamicAccess;
+
 class UPrefs {
+    #if(html5)
+        public static var prefsData:SharedObject = SharedObject.getLocal("abodePrefs");
+    #end
     private static final DEFAULT_PREFERENCES:Dynamic = {
         mainMenuMuted: false,
         #if debug
@@ -55,42 +60,50 @@ class UPrefs {
 
 
 
-    public static function getFromFile(a:String):Dynamic{
-        var v:Dynamic = Reflect.getProperty(Json.parse(getPrefsFile()), a); //inital json data.
-        if(v!=null&&Type.typeof(v)==TObject) { //map fix, so maps can be parsed correctly cuz apparently casting is stupid.
-            var m = new Map<Dynamic, Dynamic>();
-            for(f in Reflect.fields(v)) m.set(f, Reflect.field(v, f));
-            return m;
-        }
-        return v;
+    public static function getFromFile #if(html5)<T>#end(a:String):#if(sys)Dynamic#else T#end{
+        #if(sys)
+            var v:Dynamic = Reflect.getProperty(Json.parse(getPrefsFile()), a); //inital json data.
+            if(v!=null&&Type.typeof(v)==TObject) { //map fix, so maps can be parsed correctly cuz apparently casting is stupid.
+                var m = new Map<Dynamic, Dynamic>();
+                for(f in Reflect.fields(v)) m.set(f, Reflect.field(v, f));
+                return m;
+            }
+            return v;
+        #else
+            return (Reflect.field(prefsData.data, a):T);
+        #end
     }
     public static function writeToFile(a:String, b:Dynamic):Dynamic {
-        var json:Dynamic = Json.parse(getPrefsFile());
-        Reflect.setField(json, a, b);
-        trace('Setting field $a to $b in UPrefs.');
-        #if sys File.saveContent("uPrefs.json", Json.stringify(json, null,"    "));
+        #if(sys)
+            var json:Dynamic = Json.parse(getPrefsFile());
+            Reflect.setField(json, a, b);
+            trace('Setting field $a to $b in UPrefs.');
+            File.saveContent("uPrefs.json", Json.stringify(json, null,"    "));
         #else
-            trace("Not implemented");
+            Reflect.setField(prefsData.data, a, b);
+            prefsData.flush();
+            trace('Tried to set "$a" to "$b" in SharedObject, returned ${Reflect.getProperty(prefsData.data, a)}');
         #end
         return b;
     }
 
-    public static function getPrefsFile():String {
-        #if sys return (FileSystem.exists("uPrefs.json"))?File.getContent("uPrefs.json"):makePrefsFile();
-        #else
-            trace("Not implemented");
-        #end
-        return "{}"; //so it doesnt crash on html5.
-    }
-
-    public static function makePrefsFile():String {
-        #if sys File.saveContent("uPrefs.json", Json.stringify(DEFAULT_PREFERENCES, null, "    "));
-        #else
-            trace("Not Implemented");
-        #end
-
-        return #if(sys)File.getContent("uPrefs.json")#else "{}"#end;
-    }
+    #if(sys)
+        public static inline function getPrefsFile():String return (FileSystem.exists("uPrefs.json"))?File.getContent("uPrefs.json"):makePrefsFile();
+    #end
+    #if(sys)
+        public static function makePrefsFile():String {
+            File.saveContent("uPrefs.json", Json.stringify(DEFAULT_PREFERENCES, null, "    "));
+            return File.getContent("uPrefs.json");
+        }
+    #else
+        public static function makePrefsFile() {
+            for(key=>value in (DEFAULT_PREFERENCES:DynamicAccess<Dynamic>)){
+                Reflect.setField(prefsData.data, key, value); //flush after each key.
+                prefsData.flush();
+            }
+            trace('Prefs sent to cookies!');
+        }
+    #end
 }
 
 class Preference<T> {

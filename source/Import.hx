@@ -76,6 +76,7 @@ import openfl.ui.Keyboard;
 import openfl.events.KeyboardEvent;
 import openfl.geom.ColorTransform;
 import openfl.Assets;
+import openfl.net.SharedObject;
 import openfl.net.URLRequest;
 import openfl.media.SoundChannel;
 import openfl.media.SoundTransform;

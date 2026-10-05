@@ -87,17 +87,19 @@ class SplashScreen extends AState {
                                 }
                                 referallWindow.addContent(new AText(0, 0, referallWindow.width, "We noticed this is your first time launching!\nSince we don't use an account system, you have the choice!\nwhat should we call you?", 12));
                                 var customtextInput:ATextInputBox = cast(referallWindow.addContent(new ATextInputBox(0, 105, 20, 320, null, "{Custom Name Here}", 12, null)), ATextInputBox);
-                                referallWindow.addContent(new AButton("\"{PCNAME}\"", new Rectangle(0, 145, 106, 20), (_:AButton)->{
-                                    trace("TODO: make this work");
-                                    referallWindow.destroy();
-                                    onWindowComplete();
-                                }));
-                                referallWindow.addContent(new AButton("\"{WinUser}\"", new Rectangle(106, 145, 106, 20), (_:AButton)->{
-                                    trace("TODO: make this work");
-                                    referallWindow.destroy();
-                                    onWindowComplete();
-                                }));
-                                referallWindow.addContent(new AButton("\"Custom\"", new Rectangle(214, 145, 106, 20), (_:AButton)->{
+                                #if(sys)
+                                    referallWindow.addContent(new AButton('"${Sys.getEnv(#if(windows)"COMPUTERNAME"#else "HOSTNAME"#end)}"', new Rectangle(0, 145, 106, 20), (_:AButton)->{
+                                        trace("TODO: make this work");
+                                        referallWindow.destroy();
+                                        onWindowComplete();
+                                    }));
+                                    referallWindow.addContent(new AButton('"${Sys.getEnv("USERNAME")}"', new Rectangle(106, 145, 106, 20), (_:AButton)->{
+                                        trace("TODO: make this work");
+                                        referallWindow.destroy();
+                                        onWindowComplete();
+                                    }));
+                                #end
+                                referallWindow.addContent(new AButton("Custom", new Rectangle(#if(sys)214#else 0#end, 145,  #if(sys)106#else 180#end, 20), (_:AButton)->{
                                     trace('TODO: text input to make this actually work');
                                     trace('text output from input is ${customtextInput.text}');
                                     referallWindow.destroy();

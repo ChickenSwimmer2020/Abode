@@ -1,8 +1,32 @@
 package backend.debug;
 
+import backend.ui.AColorPicker;
+
 class SymbolEditor extends AState {
     public var menuBar:AMenuBar;
     public var footerBar:AMenuBar;
+
+    //editor stuffs.
+    var editor:ASprite = null; //ASprite.
+    var commands:Array<Dynamic> = [];
+    var px:Int = 16; //zoom
+    var snap:Bool = true;
+    var dragIndex:Int = -1;
+    var history:Array<Dynamic> = [];
+    var origin:APoint = new APoint(40, 40);
+    //drag/draw
+    var drawing:Bool = false;
+    var drawStartWorld:APoint = new APoint(0, 0);
+    var drawStartScreen:APoint = new APoint(0, 0);
+    var previewEnd:APoint = new APoint(0, 0);
+    //pan
+    var panning:Bool = false;
+    var panStartScreen:APoint = new APoint(0, 0);
+    var panStartOrigin:APoint = new APoint(0, 0);
+    final CLICK_THRESHOLD_PX:Int = 5;
+    final MIN_PX:Float = 0.5;
+    final MAX_PX:Float = 4000;
+
     public function new() {
         super();
         trace("Editor launched");
@@ -69,12 +93,17 @@ class SymbolEditor extends AState {
                 testGroup1.addChild(new AText(0, 0, 100, "group 1!", 12));
                 
             /*Style group section*/
-            var styleGroup:AGroup<ASprite> = new AGroup<ASprite>(0, 0);
-                styleGroup.addChild(new AText(5, 5, 100, "FILL", 12));
-                styleGroup.addChild(new ACheckBox(5, 25, "Enabled", (_:Bool)->{
+            var styleGroup:AGroup<OneOfTwo<ASprite, AText>> = new AGroup<OneOfTwo<ASprite, AText>>(0, 0);
+                var t:AText = styleGroup.add(new AText(5, 5, 100, "FILL", 12));
+                t.textColor = AColor.WHITE;
+                var c = styleGroup.add(new ACheckBox(5, 25, "Enabled", (_:Bool)->{
                     trace('Enabled fill color? $_');
                 }));
-                //styleGroup.addChild(new AText(0, 0, 100, "FILL", 12));
+                cast(c, ACheckBox).label.textColor = AColor.WHITE;
+
+                var c2 = styleGroup.add(new AColorPicker(5, 50, 160, 20, 0xFF5FD0C0, (_:Int)->{
+                    trace('Fill color changed!');
+                }));
 
             var testGroup3:AGroup<ASprite> = new AGroup<ASprite>(0, 0);
                 testGroup3.addChild(new AText(0, 0, 100, "group 3!", 12));
@@ -108,29 +137,51 @@ class SymbolEditor extends AState {
             trace('Something went wrong! ${e.stack}');
         }
     }
+    //actual editor functions n shiz
+    function pushHistory(){
+        history.push(Json.stringify(commands));
+        history.length>60?history.shift():null;
+    }
+    inline function undo() history.length!=0?{commands=Json.parse(history.pop()); renderAll();}:null;
+    inline function toScreen(x:Float, y:Float):APoint return new APoint(origin.x+x*px, origin.y+y*px); 
+
+    inline function toWorld(sx:Float, sy:Float, applySnap:Bool=true):APoint return new APoint((applySnap&&snap)?Math.round((sx-origin.x)/px):(sx-origin.x)/px, (applySnap&&snap)?Math.round((sy-origin.y)/px):(sy-origin.y)/px);
+    inline function updateZoomReadout() cast(footerBar.objects[2].object,AText).text='${Std.string(Math.round(px/16*100))}%';
+    function hexToRgb(hex:String){
+        final n:Int = Std.parseInt(hex.replace('#', '').replace("0x", "").replace("0X", ""));
+        return [(n>>16)&255, (n>>8)&255, n&255];
+    }
+    function colorInputToHaxeHex(colorPicker){
+        //TODO: this.
+        //return '0x' + colorPicker.value.replace('#','').toUpperCase();
+    }
+
+
+
+    //function nearestPointIndex(sx:Float, sy:Float, threshold:Int=12){
+    //    var closest:Int = -1;
+    //    var closestDist = threshold;
+    //    commands.forEach((c, i)->{
+    //        final a:APoint=new APoint(toScreen(c.x, c.y).x, toScreen(c.x, c.y).y);
+    //        final d = Math.hypot(a.x-sx, a.y-sy);
+    //        
+    //        if(d < closestDist){ closest = i; closestDist = d; }
+    //    });
+    //    return closest;
+    //}
+
+
+
+    //donothing.
+    function renderAll() {
+
+    }
 
     override public function destroy() {
         super.destroy();
     }
 }
 
-//  <aside>
-//    <div class="tabs">
-//      <button class="tab-btn active" data-tab="commands">Commands</button>
-//      <button class="tab-btn" data-tab="style">Style</button>
-//      <button class="tab-btn" data-tab="code">Export / Import</button>
-//    </div>
-//
-//    <div class="tabpane active" id="tab-commands">
-//      <p class="section-title">Command sequence</p>
-//      <div id="cmdList"></div>
-//      <div class="small-note">Click the canvas to append a MOVE, click-and-drag to append a LINE, or edit x/y directly here. Right-drag moves an existing point; middle-drag pans; scroll to zoom.</div>
-//    </div>
-//
-//    <div class="tabpane" id="tab-style">
-//      <p class="section-title">Fill</p>
-//      <div class="field-row"><label>enabled</label><input type="checkbox" id="fillEnabled" checked></div>
-//      <div class="field-row"><label>color</label><input type="color" id="fillColor" value="#5fd0c0"><input type="text" id="fillColorHex" value="0x5FD0C0" style="font-family:'JetBrains Mono',monospace;"></div>
 //      <div class="field-row"><label>alpha</label><input type="range" id="fillAlpha" min="0" max="1" step="0.01" value="1"><span class="val" id="fillAlphaVal">1.00</span></div>
 //
 //      <div class="divider"></div>
@@ -161,51 +212,9 @@ class SymbolEditor extends AState {
 //    </div>
 //  </aside>
 //</main>
-//
-//<footer>Coordinates map 1:1 to OpenFL stage units (y grows downward), same as <code>graphics.moveTo/lineTo</code>.</footer>
-//
-//<script>
-//(function(){
-//  const canvas = document.getElementById('stage');
-//  const ctx = canvas.getContext('2d');
-//  const holder = document.getElementById('stage-holder');
-//  const coordHint = document.getElementById('coordHint');
-//
-//  let commands = []; // {t:'MOVE'|'LINE', x, y}
-//  let px = 16; // pixels per unit (zoom)
-//  let snap = true;
-//  let dragIndex = -1;   // index of a point being moved via right-drag
-//  let history = [];
-//
-//  let originX = 40, originY = 40; // px offset for origin within canvas - mutable, panned by middle-drag
-//
-//  // left-click drag-to-draw state
-//  let drawing = false;
-//  let drawStartWorld = null;   // [x,y] where the left button went down
-//  let drawStartScreen = null;  // raw screen px, to tell a click from a drag
-//  let previewEnd = null;       // [x,y] live drag endpoint, for the rubber-band preview
-//
-//  // middle-click pan state
-//  let panning = false;
-//  let panStartScreen = null;
-//  let panStartOrigin = null;
-//
-//  const CLICK_THRESHOLD_PX = 5; // movement under this = a click, not a drag
-//  const MIN_PX = 0.5, MAX_PX = 4000; // effectively infinite zoom range
-//
-//  function pushHistory(){
-//    history.push(JSON.stringify(commands));
-//    if(history.length > 60) history.shift();
-//  }
-//  function undo(){
-//    if(history.length){
-//      commands = JSON.parse(history.pop());
-//      renderAll();
-//    }
-//  }
-//
-//  function toScreen(x,y){ return [originX + x*px, originY + y*px]; }
-//
+
+
+
 //  function drawGrid(){
 //    // pick a "nice" world-unit step so lines never get overwhelmingly dense or sparse,
 //    // however far zoomed in/out (1, 2, 5, 10, 20, 50 ... pattern)
@@ -259,23 +268,7 @@ class SymbolEditor extends AState {
 //    }
 //    ctx.restore();
 //  }
-//  function toWorld(sx,sy,applySnap=true){
-//    let x = (sx - originX)/px, y = (sy - originY)/px;
-//    if(applySnap && snap){ x = Math.round(x); y = Math.round(y); }
-//    return [x,y];
-//  }
-//  function updateZoomReadout(){
-//    document.getElementById('zoomReadout').textContent = Math.round(px/16*100) + '%';
-//  }
 //
-//  function hexToRgb(hex){
-//    hex = hex.replace('#','').replace('0x','').replace('0X','');
-//    const n = parseInt(hex,16);
-//    return [(n>>16)&255, (n>>8)&255, n&255];
-//  }
-//  function colorInputToHaxeHex(colorPicker){
-//    return '0x' + colorPicker.value.replace('#','').toUpperCase();
-//  }
 //
 //  function draw(){
 //    ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -411,21 +404,7 @@ class SymbolEditor extends AState {
 //  }
 //
 //  // --- canvas interaction ---
-//  function getMousePos(e){
-//    const r = canvas.getBoundingClientRect();
-//    const scaleX = canvas.width / r.width, scaleY = canvas.height / r.height;
-//    return [(e.clientX - r.left) * scaleX, (e.clientY - r.top) * scaleY];
-//  }
-//
-//  function nearestPointIndex(sx, sy, threshold=12){
-//    let closest = -1, closestDist = threshold;
-//    commands.forEach((c,i)=>{
-//      const [px_,py_] = toScreen(c.x,c.y);
-//      const d = Math.hypot(px_-sx, py_-sy);
-//      if(d < closestDist){ closest = i; closestDist = d; }
-//    });
-//    return closest;
-//  }
+
 //
 //  // right-click's default context menu would otherwise block right-drag
 //  canvas.addEventListener('contextmenu', e=> e.preventDefault());

@@ -1,7 +1,10 @@
 package;
 
+
+import haxe.PosInfos;
+
 class Main extends Sprite {
-    public static final desktopbackgroundImage:BitmapData = ASprite.getDesktopWallpaper(1280, 720);
+    public static #if(sys)final#else var#end desktopbackgroundImage:BitmapData#if(sys)= ASprite.getDesktopWallpaper(1280, 720)#end;
     private static var onKeyPressed:Map<String, {k:String, ar:Bool, c:KeyboardEvent->Void}>;
     public static function addKeyPressed(a:String, k:Dynamic, autoRemove:Bool=true, c:KeyboardEvent->Void){
         try{
@@ -33,13 +36,20 @@ class Main extends Sprite {
     public function new() {
         super();
         try{
+            #if(html5)
+                desktopbackgroundImage = ASprite.getDesktopWallpaper(1280, 720); //fix for a crash on startup with html5.
+                if((UPrefs.prefsData.data.preferencesCreated:Bool)==null) { //to actually create preferences.
+                    UPrefs.makePrefsFile();
+                    UPrefs.prefsData.data.preferencesCreated = true;
+                    UPrefs.prefsData.flush();
+                }
+            #end 
             Native.flashTaskbar();
             Log.throwErrors = false; //STOP CRASHING MAH GAME!
             instance = this;
             #if (hl && !debug) hl.UI.closeConsole(); #end
             stage.scaleMode = #if html5 StageScaleMode.EXACT_FIT; #else StageScaleMode.NO_SCALE; #end
             stage.align = StageAlign.TOP_LEFT;
-            scrollRect = new Rectangle(0, 0, 1280, 720);
             Lib.application.window.onClose.add(onClosing);
             stage.addEventListener(MouseEvent.MOUSE_MOVE, onStageMouseMove);
             stage.addEventListener(Event.RESIZE, onStageResize);
@@ -67,7 +77,12 @@ class Main extends Sprite {
     }
     private function onKeyDown(e:KeyboardEvent) {
         try{
-            #if debug if(e.keyCode == Keyboard.F1) stats.visible=!stats.visible; UPrefs.debuggerVisible.value=stats.visible; #end
+            #if(debug) //whoops.
+                if(e.keyCode == Keyboard.F1){
+                    stats.visible=!stats.visible;
+                    UPrefs.debuggerVisible.value=stats.visible;
+                }
+            #end
 
             if(onKeyPressed!=null) {
                 for(label=>info in onKeyPressed) {
@@ -181,10 +196,6 @@ class Main extends Sprite {
                     }
                 }
             }
-            
-            if(ATextInputBox.selectedTextBox != null && !ATextInputBox.selectedTextBox.containsMouse()) {
-                ATextInputBox.selectedTextBox = null; //deselect the textbox if we click out of it
-            }
         }catch(e:Exception) traceError(e);
     }
 
@@ -238,8 +249,8 @@ class Main extends Sprite {
         }catch(e:Exception) traceError(e);
     }
 
-    public static function traceError(e:Exception) {
-        trace('AN ERROR OCCURED: ${e.message}');
+    public static function traceError(e:Exception, ?_:PosInfos) {
+        trace('AN ERROR OCCURED: ${e.message} FROM FILE ${_.fileName} LINE ${_.lineNumber}');
         trace('WITH STACK: ${e.stack.toString()}');
     }
 }
