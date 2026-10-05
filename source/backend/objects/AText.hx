@@ -1,5 +1,9 @@
 package backend.objects;
 
+/**
+ * text alignment
+ * @since 0.00.002
+ */
 enum abstract ATextAlign(String) {
     var LEFT;
     var RIGHT;
@@ -15,10 +19,17 @@ enum abstract ATextAlign(String) {
     }
 }
 
+/**
+ * its text, not much more to it.
+ * @since 0.00.002
+ */
 class AText extends ASprite implements IDestroyable {
     @:noCompletion private var format:TextFormat; //dumb way to do it but yeahh
     @:noCompletion private var field:TextField; //dumb way to do it but yeahh
-    //stuffs
+    /**
+     * text alignment
+     * @since 0.00.002
+     */
     public var alignment(default, set):ATextAlign = LEFT;
     public function set_alignment(a:ATextAlign):ATextAlign {
         alignment = a;
@@ -26,6 +37,10 @@ class AText extends ASprite implements IDestroyable {
         field.setTextFormat(format);
         return a;
     }
+    /**
+     * font size
+     * @since 0.00.002
+     */
     public var fontSize(default, set):Int = 12;
     public function set_fontSize(a:Int):Int {
         fontSize = a;
@@ -52,7 +67,15 @@ class AText extends ASprite implements IDestroyable {
     public function get_selectable():Bool return field.selectable;
     public function set_selectable(a:Bool):Bool return field.selectable=a;
 
-    //funcs
+    /**
+     * make a new instance of AText
+     * @param x x position
+     * @param y y position
+     * @param width field width
+     * @param text text to show
+     * @param fontSize font size
+     * @since 0.00.002
+     */
     public function new(x:Float=0, y:Float=0, width:Float=0, text:String="", fontSize:Int=12) {
         super(x, y);
         if(field==null) field = new TextField();
@@ -65,11 +88,21 @@ class AText extends ASprite implements IDestroyable {
         addChild(field);
     }
 
+    /**
+     * set the text internal field size
+     * @param x x size
+     * @param y y size
+     * @since 0.00.002
+     */
     public function setFieldSize(x:Float, y:Float) {
         if(x!=-1) field.width = x;
         if(y!=-1) field.height = y;
     }
 
+    /**
+     * destroy the text
+     * @since 0.00.002
+     */
     override public function destroy() {
         super.destroy();
         if(parent!=null) parent.removeChild(this);

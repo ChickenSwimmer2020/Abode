@@ -1,11 +1,25 @@
 package;
 
-
-import haxe.PosInfos;
-
 class Main extends Sprite {
+    /**
+     * The desktop background, stored as a BitmapData directly within Main so that we only have to load it once.
+     * @since 0.00.004
+     */
     public static #if(sys)final#else var#end desktopbackgroundImage:BitmapData#if(sys)= ASprite.getDesktopWallpaper(1280, 720)#end;
+    /**
+     * For checking when global keys are pressed.
+     * @since 0.00.004
+     */
     private static var onKeyPressed:Map<String, {k:String, ar:Bool, c:KeyboardEvent->Void}>;
+
+    /**
+     * Add an listener to `onKeyPressed` globally, functions are set when this function is called.
+     * @param a the name of the listener
+     * @param k the key to listen to (set to "*" for any key)
+     * @param autoRemove should the listener remove automatically?
+     * @param c the function to run
+     * @since 0.00.004
+     */
     public static function addKeyPressed(a:String, k:Dynamic, autoRemove:Bool=true, c:KeyboardEvent->Void){
         try{
             if(onKeyPressed==null) onKeyPressed=new Map<String, {k:String,ar:Bool,c:KeyboardEvent->Void}>();
@@ -14,6 +28,13 @@ class Main extends Sprite {
             trace('added "$a" to keyboard listener.');
         }catch(e:Exception) traceError(e);
     }
+
+    /**
+     * Remove a listener from the event pool, only realled used when autoRemove is true
+     * @param a target listener
+     * @return Bool if the listener was removed correctly
+     * @since 0.00.004
+     */
     public static function removeKeyPressed(a:String):Bool{
         try{
             onKeyPressed.remove(a);
@@ -23,16 +44,49 @@ class Main extends Sprite {
         return false;
     }
 
+    /**
+     * Instance access to Main
+     * @since 0.00.002
+     */
     public static var instance:Main;
-    public static var pWidth:Int=1280; //programWidth //? these are seperate from the window w/h.
-    public static var pHeight:Int=720; //programHeight //? since these calculate the internal size of state and such.
+    /**
+     * Program internal width
+     * @since 0.00.001
+     */
+    public static var pWidth:Int=1280;
+    /**
+     * Program internal height
+     * @since 0.00.001
+     */
+    public static var pHeight:Int=720;
+    /**
+     * the current mouse position, relative to the resized/scaled stage
+     * @since 0.00.002
+     */
     public static var vMouse:APoint = new APoint(0, 0);
+    /**
+     * for managing the in-windows windows of Abode
+     * @since 0.00.002
+     */
     public static var windowManager:AWindowManager;
     #if debug
+        /**
+         * DEBUG EXCLUSIVE
+         * Debugger stats, inclueds fps, memory, and loaded objects.
+         * @since pre-0.00.001
+         */
         public var stats:DebugDisplay;
     #end
-    //CONTROLLERS (very weird system, but it works \_シ_/)
+
+    /**
+     * State system, controls the actual states of Abode, this is actually a very important thing.
+     * @since pre-0.00.001
+     */
     public static var StateSystem:StateSystemInit = new StateSystemInit(null); //defaults to splashscreen since thats literally the only thing it does on init
+    
+    /**
+     * Entry point of Abode for launching, this is what does stuff before any state loads.
+     */
     public function new() {
         super();
         try{
@@ -75,6 +129,12 @@ class Main extends Sprite {
             Mouse.hide();
         }catch(e:Exception) traceError(e);
     }
+
+    /**
+     * Used with the listener system for checking when a key is pressed and doing an associated action
+     * @param e 
+     * @since 0.00.001
+     */
     private function onKeyDown(e:KeyboardEvent) {
         try{
             #if(debug) //whoops.
@@ -149,6 +209,12 @@ class Main extends Sprite {
             }
         }catch(e:Exception) traceError(e);
     }
+
+    /**
+     * Used mostly for closing dropdowns when needed, might be expanded in the future.
+     * @param e mouseEvent, this is called by underlying Lime layers 
+     * @since 0.00.001
+     */
     private function onMouseClick(e:MouseEvent) {
         try{
             if(ADropdown.subDropdownOpen && ADropdown.canCloseSubInstace) {
@@ -199,9 +265,13 @@ class Main extends Sprite {
         }catch(e:Exception) traceError(e);
     }
 
-    
-
-    //OPENFL's actual scale mode for Stage is ASS AF. so we're gonna do it properly.
+    /**
+     * OPENFL's actual scale mode for Stage is ASS AF. so we're gonna do it properly.
+     * 
+     * Resizes the window, but also the stage properly, its based on the way that flixel sizes FlxGame.
+     * @param _ Event, called by underlying Lime Layers
+     * @since 0.00.001
+     */
     private function onStageResize(_:Event):Void {
         try{
             #if sys
@@ -220,22 +290,37 @@ class Main extends Sprite {
             updateVirtualMouse();
         }catch(e:Exception) traceError(e);
     }
-    private function onStageMouseMove(_:MouseEvent):Void {
-        try{ updateVirtualMouse(); }catch(e:Exception) traceError(e);
-    }
-    private inline function updateVirtualMouse():Void {
-        try{
-            vMouse.x = (stage.mouseX - x) / scaleX;
-            vMouse.y = (stage.mouseY - y) / scaleY;
-        }catch(e:Exception) traceError(e);
-    }
-    public function addToMainStage(a:DisplayObject) {
-        try{ addChild(a); }catch(e:Exception) traceError(e);
-    }
-    public function removeFromMainStage(a:DisplayObject) {
-        try{ removeChild(a); }catch(e:Exception) traceError(e);
-    }
 
+    /**
+     * Called whenever the mouse moves, only used to update the `vMouse` variable.
+     * @param _ MouseEvent
+     * @since 0.00.001
+     */
+    private inline function onStageMouseMove(_:MouseEvent):Void try{ updateVirtualMouse(); }catch(e:Exception) traceError(e);
+
+    /**
+     * Actually updates the `vMouse` variable.
+     */
+    private inline function updateVirtualMouse():Void try{vMouse.set(((stage.mouseX-x)/scaleX), ((stage.mouseY-y)/scaleY));}catch(e:Exception) traceError(e);
+
+    /**
+     * Adds to the main stage, so it adds above everything, including the state
+     * @param a DisplayObject to add
+     * @since 0.00.001
+     */
+    public function addToMainStage(a:DisplayObject) try{ addChild(a); }catch(e:Exception) traceError(e);
+
+    /**
+     * remove from the main stage
+     * @param a DisplayObject to add
+     * @since 0.00.001
+     */
+    public function removeFromMainStage(a:DisplayObject) try{ removeChild(a); }catch(e:Exception) traceError(e);
+
+    /**
+     * Called when the window is closing, currently used for cleanup.
+     * @since 0.00.001
+     */
     public function onClosing() {
         try{
             #if debug
@@ -249,6 +334,12 @@ class Main extends Sprite {
         }catch(e:Exception) traceError(e);
     }
 
+    /**
+     * traces an error with pos information and errors
+     * @param e Exception, contains the file information
+     * @param _ PosInfos, dont add anything here, its done automatically.
+     * @since 0.00.004
+     */
     public static function traceError(e:Exception, ?_:PosInfos) {
         trace('AN ERROR OCCURED: ${e.message} FROM FILE ${_.fileName} LINE ${_.lineNumber}');
         trace('WITH STACK: ${e.stack.toString()}');

@@ -1,5 +1,9 @@
 package backend.objects;
 
+/**
+ * tween data.
+ * @since 0.00.000
+ */
 typedef ATweenData = {
     target:Dynamic,
     prop:String,
@@ -11,13 +15,33 @@ typedef ATweenData = {
     ?ease:Float->Float
 }
 
+/**
+ * a tween system, yeahhh.
+ * @since 0.00.000
+ */
 class ATween extends Sprite {
+    /**
+     * active tweens
+	 * @since 0.00.000
+     */
     private var tweens:Array<ATweenData> = [];
 	private var lastTime:Int = 0;
+	/**
+	 * should auto-started tweens destroy on finish
+	 * @since 0.00.000
+	 */
 	public var autoDestroy:Bool = true; // set false if you want it to persist
+	/**
+	 * always set to Main on startup
+	 * @since 0.00.000
+	 */
 	public static var globalParent:openfl.display.DisplayObjectContainer;
 	
 
+    /**
+     * make a new tween
+	 * @since 0.00.000
+     */
     public function new() {
         super();
 		lastTime = openfl.Lib.getTimer();
@@ -25,6 +49,16 @@ class ATween extends Sprite {
         addEventListener(Event.ENTER_FRAME, onEnterFrame);
     }
 
+	/**
+	 * make a tween happen
+	 * @param target target object
+	 * @param props properties to change
+	 * @param duration how long to take (in seconds)
+	 * @param onComplete what to do on complete
+	 * @param ease ease to use
+	 * @return ATween the tween that was just started
+	 * @since 0.00.000
+	 */
 	public function tween(target:Dynamic, props:Dynamic, duration:Float, ?onComplete:Void->Void, ?ease:Float->Float):ATween {
 		if (target != null) {
 			if(Std.isOfType(target, openfl.display.DisplayObjectContainer)){
@@ -58,14 +92,23 @@ class ATween extends Sprite {
 		return this;
 	}
 
-    // cancel all tweens on a specific target
-    public function cancelTweensOf(target:Dynamic):Void {
-        tweens = tweens.filter(t -> t.target != target);
-    }
+    /**
+     * cancel all the tweens of `target`
+     * @param target object to stop tweens of
+	 * @since 0.00.000
+     */
+    public inline function cancelTweensOf(target:Dynamic) tweens = tweens.filter(t -> t.target != target);
 
-    // cancel everything
-    public function cancelAll():Void tweens = [];
+    /**
+     * cancel every tween
+     * @since 0.00.000
+     */
+    public inline function cancelAll() tweens = [];
 
+    /**
+     * destroy the tween.
+	 * @since 0.00.000
+     */
     public function destroy():Void {
         removeEventListener(Event.ENTER_FRAME, onEnterFrame);
         cancelAll();
@@ -98,7 +141,10 @@ class ATween extends Sprite {
 }
 
 
-//LITERALLY just FlxEase.
+/**
+ * Its FlxEase.
+ * @since 0.00.000
+ */
 class AEase {
 	static var PI2:Float=Math.PI/2;
 	static var EL:Float=2*Math.PI/.45;

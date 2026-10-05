@@ -1,13 +1,32 @@
 package backend.objects;
 
-class AGroup<T:DisplayObject> extends ASprite {
+/**
+ * group extending ASprite
+ * @since 0.00.002
+ */
+class AGroup<T:ASprite> extends ASprite {
+    /**
+     * members of the group
+     * @since 0.00.002
+     */
     public var members:Array<T>;
+    /**
+     * maximum size of the group
+     * @since 0.00.002
+     */
     public var maxSize(default, set):Int=-1;
     public function set_maxSize(a:Int):Int {
         maxSize = a;
         return a;
     }
 
+    /**
+     * make a new group
+     * @param x x position
+     * @param y y position
+     * @param maxSize maximum size (optional)
+     * @since 0.00.002
+     */
     public function new(x:Float, y:Float, ?maxSize:Int) {
         super(x, y);
         members = []; //initiate.
@@ -17,6 +36,12 @@ class AGroup<T:DisplayObject> extends ASprite {
         }
     }
     
+    /**
+     * Add a T to the group
+     * @param a object to add
+     * @return T object that was added
+     * @since 0.00.002
+     */
     public function add(a:T):T {
         if(maxSize==-1 || members.length < maxSize){
             members.push(a);
@@ -26,6 +51,13 @@ class AGroup<T:DisplayObject> extends ASprite {
         }
         return a;
     }
+
+    /**
+     * remove an object from the group
+     * @param a object to remove
+     * @return Bool was it removed
+     * @since 0.00.002
+     */
     public function remove(a:T):Bool {
         if(members.indexOf(a)==-1){
             trace('Couldnt remove $a from the group, its not in members!');
@@ -36,7 +68,10 @@ class AGroup<T:DisplayObject> extends ASprite {
         return b;
     }
 
-    //overrides
+    /**
+     * destroy the group and every object in it
+     * @since 0.00.002
+     */
     override public function destroy() {
         for(member in members) {
             switch(Type.getClass(member)) {

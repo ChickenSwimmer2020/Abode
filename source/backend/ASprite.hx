@@ -1,31 +1,66 @@
 package backend;
 
+/**
+ * used for creation of local filters
+ * @since 0.00.001
+ */
 typedef ExtraFilterParams = {
     @:optional var colorTransform:Null<AColor>;
     @:optional var offsets:Null<Rectangle>;
 } 
 
-
+/**
+ * ASprite is the building block of Abode, as 90% of classes end up extending this.
+ * @since 0.00.000
+ */
 class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implements IDestroyable{
+    /**
+     * attributes, currently only used for dropdowns.
+     * @since 0.00.002
+     */
     public var attributes:Map<String, Dynamic>;
+
+    /**
+     * set an attribute to this object
+     * @param a key
+     * @param b value
+     * @return String
+     * @since 0.00.002
+     */
     public function setAttribute(a:String, b:Dynamic):String {
         attributes.set(a, b);
         return a;
     }
-    public function getAttribute(a:String):Dynamic {
-        return attributes.get(a);
-    }
-    public function removeAttribute(a:String):Bool {
-        return attributes.remove(a);
-    }
 
+    /**
+     * get an attribute from this object
+     * @param a key
+     * @return Dynamic
+     * @since 0.00.002
+     */
+    public inline function getAttribute(a:String):Dynamic return attributes.get(a);
 
+    /**
+     * remove an attribute from this object
+     * @param a key
+     * @return Bool return attributes.remove(a)
+     * @since 0.00.002
+     */
+    public inline function removeAttribute(a:String):Bool return attributes.remove(a);
 
 
     /**
      * Color transform of the Sprite, affects sub-objects as well.
+     * @since 0.00.002
      */
     public var color(default, set):AColor = AColor.TRANSPARENT;
+
+    /**
+     * set the color transform of this sprite
+     * @param c transform
+     * @return AColor
+     * @since 0.00.002
+     */
     public function set_color(c:AColor):AColor {
         color = c;
         trace(c);
@@ -33,22 +68,30 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
         transform.colorTransform = AColor.toTransform(c);
         return c;
     }
+
     /**
      * scale of the sprite.
+     * @since 0.00.002
      */
     public var scale(default, set):APoint = new APoint(1.0, 1.0);
     /**
+     * TODO: (NON-FUNCTIONAL, PLEASE FIX)
+     * 
      * should the sprite antialias
+     * @since 0.00.002 
      */
     public var antialiasing:Bool = true;
     /**
      * frame width of the sprite
+     * @since 0.00.002
      */
     public var frameWidth:Float = 0;
     /**
      * frame height of the sprite
+     * @since 0.00.002
      */
     public var frameHeight:Float = 0;
+
     @:noCompletion private var gColor:AColor;
     @:noCompletion private var gWidth:Int = 0;
     @:noCompletion private var gHeight:Int = 0;
@@ -58,6 +101,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
      * set the scale of the sprite.
      * @param value scale to set.
      * @return APoint
+     * @since 0.00.002
      */
     public function set_scale(value:APoint):APoint {
         @:bypassAccessor scale.x = value.x;
@@ -72,6 +116,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
      * @param x position
      * @param y position
      * @param graphic image to load
+     * @since 0.00.000
      */
     public function new(x:Float, y:Float, ?graphic:OneOfThree<String, Image, BitmapData>) {
         super();
@@ -88,6 +133,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
      * @param height height
      * @param color AColor
      * @return ASprite
+     * @since 0.00.000
      */
     public function makeGraphic(width:Int, height:Int, color:AColor=AColor.TRANSPARENT):ASprite {
         graphics.clear();
@@ -99,6 +145,12 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
         gHeight = height;
         return this;
     }
+
+    /**
+     * Rerender the current graphic of the sprite
+     * @return ASprite
+     * @since 0.00.002
+     */
     public function reRender():ASprite{
         makeGraphic(gWidth, gHeight, gColor); 
         return this;
@@ -109,6 +161,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
      * @param graphic graphic to make 
      * @param takeOwnership no clue what this does :/
      * @return ASprite
+     * @since 0.00.000
      */
     public function loadGraphic(graphic:OneOfThree<String, Image, BitmapData>, takeOwnership:Bool = false):ASprite {
         // dispose previous bitmap if we own it
@@ -145,12 +198,18 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
      * change the color of the sprite background without affecting sub-objects (hopefully)
      * @param color AColor
      * @return ASprite
+     * @since 0.00.002
      */
     public function setGraphicColor(color:AColor):ASprite {
         makeGraphic(gWidth, gHeight, color);
         return this;
     }
 
+    /**
+     * Center the sprite on the screen
+     * @return ASprite
+     * @since 0.00.002
+     */
     public function screenCenter():ASprite {
         x = Main.pWidth/2-width/2;
         y = Main.pHeight/2-height/2;
@@ -161,6 +220,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
      * change the graphic size.
      * @param width 
      * @param height 
+     * @since 0.00.000
      */
     public function setGraphicSize(width:Float, height:Float) {
         if (width <= 0 && height <= 0) return;
@@ -177,6 +237,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
      * set position
      * @param x 
      * @param y 
+     * @since 0.00.000
      */
     public function setPosition(x:Float, y:Float) {
         this.x = x + width / 2;
@@ -187,6 +248,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
      * set the position without doing +width/2
      * @param x 
      * @param y 
+     * @since 0.00.004
      */
     public function setPositionRaw(x:Float, y:Float) {
         this.x = x;
@@ -195,6 +257,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 
     /**
      * self explanitory.
+     * @since 0.00.000
      */
     public function destroy() {
         graphics.clear();
@@ -212,6 +275,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
      * apply a global filter to the entire sprite.
      * @param filter 
      * @return ASprite
+     * @since 0.00.001
      */
     public function applyFilter(filter:BitmapFilter):ASprite{
         if(filters==null) filters=([]:Array<BitmapFilter>);
@@ -226,12 +290,23 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
      * Remove a global filter from the sprite
      * @param index was filter.
      * @return Bool was the filter removed
+     * @since 0.00.001
      */
     public function removeGlobalFilter(index:Int):Bool return ((filters[index]!=null)?filters.remove(filters[index]):false);
 
-    //these cant be cleared properly, once applied their applied.
-    //TODO: find workaround for removing local baked filters.
-    //TODO: fix this.
+    /**
+     * Apply a filter to a local area of the sprite
+     * 
+     * TODO: find workaround for removing local baked filters
+     * 
+     * TODO: fix this.
+     * 
+     * @param size rectangle of where to add the filter
+     * @param filter what filter to add
+     * @param extraParams extra parameters
+     * @return ASprite
+     * @since 0.00.001
+     */
     public function applyLocalFilter(size:Rectangle, filter:BitmapFilter, ?extraParams:ExtraFilterParams):ASprite {
         if (_bitmapData == null) {
             trace('applyLocalFilter: sprite does not own its bitmap, skipping');
@@ -285,10 +360,24 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
      * check if the sprite contains a point.
      * @param point point to check.
      * @return Bool return new Rectangle(x, y, width, height).containsPoint(point.toOpenflPoint())
+     * @since 0.00.002 
      */
     public inline function containsPoint(point:APoint):Bool return new Rectangle(x, y, width, height).containsPoint(point.toOpenflPoint());
+
+    /**
+     * check if the mouse is contained within the object
+     * @return Bool if the mouse is contained
+     * @since 0.00.002
+     */
     public inline function containsMouse():Bool return containsPoint(Main.vMouse);
 
+    /**
+     * get the desktop wallpaper to the sprite, windows only for now.
+     * @param maxWidth max width of the graphic
+     * @param maxHeight max height of the graphic
+     * @return BitmapData the desktop wallpaper.
+     * @since 0.00.001
+     */
     public static function getDesktopWallpaper(maxWidth:Int, maxHeight:Int):BitmapData {
         #if windows
             var original = BitmapData.fromFile('C:\\Users\\${Sys.getEnv("USERNAME")}\\AppData\\Roaming\\Microsoft\\Windows\\Themes\\TranscodedWallpaper');

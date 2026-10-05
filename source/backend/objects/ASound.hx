@@ -1,8 +1,23 @@
 package backend.objects;
 
+/**
+ * Sound manager, everything here is static so we dont need to isntance this
+ * @since 0.00.002
+ */
 class ASoundManager {
-    public function new() {}; //not really needed but yeah
+    /**
+     * for looping music
+	 * @since 0.00.002
+     */
     public static var music:Null<ASound>; //TODO: make fade in/out based on if the window is focused or not.
+
+    /**
+     * play looping music 
+     * @param asset full path to sound to play
+     * @param vol volume of the sound
+     * @return ASound the sound that wsa just started, aka `music`
+	 * @since 0.00.002
+     */
     public static function playMusic(asset:String, ?vol:Float=1.0):ASound {
         if(music == null) music = new ASound();
         music.load(asset, true);
@@ -12,6 +27,13 @@ class ASoundManager {
         return music.play();
     }
 
+    /**
+     * play a sound once, then destroy it.
+     * @param asset asset path
+     * @param vol sound volume
+     * @return ASound the sound that was just started
+	 * @since 0.00.002
+     */
     public static function playSound(asset:String, ?vol:Float=1.0):ASound {
         var sound:ASound = new ASound().load(asset, true);
         sound.onComplete = ()->sound.destroy();
@@ -23,6 +45,10 @@ class ASoundManager {
 //--------------------------------------------------------------------------------------------------------------------//
 //                   MADE BY FLIXEL, COPIED AND CONVERTED TO PURE OPENFL BY CHICKENSWIMMER2020                        //
 //--------------------------------------------------------------------------------------------------------------------//
+/**
+ * you want api information? refer to the flixel api.
+ * @since 0.00.002
+ */
 class ASound implements IDestroyable{
     //other
     public var autoDestroy:Bool;

@@ -1,7 +1,24 @@
 package backend;
 
+/**
+ * Localization system to allow for different languages to enjoy abode!
+ * @since 0.00.003
+ */
 class Locale { //overrall, very simple system. for now.
-    public static var lang:String = "en_US"; //en_US  
+    /**
+     * Current target language
+     * @since 0.00.003
+     */
+    public static var lang:String = "en_US";
+
+    /**
+     * Get a localized string based on a key
+     * @param key key to get
+     * @param replacer if words need to be replaced, use this
+     * @param overrideLanguage if the language needs to be overriden, use this.
+     * @return String translated key
+     * @since 0.00.003
+     */
     public static function get(key:String, ?replacer:Map<String, Dynamic>, ?overrideLanguage:String):String{
         var target:String = Reflect.getProperty(getLocaleFile(overrideLanguage??lang), key);
         if(target==null) return '[[$key]]';
@@ -18,5 +35,12 @@ class Locale { //overrall, very simple system. for now.
         }
         return '[[$key]]';
     }
+
+    /**
+     * get a locale file
+     * @param t target lang
+     * @return Dynamic data from file
+     * @since 0.00.003
+     */
     private static inline function getLocaleFile(t:String):Dynamic return Json.parse(Assets.getText('assets/data/locale/$t.locale')??"{}");
 }

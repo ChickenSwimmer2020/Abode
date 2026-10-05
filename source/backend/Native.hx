@@ -18,7 +18,17 @@ package backend;
         }
 ')
 #end
+/**
+ * Native support for computers, including things like getting system accent color, flashing the taskbar
+ * and other window things
+ * @since 0.00.004
+ */
 class Native {
+    /**
+     * SYS EXCLUSIVE
+     * Flash the taskbar
+     * @since 0.00.0004
+     */
     public static inline function flashTaskbar() {
         #if(windows)
             trace("flashTaskbar: Not Implemented");
@@ -29,6 +39,13 @@ class Native {
         #end
     }
 
+    /**
+     * SYS EXCLUSIVE
+     * Get the System accent color
+     * * ! LINUX/MACOS UNTESTED AS OF 0.00.006 !
+     * * ! Someone please test this.
+     * @since 0.00.0004
+     */
     public static function getAccentColor():AColor {
         #if(windows)
             var returned:Int = untyped __cpp__("getAccentNative();");
@@ -45,7 +62,14 @@ class Native {
         #elseif(html5||android) trace("getAccentColor: Unsupported!"); #end
         return AColor.BUTTON_IDLE; //fallback
     }
+
     #if linux
+        /**
+         * LINUX EXCLUSIVE FUNCTION
+         * will be used in tandem with `getAccentColor` so linux desktops can have their colors gotten.
+         * @return String current Desktop Environment
+         * @since 0.00.004
+         */
         private static function getDesktopEnv():String {
             var desktop:String = "FALLBACK";
             final env=Sys.environment();

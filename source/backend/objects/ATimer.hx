@@ -1,10 +1,15 @@
 package backend.objects;
 
+/**
+ * a timer, it waits then does something.
+ * @since 0.00.000
+ */
 class ATimer {
     /**
      * easily start a new timer, much like how Flixel does it. because timers in openfl are FUCKING. STUPID.
      * @param time how long to wait
      * @param onComplete what to do when done.
+     * @since 0.00.000
      */
     public static function start(time:Float, onComplete:Void->Void) {
         var timer:Timer = new Timer(time*1000, 1);

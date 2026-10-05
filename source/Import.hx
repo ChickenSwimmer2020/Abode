@@ -104,6 +104,8 @@ import haxe.Json;
 import haxe.zip.Reader;
 import haxe.io.Bytes;
 import haxe.Exception;
+import haxe.DynamicAccess;
+import haxe.PosInfos;
 
 //usings
 using backend.utils.DrawUtil;

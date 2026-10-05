@@ -1,8 +1,8 @@
 package backend.objects;
 
 /**
- * simply because openfl.geom.Point is INT based, and i need floating point number.
- * probably the most simple class within all of the program lol.
+ * openfl.geom.point, but float. with int options.
+ * @since 0.00.000
  */
 class APoint {
     public var x:Float=0;

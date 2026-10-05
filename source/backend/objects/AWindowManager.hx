@@ -2,14 +2,36 @@ package backend.objects;
 
 import backend.ui.ATabStack;
 
+/**
+ * manager for in-window windows
+ * @since 0.00.002
+ */
 class AWindowManager {
+    /**
+     * the window that is currently being dragged
+     * @since 0.00.002
+     */
     public static var heldWindow:Null<AWindow> = null;
+    /**
+     * all currently open windows
+     * @since 0.00.002
+     */
     public static var windows:Array<AWindow> = [];
 
+    /**
+     * initiate
+     * @since 0.00.002
+     */
     public function new() {
         if(windows == null) windows = [];
     }
 
+    /**
+     * add a window both to the manager and the stage
+     * @param win window to add
+     * @return AWindow window that was added
+     * @since 0.00.006
+     */
     public function addWindow(win:AWindow):AWindow {
         windows.push(win);
         Main.instance.addToMainStage(win);
@@ -18,8 +40,24 @@ class AWindowManager {
         return win;
     }
 
+    /**
+     * make a new window, generally paired with `addWindow`
+     * @param title window title 
+     * @param x x
+     * @param y y
+     * @param w width
+     * @param h height
+     * @param borderless borderless
+     * @param resizeable resizable
+     * @return window that was made
+     * @since 0.00.002
+     */
     public inline function makeWindow(title:String, x:Int, y:Int, w:Int, h:Int, borderless:Bool=false, resizeable:Bool=false):AWindow return addWindow(new AWindow(title, x, y, w, h, borderless, resizeable));
 
+    /**
+     * prefab windows, for `makePrefabWindow`
+     * @since 0.00.006
+     */
     final prefabWindows:Map<String, Void->AWindow> = [
         "makeProject"=>()->{
             final width:Int = 775;
@@ -70,9 +108,20 @@ class AWindowManager {
         }
     ];
 
+    /**
+     * make a pre-made window, so we dont clutter other places in code.
+     * @param type what prefab to use
+     * @return AWindow the window that was generated
+     * @since 0.00.006
+     */
     public function makePrefabWindow(type:String):AWindow return addWindow(prefabWindows.get(type)());
 
 
+    /**
+     * focus a window to the front
+     * @param w what window to focus
+     * @since 0.00.002
+     */
     public static function focusWindow(w:AWindow):Void {
         if (w == null || w.stage == null) return;
 
@@ -86,7 +135,11 @@ class AWindowManager {
     }
 }
 
-class AWindow extends AGroup<DisplayObject> {
+/**
+ * an in-window window.
+ * @since 0.00.002
+ */
+class AWindow extends AGroup<ASprite> {
     @:isVar public var dragBar(get, null):Null<ASprite>=null;
     public function get_dragBar():Null<ASprite> return dragBar??null;
 
@@ -102,7 +155,7 @@ class AWindow extends AGroup<DisplayObject> {
         return isBorderless;
     }
 
-    public var content:AGroup<DisplayObject>;
+    public var content:AGroup<ASprite>;
     public var TBHeight:Float = 0; 
     var dragOffset:APoint = new APoint(0, 0);
 
@@ -192,6 +245,12 @@ class AWindow extends AGroup<DisplayObject> {
         }
     }
 
+    /**
+     * set the window position
+     * @param x x
+     * @param y y
+     * @since 0.00.002
+     */
     override public function setPosition(x:Float, y:Float) {
         this.x = x;
         this.y = y;
@@ -215,12 +274,22 @@ class AWindow extends AGroup<DisplayObject> {
         }
     }
 
+    /**
+     * add content to the window
+     * @param a what to add
+     * @return ASprite sprite that was added
+     * @since 0.00.002
+     */
     public function addContent(a:ASprite):ASprite {
         a.y += TBHeight;
         content.add(a);
         return a;
     }
 
+    /**
+     * destroy the window
+     * @since 0.00.002
+     */
     override public function destroy() {
         this.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
         

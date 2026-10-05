@@ -1,11 +1,23 @@
 package backend;
 
-import haxe.DynamicAccess;
-
+/**
+ * User Preferences system.
+ * @since 0.00.003
+ */
 class UPrefs {
     #if(html5)
+        /**
+         * HTML5 EXCLUSIVE VARIABLE
+         * * Contains the save data for the program
+         * @since 0.00.006
+         */
         public static var prefsData:SharedObject = SharedObject.getLocal("abodePrefs");
     #end
+    /**
+     * Default Preferences
+     * * These get written to the UPrefs file if the file isnt found.
+     * @since 0.00.003
+     */
     private static final DEFAULT_PREFERENCES:Dynamic = {
         mainMenuMuted: false,
         #if debug
@@ -59,7 +71,12 @@ class UPrefs {
 
 
 
-
+    /**
+     * Return a target preference
+     * @param a What we what to try to find
+     * @param <T> (HTML5 ONLY) Used for casting.
+     * @since 0.00.003
+     */
     public static function getFromFile #if(html5)<T>#end(a:String):#if(sys)Dynamic#else T#end{
         #if(sys)
             var v:Dynamic = Reflect.getProperty(Json.parse(getPrefsFile()), a); //inital json data.
@@ -73,6 +90,13 @@ class UPrefs {
             return (Reflect.field(prefsData.data, a):T);
         #end
     }
+    /**
+     * Write to preferences
+     * @param a key
+     * @param b value
+     * @return Dynamic returns whatever `b` was
+     * @since 0.00.003
+     */
     public static function writeToFile(a:String, b:Dynamic):Dynamic {
         #if(sys)
             var json:Dynamic = Json.parse(getPrefsFile());
@@ -88,14 +112,26 @@ class UPrefs {
     }
 
     #if(sys)
+        /**
+         * Returns the preferences file, and makes it if it doesnt exist (SYS ONLY)
+         * @return String json file
+         */
         public static inline function getPrefsFile():String return (FileSystem.exists("uPrefs.json"))?File.getContent("uPrefs.json"):makePrefsFile();
-    #end
-    #if(sys)
+
+        /**
+         * Makes the preferences file (SYS ONLY)
+         * @return String the content of the file
+         * @since 0.00.003
+         */
         public static function makePrefsFile():String {
             File.saveContent("uPrefs.json", Json.stringify(DEFAULT_PREFERENCES, null, "    "));
             return File.getContent("uPrefs.json");
         }
     #else
+        /**
+         * Make the preferences Object (HTML5 ONLY)
+         * @since 0.00.006
+         */
         public static function makePrefsFile() {
             for(key=>value in (DEFAULT_PREFERENCES:DynamicAccess<Dynamic>)){
                 Reflect.setField(prefsData.data, key, value); //flush after each key.
@@ -106,11 +142,42 @@ class UPrefs {
     #end
 }
 
+/**
+ * Preference container class
+ * @param <T> Type.
+ * @since 0.00.003
+ */
 class Preference<T> {
+    /**
+     * Name of the preference.
+     * Generally used internally.
+     * @since 0.00.003
+     */
     public var name:String;
+    /**
+     * Value, this is what the preference is equal to.
+     * uses get/set functions to get/set to the file
+     * @since 0.00.003
+     */
     @:isVar public var value(get, set):T;
+    /**
+     * returns the value of the preference
+     * @return T the preference (Casted to <T>)
+     * @since 0.00.003
+     */
     public inline function get_value():T return (UPrefs.getFromFile(name):T); //safety
+    /**
+     * sets the current value to something
+     * @return the input
+     * @since 0.00.003
+     */
     public inline function set_value(a:T):T return UPrefs.writeToFile(name, a);
+    /**
+     * Initiate a new Preference
+     * @param n the name of the preference
+     * @param v the value of the preference
+     * @since 0.00.003
+     */
     public function new(n:String, v:T) {
         name = n;
         @:bypassAccessor value = v;

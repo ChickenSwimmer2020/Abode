@@ -1,6 +1,9 @@
 package backend.utils;
 
-
+/**
+ * color class for easy access. basically FlxColor but worse.
+ * @since 0.00.001
+ */
 abstract AColor(Int) from Int from UInt to Int to UInt{
     public static inline final TRANSPARENT:AColor = 0x00000000;
     public static inline final BLACK:AColor = 0xFF000000;

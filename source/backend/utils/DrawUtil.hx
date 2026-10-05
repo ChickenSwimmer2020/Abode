@@ -1,6 +1,18 @@
 package backend.utils;
 
+/**
+ * Drawing util, used mostly for adding icons to Buttons
+ * @since 0.00.001
+ */
 class DrawUtil {
+    /**
+     * draw a rectangle onto a sprite
+     * @param spr what to draw too
+     * @param rect rectangle to draw
+     * @param color color
+     * @return ASprite spr
+     * @since 0.00.001
+     */
     public static function addRect(spr:ASprite, rect:Rectangle, color:AColor):ASprite {
         spr.graphics.beginFill(color.rgb, color.a);
             spr.graphics.drawRect(rect.x, rect.y, rect.width, rect.height);
@@ -8,7 +20,19 @@ class DrawUtil {
         return spr;
     }
 
-    //TODO: support scaling on the graphic.
+    /**
+     * draw an icon to  Sprite
+     * 
+     * TODO: support scaling on the icon from the graphic
+     * 
+     * @param spr sprite to draw icon too
+     * @param icon icon to draw
+     * @param thickness line thickness
+     * @param outlineColor outline color
+     * @param fillColor fill color
+     * @return ASprite spr
+     * @since 0.00.002
+     */
     public static function drawIcon(spr:ASprite, icon:String, thickness:Int, outlineColor:AColor, fillColor:AColor):ASprite {
         if(!Reflect.hasField(ADrawableIcons, icon)) {
             trace('Unrecognized icon $icon, aborting!');
@@ -29,14 +53,27 @@ class DrawUtil {
     }
 }
 
+/**
+ * draw command style for icons
+ * @since 0.00.002
+ */
 enum ADrawableIconCommandType {MOVE; LINE;}
+/**
+ * drawable icon command.
+ * @since 0.00.002
+ */
 typedef ADrawableIconCommand = {t:ADrawableIconCommandType,a:{x:Float, y:Float}}; 
 /**
     do **NOT** make these manually.
     use the utility.
-    Abode\Tools\ADrawableIconGen.html in your browser.
+    accessable in debug build, launch SymbolEditor from the `debug` dropdown on a -debug build
+    @since 0.00.002
  */
 class ADrawableIcons {
+    /**
+     * sound icon
+     * @since 0.00.002
+     */
     public static final SOUND:Array<ADrawableIconCommand> = [
         {t:MOVE, a:{x:7, y:5}},
         {t:LINE, a:{x:7, y:14}},
@@ -66,6 +103,10 @@ class ADrawableIcons {
         {t:LINE, a:{x:13, y:2}},
         {t:LINE, a:{x:12, y:1}},
     ];
+    /**
+     * mute icon
+     * @since 0.00.002
+     */
     public static final MUTE:Array<ADrawableIconCommand> = [
         {t:MOVE, a:{x:7, y:5}},
         {t:LINE, a:{x:7, y:14}},
@@ -106,6 +147,10 @@ class ADrawableIcons {
         {t:LINE, a:{x:0, y:0}},
     ];
 
+    /**
+     * window close icon
+     * @since 0.00.002
+     */
     public static final WIN_CLOSE:Array<ADrawableIconCommand> = [
         {t:MOVE, a:{x:3, y:3}},
         {t:LINE, a:{x:16, y:17}},
@@ -118,6 +163,10 @@ class ADrawableIcons {
         {t:LINE, a:{x:16, y:3}},
         {t:LINE, a:{x:17, y:3}},
     ];
+    /**
+     * window maximize icon
+     * @since 0.00.002
+     */
     public static final WIN_MAX:Array<ADrawableIconCommand> = [
         {t:MOVE, a:{x:3, y:3}},
         {t:LINE, a:{x:3, y:3}},
@@ -126,6 +175,10 @@ class ADrawableIcons {
         {t:LINE, a:{x:3, y:17}},
         {t:LINE, a:{x:3, y:3}},
     ];
+    /**
+     * window minimize icon
+     * @since 0.00.002
+     */
     public static final WIN_MIN:Array<ADrawableIconCommand> = [
         {t:MOVE, a:{x:3, y:7}},
         {t:LINE, a:{x:3, y:7}},
@@ -134,7 +187,10 @@ class ADrawableIcons {
         {t:LINE, a:{x:3, y:14}},
         {t:LINE, a:{x:3, y:7}},
     ];
-
+    /**
+     * .FLA Project Icon
+     * @since 0.00.003
+     */
     public static final FILE_FLASH:Array<ADrawableIconCommand> = [
         {t:MOVE, a:{x:15, y:67}},
         {t:LINE, a:{x:60, y:67}},
@@ -205,6 +261,10 @@ class ADrawableIcons {
         {t:LINE, a:{x:32, y:27}},
         {t:LINE, a:{x:32, y:56}},
     ];
+    /**
+     * .APF Project Icon
+     * @since 0.00.003
+     */
     public static final FILE_ABODEPROJECTFORMAT:Array<ADrawableIconCommand> = [
         {t:MOVE, a:{x:15, y:67}},
         {t:LINE, a:{x:60, y:67}},
@@ -294,6 +354,10 @@ class ADrawableIcons {
         {t:LINE, a:{x:22, y:46}},
         {t:LINE, a:{x:20, y:56}},
     ];
+    /**
+     * checkbox check.
+     * @since 0.00.003
+     */
     public static final UICHECK:Array<ADrawableIconCommand> = [
         {t:MOVE, a:{x:5, y:10}},
         {t:LINE, a:{x:10, y:14}},
