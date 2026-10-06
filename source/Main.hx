@@ -5,7 +5,7 @@ class Main extends Sprite {
      * The desktop background, stored as a BitmapData directly within Main so that we only have to load it once.
      * @since 0.00.004
      */
-    public static #if(sys)final#else var#end desktopbackgroundImage:BitmapData#if(sys)= ASprite.getDesktopWallpaper(1280, 720)#end;
+    public static #if(sys&&!mac)final#else var#end desktopbackgroundImage:BitmapData#if(sys&&!mac)= ASprite.getDesktopWallpaper(1280, 720)#end;
     /**
      * For checking when global keys are pressed.
      * @since 0.00.004
@@ -90,7 +90,7 @@ class Main extends Sprite {
     public function new() {
         super();
         try{
-            #if(html5)
+            #if(html5||mac)
                 desktopbackgroundImage = ASprite.getDesktopWallpaper(1280, 720); //fix for a crash on startup with html5.
                 if((UPrefs.prefsData.data.preferencesCreated:Bool)==null) { //to actually create preferences.
                     UPrefs.makePrefsFile();

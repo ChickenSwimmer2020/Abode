@@ -6,6 +6,11 @@ enum ButtonStyle {
 }
 
 class AButton extends ASprite {
+    /**
+     * label access
+     * @since 0.00.007
+     */
+    public var label:Null<AText> = null;
     public var disabled(default, set):Bool = false;
     public var doDisabledColor:Bool = true;
     public function set_disabled(a:Bool):Bool {
@@ -39,7 +44,7 @@ class AButton extends ASprite {
             targetSymbol = text.split(':')[1].replace("]", "").trim();
             symbolParams = [1, AColor.BLACK, AColor.TRANSPARENT];
         }else{
-            var label = new AText(0, 0, rect.width, text, 12);
+            label = new AText(0, 0, rect.width, text, 12);
             label.setFieldSize(rect.width, rect.height);
             label.alignment = CENTER;
             addChild(label);

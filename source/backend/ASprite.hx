@@ -379,7 +379,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
      * @since 0.00.001
      */
     public static function getDesktopWallpaper(maxWidth:Int, maxHeight:Int):BitmapData {
-        #if windows
+        #if windows //TODO: support getting desktop background on MacOS
             var original = BitmapData.fromFile('C:\\Users\\${Sys.getEnv("USERNAME")}\\AppData\\Roaming\\Microsoft\\Windows\\Themes\\TranscodedWallpaper');
             if (original == null) return BitmapData.fromFile('assets/images/FbutteRautah.png');
 

@@ -63,6 +63,8 @@ class UPrefs {
     public static var groupCustomColor:Preference<AColor> = new Preference("groupCustomColor", 0xFF1cbbb4);
     public static var objectCustomColor:Preference<AColor> = new Preference("objectCustomColor", 0xFF00a8ff);
     public static var otherCustomColor:Preference<AColor> = new Preference("otherCustomColor", 0xFF0066ff);
+    //SETTINGS TO ADD AND MAKE FUNCTIONAL
+    public static var inverseScrollDirection:Preference<Bool> = new Preference("inverseScrollDirection", false);
 
 
     #if debug
@@ -142,6 +144,7 @@ class UPrefs {
     #end
 }
 
+//TODO: support of maps with .get/.set
 /**
  * Preference container class
  * @param <T> Type.

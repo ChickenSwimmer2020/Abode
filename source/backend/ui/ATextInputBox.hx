@@ -1,6 +1,7 @@
 package backend.ui;
 
 //TODO: fix the bugs and make it work properly. cuz its being stupid
+//TODO: find way to not use multiple event listeners on stage.
 class ATextInputBox extends AText {
     public var onSubmit:String->Void;
     private var placeholderText:AText;
@@ -44,7 +45,7 @@ class ATextInputBox extends AText {
             case Keyboard.ENTER: event.shiftKey?text=text+="\n":{onSubmit(text); selectedTextBox=null;};
             case Keyboard.ESCAPE: selectedTextBox = null;
             case Keyboard.BACKSPACE: text = text.substr(0, text.length - 1);
-            default: text += String.fromCharCode(event.charCode);
+            default: if(event.charCode>=32&&event.charCode<=126) text += String.fromCharCode(event.charCode);
         }
         placeholderText.visible = (text == "");
     }

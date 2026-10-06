@@ -1,6 +1,12 @@
 package backend.ui;
 
 class ATabMenu extends ASprite {
+    /**
+     * called when the group target is changed
+     * @return name of the newly selected group
+     * @since 0.00.007
+     */
+    public var onGroupChange:String->Void = (_:String)->{};
     var order:Array<String> = []; //for positioning fixes
     var targetWidth:Float = 0;
     public function new(x:Float, y:Float, size:APoint) {
@@ -17,7 +23,10 @@ class ATabMenu extends ASprite {
         gr.y+=20; //move it down
         //gr.scrollRect = new Rectangle(x, y+20, width, height-20); //so group cant render outside of the tabmenu
 
-        var button:AButton = new AButton(n, new Rectangle(0, 0, 50, 20), (_:AButton)->{activeGroup = n;});
+        var button:AButton = new AButton(n, new Rectangle(0, 0, 50, 20), (_:AButton)->{
+            activeGroup = n;
+            onGroupChange(n);
+        });
         buttons.set(n, button);
         addChild(gr);
         gr.visible = false;

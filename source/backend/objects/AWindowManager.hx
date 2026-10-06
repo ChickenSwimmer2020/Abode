@@ -60,28 +60,87 @@ class AWindowManager {
      */
     final prefabWindows:Map<String, Void->AWindow> = [
         "makeProject"=>()->{
+            //for project creation.
+            var projWidth:Int = 1280;
+            var projHeight:Int = 720;
+            var projFPS:Int = 30;
+
+
+            //ui
+            var projectWidthInput:ATextInputBox = null;
+            var projectHeightInput:ATextInputBox = null;
+            var projectFpsInput:ATextInputBox = null;
+            var projectTypeDropdown:AButton = null;
+            var projectMeasureDropdown:AButton = null;
+            
+            function onProjectCreate(){
+                trace('Attempting to make a new ${projWidth}x$projHeight project @$projFPS FPS, platform: ${projectTypeDropdown?.label.text}, and measure type: ${projectMeasureDropdown?.label.text}');
+            }
+
             final width:Int = 775;
             final height:Int = (740/2).floor();
             var premade:AWindow = new AWindow("New Project", Main.pWidth/2-width/2, Main.pHeight/2-height/2, width, height, false, false);
             var tabGroup:ATabMenu = new ATabMenu(0, 0, new APoint(width/2, height));
-                tabGroup.addGroup("Character Animation", new AGroup(0, 0)); //we dont use locales yet, fuck you copilot.
+                    var charAnimGroup:AGroup<AButton> = new AGroup(0, 0);
+                        charAnimGroup.add(new AButton("Standard\n640x480", new Rectangle(5, 5, 85, 85), (_:AButton)->{
+                            trace('Standard project make!');
+                        }));
+                        charAnimGroup.add(new AButton("HD\n1280x720", new Rectangle(90+5, 5, 85, 85), (_:AButton)->{
+                            trace('HD project make!');
+                        }));
+                        charAnimGroup.add(new AButton("Full HD\n1920x1080", new Rectangle(90+90+5, 5, 85, 85), (_:AButton)->{
+                            trace('Full HD project make!');
+                        }));
+                        charAnimGroup.add(new AButton("4K\n3840x2160", new Rectangle(90+90+90+5, 5, 85, 85), (_:AButton)->{
+                            trace('4K project make!');
+                        }));
+                tabGroup.addGroup("Character Animation", charAnimGroup); //we dont use locales yet, fuck you copilot.
                 tabGroup.addGroup("Social", new AGroup(0, 0));
                 tabGroup.addGroup("Game", new AGroup(0, 0));
                 tabGroup.addGroup("Web", new AGroup(0, 0));
                 tabGroup.addGroup("Advanced", new AGroup(0, 0));
             premade.addContent(tabGroup);
-            var detailsArea:ASprite = premade.addContent(new ASprite(width/2, 0).makeGraphic((width/2).floor(), height, AColor.BUTTON_DISABLED));
+            var detailsArea:ASprite = premade.addContent(new ASprite(width/2, 0).makeGraphic((width/2).floor(), height, AColor.MENUBAR_DROPDOWN_BACKGROUND));
             premade.addContent(new AText(detailsArea.x+2, 2, detailsArea.width-10, "Details", 12));
+            premade.addContent(new AText(detailsArea.x+2, 22, detailsArea.width-10, "Width", 12));
+            projectWidthInput = cast premade.addContent(new ATextInputBox(detailsArea.x+2, 42, 20, (((detailsArea.width-10)/2)-10).floor(), "1280", "1280", 12, (_:String)->{
+                trace('Target Project Width was changed to $_!');
+                projWidth = Std.parseInt(_);
+            }));
+            premade.addContent(new AText((detailsArea.x+2)+(((detailsArea.width-10)/2)-10).floor()+15, 22, detailsArea.width-10, "Height", 12));
+            projectHeightInput = cast premade.addContent(new ATextInputBox((detailsArea.x+2)+(((detailsArea.width-10)/2)-10).floor()+15, 42, 20, (((detailsArea.width-10)/2)-10).floor(), "720", "720", 12, (_:String)->{
+                trace('Target Project Height was changed to $_!');
+                projHeight = Std.parseInt(_);
+            }));
+            premade.addContent(new AText(detailsArea.x+2, 62, detailsArea.width-10, "Units", 12));
+            projectTypeDropdown = cast premade.addContent(new AButton("Pixels", new Rectangle(detailsArea.x+2, 82, 120, 20), (_:AButton)->{
+                ADropdown.openDropdownMenu(_, false, [
+                    {text: "Inches", closeOnClick: true, func: (b:AButton)->_.label.text="Inches"},
+                    {text: "Inches (Decimal)", closeOnClick: true, func: (b:AButton)->_.label.text="Inches (Decimal)"},
+                    {text: "Points", closeOnClick: true, func: (b:AButton)->_.label.text="Points"},
+                    {text: "Centimeters", closeOnClick: true, func: (b:AButton)->_.label.text="Centimeters"},
+                    {text: "Millimeters", closeOnClick: true, func: (b:AButton)->_.label.text="Millimeters"},
+                    {text: "Pixels", closeOnClick: true, func: (b:AButton)->_.label.text="Pixels"},
+                ]);
+            }));
+            projectTypeDropdown.disabled=true; //disable button at creation.
+            //so that changing the group will either enable or disable the dropdown.
+            tabGroup.onGroupChange = (newGroup:String)->projectTypeDropdown.disabled=!(newGroup=="Advanced");
+            premade.addContent(new AText((detailsArea.x+2)+(((detailsArea.width-10)/2)-10).floor()+15, 62, detailsArea.width-10, "Frame Rate", 12));
+            projectFpsInput = cast premade.addContent(new ATextInputBox((detailsArea.x+2)+(((detailsArea.width-10)/2)-10).floor()+15, 82, 20, (((detailsArea.width-10)/2)-10).floor(), "30", "30", 12, (_:String)->{
+                trace('Target Project FPS was changed to $_!');
+                projFPS = Std.parseInt(_);
+            }));
+            premade.addContent(new AText(detailsArea.x+2, 102, detailsArea.width-10, "Platform Type", 12));
+            projectMeasureDropdown = cast premade.addContent(new AButton("HScript 2.7", new Rectangle(detailsArea.x+2, 122, 120, 20), (_:AButton)->{
+                ADropdown.openDropdownMenu(_, false, [
+                    {text: "HScript 2.7", closeOnClick: true, func: (b:AButton)->_.label.text="HScript 2.7"},
+                    {text: "seperator",  func: null},
+                    {text: "HTML5", closeOnClick: true, func: (b:AButton)->_.label.text="HTML5"},
+                ]);
+            }));
+            premade.addContent(new AButton("Create", new Rectangle(((detailsArea.x+detailsArea.width)-82), height-42, 80, 20), (_:AButton)->onProjectCreate(), ACCENT));
 
-            //TODO: if advanced, the units dropdown can be changed between
-            /**
-             * Inches,
-             * Inches (decimal)
-             * Points,
-             * Centimeters,
-             * Millimeters,
-             * Pixels.
-             */
 
             return premade;
         },

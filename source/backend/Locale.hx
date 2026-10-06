@@ -37,6 +37,25 @@ class Locale { //overrall, very simple system. for now.
     }
 
     /**
+     * get the current referall name, set on first program launch
+     * @since 0.00.007
+     */
+    public static function getUser():String {
+        trace(UPrefs.perferredReference.value);
+        for(target=>enabled in UPrefs.perferredReference.value) {
+            if(enabled){
+                switch(target) {
+                    case "WINUser": return Sys.getEnv("USERNAME");
+                    case "PCName": return Sys.getEnv(#if(windows)"COMPUTERNAME"#else "HOSTNAME"#end);
+                    case "Custom": return UPrefs.customReferenceName.value??"[[USER]]";
+                    default: return "[[USER]]";
+                }
+            }
+        }
+        return "[[USER]]";
+    }
+
+    /**
      * get a locale file
      * @param t target lang
      * @return Dynamic data from file

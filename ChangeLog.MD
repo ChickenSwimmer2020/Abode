@@ -2,6 +2,26 @@
 <!--markdownlint-disable MD033 -->
 # CHANGELOG
 
+> ## 0.00.007 (ui changes, mac support, and building guide)
+>
+>> MacOS now compiles! (Thanks [Rex](https://github.com/RX-739)!)
+>
+>> mac is VERY BUGGY at the moment, failes to get desktop wallpaper, or fallback...
+>>
+>> fails to get the username/pcname, really broken.
+>
+> * added BUILDING.MD, if applicible someone fix this, it might take me a while
+> * Added a TODO to `ASprite`
+> * New Function for `Locale`: `getUser`
+> * Updated `makeProject` prefab on `AWindowManager`
+> * `AButton` now has label access
+> * Added `onGroupChange` to `ATabMenu`
+> * `ATextInput` no longer gives invalid text output from non-printable keys
+> * New preference! `inverseScrollDirection`
+> * `InitState` refers to you by whats set in the popup on `Splash`
+> * `Main` no longer crashes when *trying* to get desktop wallpaper on MacOS
+> * `SplashScreen` popup finished.
+>
 > ## 0.00.006 (sounds and input)
 >
 > * New Sounds! (Thanks [HarukaStudios](https://github.com/HarukaStudios)!)

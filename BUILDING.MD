@@ -1,12 +1,35 @@
 # BUILDING
 
-> THIS IS A PLACEHOLDER, THIS WILL BE UPDATED IN THE FUTURE
+So you wanna build abode, go ahead
+>placeholder MSG, please rewrite this.
 
-0. IF MAC (install XCode from store)
-1. install haxe and go through the setup https://haxe.org/
-2. download the repo
-3. open repo in visual studio code
-4. in console run `haxelib install openfl 9.5.2; haxelib install lime 8.3.2`
-5. in console run `haxelib run lime setup`
-6. run `lime` in the console to make sure it worked
-7. run `lime test mac -debug`
+## BUILDING[ios]
+
+>TODO
+
+## BUILDING[android]
+
+>TODO
+
+## BUILDING[windows]
+
+* Install [haxe](https://haxe.org/)
+* download abode's repo (skip if you already have)
+* in your terminal, run `haxelib install openfl 9.5.2; haxelib install lime 8.3.2`
+* after those two complete, run `haxelib run lime setup`
+* run `lime` in the console and make sure it worked
+* (optional) run `haxelib setup` to set haxelib path
+* run `haxelib install hxcpp-debugger`
+* run `lime test windows -debug`
+
+## BUILDING[mac]
+
+* Make sure you have XCode installed from the app store
+* Install [haxe](https://haxe.org/)
+* download abode's repo (skip if you already have)
+* in your terminal, run `haxelib install openfl 9.5.2; haxelib install lime 8.3.2`
+* after those two complete, run `haxelib run lime setup`
+* run `lime` in the console and make sure it worked
+* (optional) run `haxelib setup` to set haxelib path
+* run `haxelib install hxcpp-debugger`
+* run `lime test mac -debug`

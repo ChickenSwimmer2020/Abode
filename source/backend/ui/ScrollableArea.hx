@@ -18,7 +18,9 @@ class ScrollableArea extends AGroup<ASprite> {
     public function onMouseScroll(e:MouseEvent) {
         if(interactable) {
             if(containsMouse()){
-                index+=(#if(html5)e.delta #else e.delta*40#end); //delta is fucky on html.
+                final delta:Int = (#if(html5)e.delta #else e.delta*40#end);
+                if(UPrefs.inverseScrollDirection.value) index+=delta; //delta is fucky on html.
+                else index-=delta;
                 if(index<0) index=0;
             }
         }

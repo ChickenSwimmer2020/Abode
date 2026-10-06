@@ -37,7 +37,7 @@ class InitState extends AState {
                 appliedDarkenOnlyOnce = true;
             }
             final totalLaunchMessages:Int = 4;
-            welcomeText = new AText(0, 20, 600, Locale.get("title.welcomeMSG", ["{USER}"=>"[USER]", "{MSGOFLAUNCH}"=>Locale.get('title.launchMSG${Std.string(AMath.random(0, totalLaunchMessages))}')]), 12);
+            welcomeText = new AText(0, 20, 600, Locale.get("title.welcomeMSG", ["{USER}"=>Locale.getUser(), "{MSGOFLAUNCH}"=>Locale.get('title.launchMSG${Std.string(AMath.random(0, totalLaunchMessages))}')]), 12);
             add(welcomeText);
             welcomeText.textColor = AColor.WHITE;
             add(new AButton(Locale.get("title.newProject"), new Rectangle(5, 235, 80, 20), (_:AButton)->{
@@ -59,8 +59,6 @@ class InitState extends AState {
                 ][i]);
                 add(button);
             }
-
-            //TODO: first time launch popup asking if you want to be called by a custom name, pc name, or windows account name.
 
             //presets, that show on the main menu
             // Full HD
