@@ -3,185 +3,200 @@ package backend.debug;
 import backend.ui.AColorPicker;
 
 class SymbolEditor extends AState {
-    public var menuBar:AMenuBar;
-    public var footerBar:AMenuBar;
+	public var menuBar:AMenuBar;
+	public var footerBar:AMenuBar;
 
-    //editor stuffs.
-    var editor:ASprite = null; //ASprite.
-    var commands:Array<Dynamic> = [];
-    var px:Int = 16; //zoom
-    var snap:Bool = true;
-    var dragIndex:Int = -1;
-    var history:Array<Dynamic> = [];
-    var origin:APoint = new APoint(40, 40);
-    //drag/draw
-    var drawing:Bool = false;
-    var drawStartWorld:APoint = new APoint(0, 0);
-    var drawStartScreen:APoint = new APoint(0, 0);
-    var previewEnd:APoint = new APoint(0, 0);
-    //pan
-    var panning:Bool = false;
-    var panStartScreen:APoint = new APoint(0, 0);
-    var panStartOrigin:APoint = new APoint(0, 0);
-    final CLICK_THRESHOLD_PX:Int = 5;
-    final MIN_PX:Float = 0.5;
-    final MAX_PX:Float = 4000;
+	// editor stuffs.
+	var editor:ASprite = null; // ASprite.
+	var commands:Array<Dynamic> = [];
+	var px:Int = 16; // zoom
+	var snap:Bool = true;
+	var dragIndex:Int = -1;
+	var history:Array<Dynamic> = [];
+	var origin:APoint = new APoint(40, 40);
+	// drag/draw
+	var drawing:Bool = false;
+	var drawStartWorld:APoint = new APoint(0, 0);
+	var drawStartScreen:APoint = new APoint(0, 0);
+	var previewEnd:APoint = new APoint(0, 0);
+	// pan
+	var panning:Bool = false;
+	var panStartScreen:APoint = new APoint(0, 0);
+	var panStartOrigin:APoint = new APoint(0, 0);
+	final CLICK_THRESHOLD_PX:Int = 5;
+	final MIN_PX:Float = 0.5;
+	final MAX_PX:Float = 4000;
 
-    public function new() {
-        super();
-        trace("Editor launched");
-        Main.addKeyPressed("SymbolGeneratorExitKey", Keyboard.ESCAPE, true, (_:KeyboardEvent)->{
-            Main.StateSystem.switchState(InitState);
-        });
+	public function new() {
+		super();
+		trace("Editor launched");
+		Main.addKeyPressed("SymbolGeneratorExitKey", Keyboard.ESCAPE, true, (_:KeyboardEvent) -> {
+			Main.StateSystem.switchState(InitState);
+		});
 
-        try{
-            menuBar = new AMenuBar(TOP, [
-                {
-                    type: ACHECKBOX,
-                    text: "snap to grid",
-                    enabled: true,
-                    onClick: (_:Bool)->{
-                        trace('Grid should show? $_');
-                    }
-                },
-                {
-                    type: ACHECKBOX,
-                    text: "show grid",
-                    enabled: true,
-                    onClick: (_:Bool)->{
-                        trace('Snap to grid? $_');
-                    }
-                },
-                {type: ASPRITE, /*seperator*/text: "seperator0", size: new APoint(2, 20), color: AColor.MENUBAR_DROPDOWN_BACKGROUND},
-                { //index 3
-                    type: ATEXT,
-                    text: "100%",
-                    size: new APoint(35, 0) //y isnt used. and if defaulting worked correctly this wouldnt be needed here. thanks haxe.
-                },
-                {
-                    type: ABUTTON,
-                    size: new APoint(75, 20),
-                    text: "Reset view",
-                    onClick: (_:AButton)->{
-                        trace('Attempting to reset view...');
-                    }
-                },
-                {type: ASPRITE, /*seperator*/text: "seperator0", size: new APoint(2, 20), color: AColor.MENUBAR_DROPDOWN_BACKGROUND},
-                {
-                    type: ABUTTON,
-                    text: "Undo",
-                    size: new APoint(50, 20),
-                    onClick: (_:AButton)->{
-                        trace('Attempting to undo last change...');
-                    }
-                },
-                {
-                    type: ABUTTON,
-                    size: new APoint(50, 20),
-                    text: "Clear all",
-                    onClick: (_:AButton)->{
-                        trace('Attempting to clear all changes...');
-                    }
-                },
-            ]);
-            add(menuBar);
+		try {
+			menuBar = new AMenuBar(TOP, [
+				{
+					type: ACHECKBOX,
+					text: "snap to grid",
+					enabled: true,
+					onClick: (_:Bool) -> {
+						trace('Grid should show? $_');
+					}
+				},
+				{
+					type: ACHECKBOX,
+					text: "show grid",
+					enabled: true,
+					onClick: (_:Bool) -> {
+						trace('Snap to grid? $_');
+					}
+				},
+				{
+					type: ASPRITE,
+					/*seperator*/
+					text: "seperator0",
+					size: new APoint(2, 20),
+					color: AColor.MENUBAR_DROPDOWN_BACKGROUND
+				},
+				{ // index 3
+					type: ATEXT,
+					text: "100%",
+					size: new APoint(35, 0) // y isnt used. and if defaulting worked correctly this wouldnt be needed here. thanks haxe.
+				},
+				{
+					type: ABUTTON,
+					size: new APoint(75, 20),
+					text: "Reset view",
+					onClick: (_:AButton) -> {
+						trace('Attempting to reset view...');
+					}
+				},
+				{
+					type: ASPRITE,
+					/*seperator*/
+					text: "seperator0",
+					size: new APoint(2, 20),
+					color: AColor.MENUBAR_DROPDOWN_BACKGROUND
+				},
+				{
+					type: ABUTTON,
+					text: "Undo",
+					size: new APoint(50, 20),
+					onClick: (_:AButton) -> {
+						trace('Attempting to undo last change...');
+					}
+				},
+				{
+					type: ABUTTON,
+					size: new APoint(50, 20),
+					text: "Clear all",
+					onClick: (_:AButton) -> {
+						trace('Attempting to clear all changes...');
+					}
+				},
+			]);
+			add(menuBar);
 
-            var tabMenu:ATabMenu = new ATabMenu(Main.pWidth-400, 0, new APoint(400, Main.pHeight));
-            add(tabMenu);
+			var tabMenu:ATabMenu = new ATabMenu(Main.pWidth - 400, 0, new APoint(400, Main.pHeight));
+			add(tabMenu);
 
-            var testGroup1:AGroup<ASprite> = new AGroup<ASprite>(0, 0);
-                testGroup1.addChild(new AText(0, 0, 100, "group 1!", 12));
-                
-            /*Style group section*/
-            var styleGroup:AGroup<OneOfTwo<ASprite, AText>> = new AGroup<OneOfTwo<ASprite, AText>>(0, 0);
-                var t:AText = styleGroup.add(new AText(5, 5, 100, "FILL", 12));
-                t.textColor = AColor.WHITE;
-                var c = styleGroup.add(new ACheckBox(5, 25, "Enabled", (_:Bool)->{
-                    trace('Enabled fill color? $_');
-                }));
-                cast(c, ACheckBox).label.textColor = AColor.WHITE;
+			var testGroup1:AGroup<ASprite> = new AGroup<ASprite>(0, 0);
+			testGroup1.addChild(new AText(0, 0, 100, "group 1!", 12));
 
-                var c2 = styleGroup.add(new AColorPicker(5, 50, 160, 20, 0xFF5FD0C0, (_:Int)->{
-                    trace('Fill color changed!');
-                }));
+			/*Style group section*/
+			var styleGroup:AGroup<OneOfTwo<ASprite, AText>> = new AGroup<OneOfTwo<ASprite, AText>>(0, 0);
+			var t:AText = styleGroup.add(new AText(5, 5, 100, "FILL", 12));
+			t.textColor = AColor.WHITE;
+			var c = styleGroup.add(new ACheckBox(5, 25, "Enabled", (_:Bool) -> {
+				trace('Enabled fill color? $_');
+			}));
+			cast(c, ACheckBox).label.textColor = AColor.WHITE;
 
-            var testGroup3:AGroup<ASprite> = new AGroup<ASprite>(0, 0);
-                testGroup3.addChild(new AText(0, 0, 100, "group 3!", 12));
+			var c2 = styleGroup.add(new AColorPicker(5, 50, 160, 20, 0xFF5FD0C0, (_:Int) -> {
+				trace('Fill color changed!');
+			}));
 
-            tabMenu.addGroup("first", testGroup1);
-            tabMenu.addGroup("Style", styleGroup);
-            tabMenu.addGroup("third", testGroup3);
+			var testGroup3:AGroup<ASprite> = new AGroup<ASprite>(0, 0);
+			testGroup3.addChild(new AText(0, 0, 100, "group 3!", 12));
 
+			tabMenu.addGroup("first", testGroup1);
+			tabMenu.addGroup("Style", styleGroup);
+			tabMenu.addGroup("third", testGroup3);
 
+			footerBar = new AMenuBar(BOTTOM, [
+				{
+					text: "click: MOVE · drag: LINE · right-drag: move point · wheel: zoom · middle-drag: pan",
+					type: ATEXT,
+					size: new APoint(410, 0),
+					color: AColor.MENUBAR_DROPDOWN_BACKGROUND
+				},
+				{
+					type: ASPRITE,
+					text: "seperator_footer",
+					size: new APoint(2, 20),
+					color: AColor.MENUBAR_DROPDOWN_BACKGROUND
+				},
+				{
+					text: "x: {X}, y: {Y}",
+					type: ATEXT,
+					size: new APoint(420, 18),
+					color: AColor.MENUBAR_DROPDOWN_BACKGROUND
+				}
+			]);
+			add(footerBar);
+		} catch (e) {
+			trace('Something went wrong! ${e.stack}');
+		}
+	}
 
+	// actual editor functions n shiz
+	function pushHistory() {
+		history.push(Json.stringify(commands));
+		history.length > 60 ? history.shift() : null;
+	}
 
+	inline function undo()
+		history.length != 0 ? {commands = Json.parse(history.pop()); renderAll();} : null;
 
+	inline function toScreen(x:Float, y:Float):APoint
+		return new APoint(origin.x + x * px, origin.y + y * px);
 
-            footerBar = new AMenuBar(BOTTOM, [
-                {
-                    text: "click: MOVE · drag: LINE · right-drag: move point · wheel: zoom · middle-drag: pan",
-                    type: ATEXT,
-                    size: new APoint(410, 0),
-                    color: AColor.MENUBAR_DROPDOWN_BACKGROUND
-                },
-                {type: ASPRITE, text: "seperator_footer", size: new APoint(2, 20), color: AColor.MENUBAR_DROPDOWN_BACKGROUND},
-                {
-                    text: "x: {X}, y: {Y}",
-                    type: ATEXT,
-                    size: new APoint(420, 18),
-                    color: AColor.MENUBAR_DROPDOWN_BACKGROUND
-                }
-            ]);
-            add(footerBar);
-        }catch(e){
-            trace('Something went wrong! ${e.stack}');
-        }
-    }
-    //actual editor functions n shiz
-    function pushHistory(){
-        history.push(Json.stringify(commands));
-        history.length>60?history.shift():null;
-    }
-    inline function undo() history.length!=0?{commands=Json.parse(history.pop()); renderAll();}:null;
-    inline function toScreen(x:Float, y:Float):APoint return new APoint(origin.x+x*px, origin.y+y*px); 
+	inline function toWorld(sx:Float, sy:Float, applySnap:Bool = true):APoint
+		return new APoint((applySnap && snap) ? Math.round((sx - origin.x) / px) : (sx - origin.x) / px,
+			(applySnap && snap) ? Math.round((sy - origin.y) / px) : (sy - origin.y) / px);
 
-    inline function toWorld(sx:Float, sy:Float, applySnap:Bool=true):APoint return new APoint((applySnap&&snap)?Math.round((sx-origin.x)/px):(sx-origin.x)/px, (applySnap&&snap)?Math.round((sy-origin.y)/px):(sy-origin.y)/px);
-    inline function updateZoomReadout() cast(footerBar.objects[2].object,AText).text='${Std.string(Math.round(px/16*100))}%';
-    function hexToRgb(hex:String){
-        final n:Int = Std.parseInt(hex.replace('#', '').replace("0x", "").replace("0X", ""));
-        return [(n>>16)&255, (n>>8)&255, n&255];
-    }
-    function colorInputToHaxeHex(colorPicker){
-        //TODO: this.
-        //return '0x' + colorPicker.value.replace('#','').toUpperCase();
-    }
+	inline function updateZoomReadout()
+		cast(footerBar.objects[2].object, AText).text = '${Std.string(Math.round(px / 16 * 100))}%';
 
+	function hexToRgb(hex:String) {
+		final n:Int = Std.parseInt(hex.replace('#', '').replace("0x", "").replace("0X", ""));
+		return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+	}
 
+	function colorInputToHaxeHex(colorPicker) {
+		// TODO: this.
+		// return '0x' + colorPicker.value.replace('#','').toUpperCase();
+	}
 
-    //function nearestPointIndex(sx:Float, sy:Float, threshold:Int=12){
-    //    var closest:Int = -1;
-    //    var closestDist = threshold;
-    //    commands.forEach((c, i)->{
-    //        final a:APoint=new APoint(toScreen(c.x, c.y).x, toScreen(c.x, c.y).y);
-    //        final d = Math.hypot(a.x-sx, a.y-sy);
-    //        
-    //        if(d < closestDist){ closest = i; closestDist = d; }
-    //    });
-    //    return closest;
-    //}
+	// function nearestPointIndex(sx:Float, sy:Float, threshold:Int=12){
+	//    var closest:Int = -1;
+	//    var closestDist = threshold;
+	//    commands.forEach((c, i)->{
+	//        final a:APoint=new APoint(toScreen(c.x, c.y).x, toScreen(c.x, c.y).y);
+	//        final d = Math.hypot(a.x-sx, a.y-sy);
+	//
+	//        if(d < closestDist){ closest = i; closestDist = d; }
+	//    });
+	//    return closest;
+	// }
+	// donothing.
+	function renderAll() {}
 
-
-
-    //donothing.
-    function renderAll() {
-
-    }
-
-    override public function destroy() {
-        super.destroy();
-    }
+	override public function destroy() {
+		super.destroy();
+	}
 }
-
 //      <div class="field-row"><label>alpha</label><input type="range" id="fillAlpha" min="0" max="1" step="0.01" value="1"><span class="val" id="fillAlphaVal">1.00</span></div>
 //
 //      <div class="divider"></div>
@@ -211,10 +226,7 @@ class SymbolEditor extends AState {
 //      <div class="small-note" id="importMsg"></div>
 //    </div>
 //  </aside>
-//</main>
-
-
-
+// </main>
 //  function drawGrid(){
 //    // pick a "nice" world-unit step so lines never get overwhelmingly dense or sparse,
 //    // however far zoomed in/out (1, 2, 5, 10, 20, 50 ... pattern)
@@ -404,7 +416,6 @@ class SymbolEditor extends AState {
 //  }
 //
 //  // --- canvas interaction ---
-
 //
 //  // right-click's default context menu would otherwise block right-drag
 //  canvas.addEventListener('contextmenu', e=> e.preventDefault());
@@ -595,8 +606,8 @@ class SymbolEditor extends AState {
 //
 //  updateZoomReadout();
 //  renderAll();
-//})();
-//</script>
-//</body>
-//</html>
+// })();
+// </script>
+// </body>
+// </html>
 //

@@ -5,10 +5,10 @@ package backend.utils;
  * @since 0.00.001
  */
 interface IHasAttributes<T1, T2> {
-    public var attributes:Map<T1, T2>;
-    public function setAttribute(a:T1, b:T2):T1;
+	public var attributes:Map<T1, T2>;
+	public function setAttribute(a:T1, b:T2):T1;
 	public function getAttribute(a:T1):T2;
-    public function removeAttribute(a:T1):Bool;
+	public function removeAttribute(a:T1):Bool;
 }
 
 /**

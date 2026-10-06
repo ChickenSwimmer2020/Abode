@@ -5,11 +5,13 @@ package backend.utils;
  * @since 0.00.000
  */
 abstract OneOfTwo<T1, T2>(Dynamic) from T1 from T2 to T1 to T2 {}
+
 /**
  * Literally Flixel OneOfThree.
  * @since 0.00.000
  */
 abstract OneOfThree<T1, T2, T3>(Dynamic) from T1 from T2 from T3 to T1 to T2 to T3 {}
+
 /**
  * Literally Flixel OneOfFour.
  * @since 0.00.000

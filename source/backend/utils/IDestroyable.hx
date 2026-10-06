@@ -6,11 +6,11 @@ package backend.utils;
  * @since 0.00.002
  */
 interface IDestroyable {
-    /**
-     * destroys the object
+	/**
+	 * destroys the object
 	 * @since 0.00.002
-     */
-    public function destroy():Void;
+	 */
+	public function destroy():Void;
 }
 
 /**
@@ -25,7 +25,8 @@ class IDestroyableUtil {
 	 * @since 0.00.002
 	 */
 	public static function destroy<T:IDestroyable>(object:Null<IDestroyable>):T {
-		if (object != null) object.destroy();
+		if (object != null)
+			object.destroy();
 		return null;
 	}
 }
