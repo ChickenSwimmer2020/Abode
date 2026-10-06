@@ -1,28 +1,28 @@
 package backend.debug;
 
-import backend.ui.AColorPicker;
+import backend.ui.HColorPicker;
 
-class SymbolEditor extends AState {
-	public var menuBar:AMenuBar;
-	public var footerBar:AMenuBar;
+class SymbolEditor extends HState {
+	public var menuBar:HMenuBar;
+	public var footerBar:HMenuBar;
 
 	// editor stuffs.
-	var editor:ASprite = null; // ASprite.
+	var editor:HSprite = null; // HSprite.
 	var commands:Array<Dynamic> = [];
 	var px:Int = 16; // zoom
 	var snap:Bool = true;
 	var dragIndex:Int = -1;
 	var history:Array<Dynamic> = [];
-	var origin:APoint = new APoint(40, 40);
+	var origin:HPoint = new HPoint(40, 40);
 	// drag/draw
 	var drawing:Bool = false;
-	var drawStartWorld:APoint = new APoint(0, 0);
-	var drawStartScreen:APoint = new APoint(0, 0);
-	var previewEnd:APoint = new APoint(0, 0);
+	var drawStartWorld:HPoint = new HPoint(0, 0);
+	var drawStartScreen:HPoint = new HPoint(0, 0);
+	var previewEnd:HPoint = new HPoint(0, 0);
 	// pan
 	var panning:Bool = false;
-	var panStartScreen:APoint = new APoint(0, 0);
-	var panStartOrigin:APoint = new APoint(0, 0);
+	var panStartScreen:HPoint = new HPoint(0, 0);
+	var panStartOrigin:HPoint = new HPoint(0, 0);
 	final CLICK_THRESHOLD_PX:Int = 5;
 	final MIN_PX:Float = 0.5;
 	final MAX_PX:Float = 4000;
@@ -35,9 +35,9 @@ class SymbolEditor extends AState {
 		});
 
 		try {
-			menuBar = new AMenuBar(TOP, [
+			menuBar = new HMenuBar(TOP, [
 				{
-					type: ACHECKBOX,
+					type: HCHECKBOX,
 					text: "snap to grid",
 					enabled: true,
 					onClick: (_:Bool) -> {
@@ -45,7 +45,7 @@ class SymbolEditor extends AState {
 					}
 				},
 				{
-					type: ACHECKBOX,
+					type: HCHECKBOX,
 					text: "show grid",
 					enabled: true,
 					onClick: (_:Bool) -> {
@@ -53,95 +53,95 @@ class SymbolEditor extends AState {
 					}
 				},
 				{
-					type: ASPRITE,
+					type: HSPRITE,
 					/*seperator*/
 					text: "seperator0",
-					size: new APoint(2, 20),
-					color: AColor.MENUBAR_DROPDOWN_BACKGROUND
+					size: new HPoint(2, 20),
+					color: HColor.MENUBAR_DROPDOWN_BACKGROUND
 				},
 				{ // index 3
-					type: ATEXT,
+					type: HTEXT,
 					text: "100%",
-					size: new APoint(35, 0) // y isnt used. and if defaulting worked correctly this wouldnt be needed here. thanks haxe.
+					size: new HPoint(35, 0) // y isnt used. and if defaulting worked correctly this wouldnt be needed here. thanks haxe.
 				},
 				{
-					type: ABUTTON,
-					size: new APoint(75, 20),
+					type: HBUTTON,
+					size: new HPoint(75, 20),
 					text: "Reset view",
-					onClick: (_:AButton) -> {
+					onClick: (_:HButton) -> {
 						trace('Attempting to reset view...');
 					}
 				},
 				{
-					type: ASPRITE,
+					type: HSPRITE,
 					/*seperator*/
 					text: "seperator0",
-					size: new APoint(2, 20),
-					color: AColor.MENUBAR_DROPDOWN_BACKGROUND
+					size: new HPoint(2, 20),
+					color: HColor.MENUBAR_DROPDOWN_BACKGROUND
 				},
 				{
-					type: ABUTTON,
+					type: HBUTTON,
 					text: "Undo",
-					size: new APoint(50, 20),
-					onClick: (_:AButton) -> {
+					size: new HPoint(50, 20),
+					onClick: (_:HButton) -> {
 						trace('Attempting to undo last change...');
 					}
 				},
 				{
-					type: ABUTTON,
-					size: new APoint(50, 20),
+					type: HBUTTON,
+					size: new HPoint(50, 20),
 					text: "Clear all",
-					onClick: (_:AButton) -> {
+					onClick: (_:HButton) -> {
 						trace('Attempting to clear all changes...');
 					}
 				},
 			]);
 			add(menuBar);
 
-			var tabMenu:ATabMenu = new ATabMenu(Main.pWidth - 400, 0, new APoint(400, Main.pHeight));
+			var tabMenu:HTabMenu = new HTabMenu(Main.pWidth - 400, 0, new HPoint(400, Main.pHeight));
 			add(tabMenu);
 
-			var testGroup1:AGroup<ASprite> = new AGroup<ASprite>(0, 0);
-			testGroup1.addChild(new AText(0, 0, 100, "group 1!", 12));
+			var testGroup1:HGroup<HSprite> = new HGroup<HSprite>(0, 0);
+			testGroup1.addChild(new HText(0, 0, 100, "group 1!", 12));
 
 			/*Style group section*/
-			var styleGroup:AGroup<OneOfTwo<ASprite, AText>> = new AGroup<OneOfTwo<ASprite, AText>>(0, 0);
-			var t:AText = styleGroup.add(new AText(5, 5, 100, "FILL", 12));
-			t.textColor = AColor.WHITE;
-			var c = styleGroup.add(new ACheckBox(5, 25, "Enabled", (_:Bool) -> {
+			var styleGroup:HGroup<OneOfTwo<HSprite, HText>> = new HGroup<OneOfTwo<HSprite, HText>>(0, 0);
+			var t:HText = styleGroup.add(new HText(5, 5, 100, "FILL", 12));
+			t.textColor = HColor.WHITE;
+			var c = styleGroup.add(new HCheckbox(5, 25, "Enabled", (_:Bool) -> {
 				trace('Enabled fill color? $_');
 			}));
-			cast(c, ACheckBox).label.textColor = AColor.WHITE;
+			cast(c, HCheckbox).label.textColor = HColor.WHITE;
 
-			var c2 = styleGroup.add(new AColorPicker(5, 50, 160, 20, 0xFF5FD0C0, (_:Int) -> {
+			var c2 = styleGroup.add(new HColorPicker(5, 50, 160, 20, 0xFF5FD0C0, (_:Int) -> {
 				trace('Fill color changed!');
 			}));
 
-			var testGroup3:AGroup<ASprite> = new AGroup<ASprite>(0, 0);
-			testGroup3.addChild(new AText(0, 0, 100, "group 3!", 12));
+			var testGroup3:HGroup<HSprite> = new HGroup<HSprite>(0, 0);
+			testGroup3.addChild(new HText(0, 0, 100, "group 3!", 12));
 
 			tabMenu.addGroup("first", testGroup1);
 			tabMenu.addGroup("Style", styleGroup);
 			tabMenu.addGroup("third", testGroup3);
 
-			footerBar = new AMenuBar(BOTTOM, [
+			footerBar = new HMenuBar(BOTTOM, [
 				{
 					text: "click: MOVE · drag: LINE · right-drag: move point · wheel: zoom · middle-drag: pan",
-					type: ATEXT,
-					size: new APoint(410, 0),
-					color: AColor.MENUBAR_DROPDOWN_BACKGROUND
+					type: HTEXT,
+					size: new HPoint(410, 0),
+					color: HColor.MENUBAR_DROPDOWN_BACKGROUND
 				},
 				{
-					type: ASPRITE,
+					type: HSPRITE,
 					text: "seperator_footer",
-					size: new APoint(2, 20),
-					color: AColor.MENUBAR_DROPDOWN_BACKGROUND
+					size: new HPoint(2, 20),
+					color: HColor.MENUBAR_DROPDOWN_BACKGROUND
 				},
 				{
 					text: "x: {X}, y: {Y}",
-					type: ATEXT,
-					size: new APoint(420, 18),
-					color: AColor.MENUBAR_DROPDOWN_BACKGROUND
+					type: HTEXT,
+					size: new HPoint(420, 18),
+					color: HColor.MENUBAR_DROPDOWN_BACKGROUND
 				}
 			]);
 			add(footerBar);
@@ -159,15 +159,15 @@ class SymbolEditor extends AState {
 	inline function undo()
 		history.length != 0 ? {commands = Json.parse(history.pop()); renderAll();} : null;
 
-	inline function toScreen(x:Float, y:Float):APoint
-		return new APoint(origin.x + x * px, origin.y + y * px);
+	inline function toScreen(x:Float, y:Float):HPoint
+		return new HPoint(origin.x + x * px, origin.y + y * px);
 
-	inline function toWorld(sx:Float, sy:Float, applySnap:Bool = true):APoint
-		return new APoint((applySnap && snap) ? Math.round((sx - origin.x) / px) : (sx - origin.x) / px,
+	inline function toWorld(sx:Float, sy:Float, applySnap:Bool = true):HPoint
+		return new HPoint((applySnap && snap) ? Math.round((sx - origin.x) / px) : (sx - origin.x) / px,
 			(applySnap && snap) ? Math.round((sy - origin.y) / px) : (sy - origin.y) / px);
 
 	inline function updateZoomReadout()
-		cast(footerBar.objects[2].object, AText).text = '${Std.string(Math.round(px / 16 * 100))}%';
+		cast(footerBar.objects[2].object, HText).text = '${Std.string(Math.round(px / 16 * 100))}%';
 
 	function hexToRgb(hex:String) {
 		final n:Int = Std.parseInt(hex.replace('#', '').replace("0x", "").replace("0X", ""));
@@ -183,7 +183,7 @@ class SymbolEditor extends AState {
 	//    var closest:Int = -1;
 	//    var closestDist = threshold;
 	//    commands.forEach((c, i)->{
-	//        final a:APoint=new APoint(toScreen(c.x, c.y).x, toScreen(c.x, c.y).y);
+	//        final a:HPoint=new HPoint(toScreen(c.x, c.y).x, toScreen(c.x, c.y).y);
 	//        final d = Math.hypot(a.x-sx, a.y-sy);
 	//
 	//        if(d < closestDist){ closest = i; closestDist = d; }
@@ -212,14 +212,14 @@ class SymbolEditor extends AState {
 //    </div>
 //
 //    <div class="tabpane" id="tab-code">
-//      <p class="section-title">Generated ADrawableIcons entry</p>
+//      <p class="section-title">Generated HDrawableIcons entry</p>
 //      <textarea id="exportCode" readonly></textarea>
 //      <div class="copybar">
 //        <button id="copyBtn" class="primary">Copy</button>
 //      </div>
 //      <div class="divider"></div>
 //      <p class="section-title">Import existing command array</p>
-//      <textarea id="importCode" placeholder="Paste an ADrawableIconCommand array, e.g.&#10;[&#10;  {t:MOVE,a:{x:0,y:0}},&#10;  {t:LINE,a:{x:10,y:10}}&#10;]"></textarea>
+//      <textarea id="importCode" placeholder="Paste an HDrawableIconCommand array, e.g.&#10;[&#10;  {t:MOVE,a:{x:0,y:0}},&#10;  {t:LINE,a:{x:10,y:10}}&#10;]"></textarea>
 //      <div class="copybar">
 //        <button id="importBtn" class="primary">Parse & load</button>
 //      </div>
@@ -403,8 +403,8 @@ class SymbolEditor extends AState {
 //    const strokeAlpha = document.getElementById('strokeAlpha').value;
 //    const thickness = document.getElementById('strokeThickness').value;
 //
-//    let out = `// Add to ADrawableIcons:\npublic static final ${iconName}:Array<ADrawableIconCommand> = [\n${lines || '        // no commands yet'}\n];\n\n`;
-//    out += `// Usage:\nDrawUtil.drawIcon(spr, "${iconName}", ${strokeEnabled?thickness:0}, new AColor(${strokeColor}, ${strokeEnabled?strokeAlpha:0}), new AColor(${fillColor}, ${fillAlpha}));`;
+//    let out = `// Add to HDrawableIcons:\npublic static final ${iconName}:Array<HDrawableIconCommand> = [\n${lines || '        // no commands yet'}\n];\n\n`;
+//    out += `// Usage:\nDrawUtil.drawIcon(spr, "${iconName}", ${strokeEnabled?thickness:0}, new HColor(${strokeColor}, ${strokeEnabled?strokeAlpha:0}), new HColor(${fillColor}, ${fillAlpha}));`;
 //    document.getElementById('exportCode').value = out;
 //  }
 //  function fmt(n){ return Number.isInteger(n) ? n : Math.round(n*100)/100; }

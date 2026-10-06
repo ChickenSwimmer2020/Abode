@@ -1,10 +1,10 @@
 package backend.objects;
 
 /**
- * AState, its a state. functions like FlxState from Flixel
+ * HState, its a state. functions like FlxState from Flixel
  * @since 0.00.000
  */
-class AState extends Sprite {
+class HState extends Sprite {
 	/**
 	 * members of the state
 	 * @since 0.00.000
@@ -21,7 +21,7 @@ class AState extends Sprite {
 	 * UNFINISHED
 	 * @since 0.00.004
 	 */
-	private var lastButtonStates:Map<AButton, Bool> = new Map<AButton, Bool>();
+	private var lastButtonStates:Map<HButton, Bool> = new Map<HButton, Bool>();
 
 	/**
 	 * UNFINISHED
@@ -31,15 +31,15 @@ class AState extends Sprite {
 	public function set_canInteract(a:Bool):Bool {
 		canInteract = a;
 		for (member in members) {
-			if (member is AButton) {
+			if (member is HButton) {
 				if (a) {
-					(member : AButton).disabled = lastButtonStates.get((member : AButton));
-					(member : AButton).doDisabledColor = false;
-					lastButtonStates.remove((member : AButton));
+					(member : HButton).disabled = lastButtonStates.get((member : HButton));
+					(member : HButton).doDisabledColor = false;
+					lastButtonStates.remove((member : HButton));
 				} else {
-					lastButtonStates.set((member : AButton), (member : AButton).disabled);
-					(member : AButton).doDisabledColor = false;
-					(member : AButton).disabled = true;
+					lastButtonStates.set((member : HButton), (member : HButton).disabled);
+					(member : HButton).doDisabledColor = false;
+					(member : HButton).disabled = true;
 				}
 			}
 		}
@@ -90,8 +90,8 @@ class AState extends Sprite {
 		// iterate a copy so removing mid-loop doesnt cause skips
 		for (thing in members.copy()) {
 			// call destroy on children that support it
-			if (Std.isOfType(thing, AState))
-				(cast thing : AState).destroy();
+			if (Std.isOfType(thing, HState))
+				(cast thing : HState).destroy();
 			else if (Reflect.hasField(thing, "destroy"))
 				Reflect.callMethod(thing, Reflect.field(thing, "destroy"), []);
 

@@ -2,7 +2,7 @@ package backend.debug;
 
 #if debug
 class DebugDisplay extends Sprite {
-	private var label:AText;
+	private var label:HText;
 	private var frameCount:Int = 0;
 	private var fps:Float = 0;
 	private var fpsTimer:Float = 0;
@@ -12,13 +12,13 @@ class DebugDisplay extends Sprite {
 		super();
 
 		// background
-		graphics.beginFill(AColor.DEBUGGER_BACKGROUND.rgb, AColor.DEBUGGER_BACKGROUND.a);
+		graphics.beginFill(HColor.DEBUGGER_BACKGROUND.rgb, HColor.DEBUGGER_BACKGROUND.a);
 		graphics.drawRect(0, 0, 200, 80);
 		graphics.endFill();
 
 		// text field
-		label = new AText(0, 0, 200, "", 11);
-		label.defaultTextFormat = new TextFormat("_typewriter", 11, AColor.DEBUGGER_CONSOLE_TEXT);
+		label = new HText(0, 0, 200, "", 11);
+		label.defaultTextFormat = new TextFormat("_typewriter", 11, HColor.DEBUGGER_CONSOLE_TEXT);
 		label.setFieldSize(-1, 80);
 		addChild(label);
 
@@ -54,9 +54,9 @@ class DebugDisplay extends Sprite {
 			{key: "MEM||MB", value: (Math.round(mem * 10) / 10)},
 			{key: "STG||children", value: ((stage != null) ? stage.numChildren : 0)},
 			{key: "OBJ||children", value: numChildren},
-			{key: "CST", value: ATextInputBox.selectedTextBox},
-			{key: "DDO", value: ADropdown.dropdownOpen},
-			{key: "SSD", value: ADropdown.subDropdownOpen},
+			{key: "CST", value: HTextInputBox.selectedTextBox},
+			{key: "DDO", value: HDropdown.dropdownOpen},
+			{key: "SSD", value: HDropdown.subDropdownOpen},
 		] : Array<Dynamic>);
 		// }
 
@@ -67,7 +67,7 @@ class DebugDisplay extends Sprite {
 		if (label.height != (0 + (20 * (MSGS.length - 1)))) { // only update the graphics if we need too.
 			label.setFieldSize(-1, 0 + (20 * (MSGS.length - 1)));
 			graphics.clear();
-			graphics.beginFill(AColor.DEBUGGER_BACKGROUND.rgb, AColor.DEBUGGER_BACKGROUND.a);
+			graphics.beginFill(HColor.DEBUGGER_BACKGROUND.rgb, HColor.DEBUGGER_BACKGROUND.a);
 			graphics.drawRect(0, 0, 200, label.height);
 			graphics.endFill();
 		}

@@ -1,7 +1,7 @@
 package backend;
 
 /**
- * Localization system to allow for different languages to enjoy abode!
+ * Localization system to allow for different languages to enjoy HYDRO-FRAME!
  * @since 0.00.003
  */
 class Locale { // overrall, very simple system. for now.
@@ -27,7 +27,7 @@ class Locale { // overrall, very simple system. for now.
 		else {
 			var toReturn:String = target;
 			// TODO: fix
-			// TODO /*if(Date.now().getMonth()==3&&Date.now().getDate()==1)?*/toReturn = toReturn.replace("abode", "aboat");
+			// TODO /*if(Date.now().getMonth()==3&&Date.now().getDate()==1)?*/toReturn = toReturn.replace("HYDRO-FRAME", "aboat");
 			if (replacer != null) {
 				for (get => to in replacer) {
 					toReturn = toReturn.replace(get, Std.string(to)); // whoops.

@@ -4,23 +4,23 @@ package backend.objects;
  * Sound manager, everything here is static so we dont need to isntance this
  * @since 0.00.002
  */
-class ASoundManager {
+class HSoundManager {
 	/**
 	 * for looping music
 	 * @since 0.00.002
 	 */
-	public static var music:Null<ASound>; // TODO: make fade in/out based on if the window is focused or not.
+	public static var music:Null<HSound>; // TODO: make fade in/out based on if the window is focused or not.
 
 	/**
 	 * play looping music 
 	 * @param asset full path to sound to play
 	 * @param vol volume of the sound
-	 * @return ASound the sound that wsa just started, aka `music`
+	 * @return HSound the sound that wsa just started, aka `music`
 	 * @since 0.00.002
 	 */
-	public static function playMusic(asset:String, ?vol:Float = 1.0):ASound {
+	public static function playMusic(asset:String, ?vol:Float = 1.0):HSound {
 		if (music == null)
-			music = new ASound();
+			music = new HSound();
 		music.load(asset, true);
 		music.autoDestroy = false;
 		music.looped = true;
@@ -32,11 +32,11 @@ class ASoundManager {
 	 * play a sound once, then destroy it.
 	 * @param asset asset path
 	 * @param vol sound volume
-	 * @return ASound the sound that was just started
+	 * @return HSound the sound that was just started
 	 * @since 0.00.002
 	 */
-	public static function playSound(asset:String, ?vol:Float = 1.0):ASound {
-		var sound:ASound = new ASound().load(asset, true);
+	public static function playSound(asset:String, ?vol:Float = 1.0):HSound {
+		var sound:HSound = new HSound().load(asset, true);
 		sound.onComplete = () -> sound.destroy();
 		sound.volume = vol;
 		return sound.play();
@@ -51,7 +51,7 @@ class ASoundManager {
  * you want api information? refer to the flixel api.
  * @since 0.00.002
  */
-class ASound implements IDestroyable {
+class HSound implements IDestroyable {
 	// other
 	public var autoDestroy:Bool;
 	public var onComplete:Null<() -> Void> = null;
@@ -77,7 +77,7 @@ class ASound implements IDestroyable {
 		return _volume;
 
 	function set_volume(Volume:Float):Float {
-		_volume = AMath.bound(Volume, 0, 1);
+		_volume = HMath.bound(Volume, 0, 1);
 		updateTransform();
 		return Volume;
 	}
@@ -182,13 +182,13 @@ class ASound implements IDestroyable {
 		cleanup(false);
 
 	// important stuff.
-	public function load(asset:String, allowCache:Bool = true):ASound {
+	public function load(asset:String, allowCache:Bool = true):HSound {
 		if (asset == null)
 			trace("Couldnt find a valid sound to load!!");
 		return loadHelper(asset, true, allowCache, true).init(false, false, null);
 	}
 
-	function loadHelper(asset:String, destroy:Bool = false, allowCache:Bool = true, addExt:Bool = false):ASound {
+	function loadHelper(asset:String, destroy:Bool = false, allowCache:Bool = true, addExt:Bool = false):HSound {
 		cleanup(destroy);
 
 		_sound = Assets.getSound(asset, allowCache);
@@ -198,10 +198,10 @@ class ASound implements IDestroyable {
 		return this;
 	}
 
-	public function loadFromURL(URL:String, ?onLoad:Void->Void):ASound
+	public function loadFromURL(URL:String, ?onLoad:Void->Void):HSound
 		return loadFromURLHelper(URL, onLoad).init(false, false, null);
 
-	function loadFromURLHelper(URL:String, ?onLoad:Void->Void):ASound {
+	function loadFromURLHelper(URL:String, ?onLoad:Void->Void):HSound {
 		cleanup(true);
 
 		final sound = _sound = new Sound();
@@ -220,19 +220,19 @@ class ASound implements IDestroyable {
 		return this;
 	}
 
-	overload public inline extern function setup(volume = 1.0, looped = false, autoDestroy = false, ?onComplete:() -> Void):ASound {
+	overload public inline extern function setup(volume = 1.0, looped = false, autoDestroy = false, ?onComplete:() -> Void):HSound {
 		this.volume = volume;
 		loopUntil = -1;
 		return init(looped, autoDestroy, onComplete);
 	}
 
-	overload public inline extern function setup(volume = 1.0, loopUntil:Int, autoDestroy = false, ?onComplete:() -> Void):ASound {
+	overload public inline extern function setup(volume = 1.0, loopUntil:Int, autoDestroy = false, ?onComplete:() -> Void):HSound {
 		this.volume = volume;
 		this.loopUntil = loopUntil;
 		return init(true, autoDestroy, onComplete);
 	}
 
-	function init(looped:Bool, autoDestroy:Bool, onComplete:Null<() -> Void>):ASound {
+	function init(looped:Bool, autoDestroy:Bool, onComplete:Null<() -> Void>):HSound {
 		this.looped = looped;
 		this.autoDestroy = autoDestroy;
 		this.onComplete = onComplete;
@@ -241,7 +241,7 @@ class ASound implements IDestroyable {
 		return this;
 	}
 
-	public function play(forceRestart = false, startTime = 0.0, ?endTime:Float):ASound {
+	public function play(forceRestart = false, startTime = 0.0, ?endTime:Float):HSound {
 		if (forceRestart)
 			cleanup(false, true);
 		else if (playing) // Already playing sound
@@ -258,13 +258,13 @@ class ASound implements IDestroyable {
 		return this;
 	}
 
-	public function resume():ASound {
+	public function resume():HSound {
 		if (_paused)
 			startSound(_time);
 		return this;
 	}
 
-	public function pause():ASound {
+	public function pause():HSound {
 		if (!playing)
 			return this;
 
@@ -274,7 +274,7 @@ class ASound implements IDestroyable {
 		return this;
 	}
 
-	public inline function stop():ASound {
+	public inline function stop():HSound {
 		cleanup(autoDestroy, true);
 		return this;
 	}

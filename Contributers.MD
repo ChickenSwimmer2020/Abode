@@ -1,6 +1,6 @@
 # CONTRIBUTERS
 
-## this will be put into the credits section on the `About Abode` window in-program
+## this will be put into the credits section on the `About HYDRO-FRAME` window in-program
 
 |  credee  | action(s)
 | -------- | --------

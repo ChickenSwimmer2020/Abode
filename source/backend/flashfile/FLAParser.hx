@@ -55,7 +55,7 @@ typedef FlashSymbolInstance = {
 	var symbolType:String;
 	var loop:String;
 	var matrix:Matrix; //* CONFIRMED
-	var transformationPoint:APoint;
+	var transformationPoint:HPoint;
 	var filters:Array<FlashSymbolFilter>;
 	// missed more :/
 	@:optional var centerPoint3DX:Float;
@@ -313,7 +313,7 @@ class FlashReader {
 										symbolType: element.get('symbolType') ?? "",
 										loop: element.get('loop') ?? "loopPlay",
 										matrix: matrixElement != null ? parseMatrix(matrixElement.firstElement()) : new Matrix(1, 0, 0, 1, 0, 0),
-										transformationPoint: transformElement != null ? parsePoint(transformElement.firstElement()) : new APoint(0, 0),
+										transformationPoint: transformElement != null ? parsePoint(transformElement.firstElement()) : new HPoint(0, 0),
 										filters: [],
 										centerPoint3DX: Std.parseFloat(element.get('centerPoint3DX') ?? "0"),
 										centerPoint3DY: Std.parseFloat(element.get('centerPoint3DY') ?? "0"),
@@ -373,8 +373,8 @@ class FlashReader {
 		return TimeLines;
 	}
 
-	private static inline function parsePoint(element:Xml):APoint
-		return new APoint(Std.parseFloat(element.get('x')), Std.parseFloat(element.get('y')));
+	private static inline function parsePoint(element:Xml):HPoint
+		return new HPoint(Std.parseFloat(element.get('x')), Std.parseFloat(element.get('y')));
 
 	private static inline function parseMatrix(element:Xml):Matrix
 		return new Matrix(Std.parseFloat(element.get('a') ?? "1"), // proper defaulting i guess.

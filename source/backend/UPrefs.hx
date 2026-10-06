@@ -11,7 +11,7 @@ class UPrefs {
          * * Contains the save data for the program
          * @since 0.00.006
          */
-        public static var prefsData:SharedObject = SharedObject.getLocal("abodePrefs");
+        public static var prefsData:SharedObject = SharedObject.getLocal("HYDRO-FRAMEPrefs");
     #end
     /**
      * Default Preferences
@@ -60,9 +60,9 @@ class UPrefs {
     public static var autoCollapseIconPanels:Preference<Bool> = new Preference("autoCollapseIconPanels", true);
     public static var seperateProjectsAndScriptWindows:Preference<Bool> = new Preference("seperateProjectsAndScriptWindows", false);
     public static var useCustomColorsForHighlights:Preference<Bool> = new Preference("useCustomColorsForHighlights", false);
-    public static var groupCustomColor:Preference<AColor> = new Preference("groupCustomColor", 0xFF1cbbb4);
-    public static var objectCustomColor:Preference<AColor> = new Preference("objectCustomColor", 0xFF00a8ff);
-    public static var otherCustomColor:Preference<AColor> = new Preference("otherCustomColor", 0xFF0066ff);
+    public static var groupCustomColor:Preference<HColor> = new Preference("groupCustomColor", 0xFF1cbbb4);
+    public static var objectCustomColor:Preference<HColor> = new Preference("objectCustomColor", 0xFF00a8ff);
+    public static var otherCustomColor:Preference<HColor> = new Preference("otherCustomColor", 0xFF0066ff);
     //SETTINGS TO ADD AND MAKE FUNCTIONAL
     public static var inverseScrollDirection:Preference<Bool> = new Preference("inverseScrollDirection", false);
 

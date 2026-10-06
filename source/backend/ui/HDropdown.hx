@@ -1,36 +1,37 @@
 package backend.ui;
 
-class ADropdown extends ASprite {
-	public static var members:Array<ASprite> = [];
+class HDropdown extends HSprite {
+	public static var members:Array<HSprite> = [];
 	public static var canCloseInstace:Bool = false;
 	public static var canCloseSubInstace:Bool = false;
 	public static var dropdownOpen:Bool = false;
 	public static var subDropdownOpen:Bool = false;
-	public static var dropdownBG:ASprite;
-	public static var subDropdownBG:ASprite;
-	static var dropdownButtons:Array<OneOfTwo<ASprite, AButton>> = [];
-	static var subDropdownButtons:Array<OneOfTwo<ASprite, AButton>> = [];
+	public static var dropdownBG:HSprite;
+	public static var subDropdownBG:HSprite;
+	static var dropdownButtons:Array<OneOfTwo<HSprite, HButton>> = [];
+	static var subDropdownButtons:Array<OneOfTwo<HSprite, HButton>> = [];
 	static var increment:Float = 0.0;
 	static var subIncrement:Float = 0.0;
 	public static var dropdownKeys:Map<Array<Int>, String> = [];
 	public static var subDropdownKeys:Map<Array<Int>, String> = [];
 
 	// TODO: fix the backgrounds extending past the total ammount of buttons.
-	public static function openDropdownMenu(target:ASprite, ?isSub:Bool = false, options:Array<{
+	public static function openDropdownMenu(target:HSprite, ?isSub:Bool = false, options:Array<{
 		text:String,
 		?closeOnClick:Bool,
 		?keys:Array<Int>,
 		?disabled:Bool,
-		func:AButton->Void
+		func:HButton->Void
 	}>, ?overWidth:Int) {
 		if (dropdownOpen)
 			return;
 		var button = target;
-		var targetPosition:APoint = new APoint(button.x + (isSub ? button.width : 0), button.y + (isSub ? 0 : button.height));
+        //TODO: fix not positioning based on stage position.
+		var targetPosition:HPoint = new HPoint(button.x + (isSub ? button.width : 0), button.y + (isSub ? 0 : button.height));
 
-		dropdownBG = new ASprite(targetPosition.x,
+		dropdownBG = new HSprite(targetPosition.x,
 			targetPosition.y).makeGraphic(Math.floor(overWidth ?? button.width), Math.floor(button.height * (options.length - 1)),
-				AColor.MENUBAR_DROPDOWN_BACKGROUND);
+				HColor.MENUBAR_DROPDOWN_BACKGROUND);
 		addM(dropdownBG);
 		var ind:Int = 0;
 		increment = 0.0;
@@ -42,9 +43,9 @@ class ADropdown extends ASprite {
 				dropdownKeys.set(t.keys, text);
 
 			if (text == 'seperator') {
-				var seperator:ASprite = new ASprite(targetPosition.x, targetPosition.y + increment);
+				var seperator:HSprite = new HSprite(targetPosition.x, targetPosition.y + increment);
 				seperator.makeGraphic(Math.floor(overWidth != null ? (overWidth / 2) : (button.width / 2)), Math.floor(button.height / 4),
-					AColor.MENUBAR_DROPDOWN_SEPERATOR);
+					HColor.MENUBAR_DROPDOWN_SEPERATOR);
 				dropdownButtons.push(seperator);
 				addM(seperator);
 				seperator.setAttribute("isDropdownObject", true);
@@ -52,7 +53,7 @@ class ADropdown extends ASprite {
 				increment += seperator.gHeight;
 			} else {
 				var func = t.func;
-				var button:AButton = new AButton(text,
+				var button:HButton = new HButton(text,
 					new Rectangle(targetPosition.x, targetPosition.y + increment, overWidth ?? button.width, button.height), func);
 				dropdownButtons.push(button);
 				addM(button);
@@ -65,27 +66,27 @@ class ADropdown extends ASprite {
 		}
 
 		dropdownOpen = true;
-		ATimer.start(0.02, () -> {
+		HTimer.start(0.02, () -> {
 			canCloseInstace = true;
 		});
 	}
 
-	public static function openSubDropdownMenu(target:ASprite, options:Array<{
+	public static function openSubDropdownMenu(target:HSprite, options:Array<{
 		text:String,
 		?closeOnClick:Bool,
 		?closeFullDropdown:Bool,
 		?keys:Array<Int>,
 		?disabled:Bool,
-		func:AButton->Void
+		func:HButton->Void
 	}>, ?overWidth:Int) {
 		if (subDropdownOpen)
 			return;
 		var button = target;
-		var targetPosition:APoint = new APoint(button.x + button.width, button.y);
+		var targetPosition:HPoint = new HPoint(button.x + button.width, button.y);
 
-		subDropdownBG = new ASprite(targetPosition.x,
+		subDropdownBG = new HSprite(targetPosition.x,
 			targetPosition.y).makeGraphic(Math.floor(overWidth ?? button.width), Math.floor(button.height * (options.length - 1)),
-				AColor.MENUBAR_DROPDOWN_BACKGROUND);
+				HColor.MENUBAR_DROPDOWN_BACKGROUND);
 		addM(subDropdownBG);
 		var ind:Int = 0;
 		subIncrement = 0.0;
@@ -98,9 +99,9 @@ class ADropdown extends ASprite {
 				subDropdownKeys.set(t.keys, text);
 
 			if (text == 'seperator') {
-				var seperator:ASprite = new ASprite(targetPosition.x, targetPosition.y + subIncrement);
+				var seperator:HSprite = new HSprite(targetPosition.x, targetPosition.y + subIncrement);
 				seperator.makeGraphic(Math.floor(overWidth != null ? (overWidth / 2) : (button.width / 2)), Math.floor(button.height / 4),
-					AColor.MENUBAR_DROPDOWN_SEPERATOR);
+					HColor.MENUBAR_DROPDOWN_SEPERATOR);
 				subDropdownButtons.push(seperator);
 				addM(seperator);
 				seperator.setAttribute("isSubDropdownObject", true);
@@ -109,7 +110,7 @@ class ADropdown extends ASprite {
 				subIncrement += seperator.height;
 			} else {
 				var func = t.func;
-				var button:AButton = new AButton(text,
+				var button:HButton = new HButton(text,
 					new Rectangle(targetPosition.x, targetPosition.y + subIncrement, overWidth ?? button.width, button.height), func);
 				subDropdownButtons.push(button);
 				addM(button);
@@ -123,18 +124,18 @@ class ADropdown extends ASprite {
 		}
 
 		subDropdownOpen = true;
-		ATimer.start(0.02, () -> {
+		HTimer.start(0.02, () -> {
 			canCloseSubInstace = true;
 		});
 	}
 
 	public static function closeDropdownMenu() {
-		trace("Destroying ADropdown");
+		trace("Destroying HDropdown");
 		for (button in dropdownButtons) { // stupid casting requirements.
-			if (button is ASprite)
-				removeM((button : ASprite));
-			if (button is AButton)
-				removeM((button : AButton));
+			if (button is HSprite)
+				removeM((button : HSprite));
+			if (button is HButton)
+				removeM((button : HButton));
 		}
 		for (keys => key in dropdownKeys)
 			dropdownKeys.remove(keys);
@@ -146,10 +147,10 @@ class ADropdown extends ASprite {
 	public static function closeSubDropdownMenu() {
 		trace("Destroying the subDropdownMenu");
 		for (button in subDropdownButtons) { // stupid casting requirements.
-			if (button is ASprite)
-				removeM((button : ASprite));
-			if (button is AButton)
-				removeM((button : AButton));
+			if (button is HSprite)
+				removeM((button : HSprite));
+			if (button is HButton)
+				removeM((button : HButton));
 		}
 		for (keys => key in subDropdownKeys)
 			subDropdownKeys.remove(keys);
@@ -158,15 +159,15 @@ class ADropdown extends ASprite {
 		canCloseSubInstace = false;
 	}
 
-	private static inline function addM(a:ASprite):ASprite {
+	private static inline function addM(a:HSprite):HSprite {
 		members.push(a);
 		Main.instance.addToMainStage(a);
 		return a;
 	}
 
-	private static inline function removeM(a:ASprite):Bool {
+	private static inline function removeM(a:HSprite):Bool {
 		members.remove(a);
-		cast(a, ASprite).destroy(); // auto calls `removeChild` from it.
+		cast(a, HSprite).destroy(); // auto calls `removeChild` from it.
 		return a == null;
 	}
 }

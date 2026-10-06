@@ -1,6 +1,6 @@
 package backend.ui;
 
-class ScrollableArea extends AGroup<ASprite> {
+class ScrollableArea extends HGroup<HSprite> {
 	public var interactable:Bool = true;
 	public var index:Int = 0;
 	public var target:Float = 0.0;
@@ -12,7 +12,7 @@ class ScrollableArea extends AGroup<ASprite> {
 	}
 
 	public function onEnterFrame(e:Event) {
-		target = AMath.lerp(target, index, 0.1);
+		target = HMath.lerp(target, index, 0.1);
 		scrollRect = new Rectangle(0, 0 + target, width, height);
 	}
 

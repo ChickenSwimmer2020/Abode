@@ -1,34 +1,34 @@
 package backend.ui;
 
-class ProjectBox extends ASprite {
-	public static final SIZE:APoint = new APoint(300, 75);
+class ProjectBox extends HSprite {
+	public static final SIZE:HPoint = new HPoint(300, 75);
 
-	public var icon:ASprite;
-	public var title:AText;
-	public var lastUsed:AText;
-	public var size:AText;
-	public var desc:AText;
+	public var icon:HSprite;
+	public var title:HText;
+	public var lastUsed:HText;
+	public var size:HText;
+	public var desc:HText;
 
 	public function new(x:Float, y:Float) {
 		super(x, y);
 
-		makeGraphic(SIZE.iX, SIZE.iY, AColor.RED);
-		this.addRect(new Rectangle(0, 0, SIZE.y, SIZE.y), AColor.MAGENTA); // debug fallback if the image cant load
+		makeGraphic(SIZE.iX, SIZE.iY, HColor.RED);
+		this.addRect(new Rectangle(0, 0, SIZE.y, SIZE.y), HColor.MAGENTA); // debug fallback if the image cant load
 
-		title = new AText(0 + SIZE.y, 0, width, "[project].(apf/fla)", 12);
+		title = new HText(0 + SIZE.y, 0, width, "[project].(apf/fla)", 12);
 		title.setFieldSize(-1, height);
 		addChild(title);
 
-		size = new AText(0, 0, width, "---.--- (KB/MB/GB)", 12); // why will we support gb? idfk lmfao.
+		size = new HText(0, 0, width, "---.--- (KB/MB/GB)", 12); // why will we support gb? idfk lmfao.
 		size.setFieldSize(-1, height);
 		size.x = SIZE.x - (size.textWidth + 5);
 		addChild(size);
 
-		lastUsed = new AText(0 + SIZE.y, 0 + title.textHeight, width, "[yesterday, [last | week/month/year], ~ /days/weeks/months/years | ago]", 12);
+		lastUsed = new HText(0 + SIZE.y, 0 + title.textHeight, width, "[yesterday, [last | week/month/year], ~ /days/weeks/months/years | ago]", 12);
 		lastUsed.setFieldSize(-1, height - title.textHeight);
 		addChild(lastUsed);
 
-		desc = new AText(0 + SIZE.y, 0, width, "Description go brrrr", 12);
+		desc = new HText(0 + SIZE.y, 0, width, "Description go brrrr", 12);
 		desc.setFieldSize(-1, height);
 		desc.y = SIZE.y - (desc.textHeight + 5);
 		addChild(desc);
@@ -37,8 +37,8 @@ class ProjectBox extends ASprite {
 	public function loadData(name:String, type:String, lastModded:String, ?description:String) {
 		title.text = '$name.${type == "Flash" ? "Fla" : "APF"}';
 		if (type == "Flash") {
-			title.textColor = AColor.WHITE;
-			lastUsed.textColor = AColor.WHITE;
+			title.textColor = HColor.WHITE;
+			lastUsed.textColor = HColor.WHITE;
 		}
 		lastUsed.text = lastModded;
 		desc.text = description ?? ""; // show nothing if its null.
@@ -47,8 +47,8 @@ class ProjectBox extends ASprite {
 		switch (type) { // graphic, *then* icon.
 			case "Flash":
 				DrawUtil.drawIcon(this, "FILE_FLASH", 1, 0xFF9999FF, 0xFF00005B);
-			case "AbodeProjectFormat":
-				DrawUtil.drawIcon(this, "FILE_ABODEPROJECTFORMAT", 1, 0xFF9173B5, 0xFF89B2B7);
+			case "HYDRO-FRAMEProjectFormat":
+				DrawUtil.drawIcon(this, "FILE_HYDRO-FRAMEPROJECTFORMAT", 1, 0xFF9173B5, 0xFF89B2B7);
 		}
 	}
 }

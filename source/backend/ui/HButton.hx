@@ -4,13 +4,13 @@ enum ButtonStyle {
 	DEFAULT;
 	ACCENT;
 }
-
-class AButton extends ASprite {
+//TODO: support double clicking.
+class HButton extends HSprite {
 	/**
 	 * label access
 	 * @since 0.00.007
 	 */
-	public var label:Null<AText> = null;
+	public var label:Null<HText> = null;
 
 	public var disabled(default, set):Bool = false;
 	public var doDisabledColor:Bool = true;
@@ -22,9 +22,9 @@ class AButton extends ASprite {
 			removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
 			removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 			if (doDisabledColor)
-				setGraphicColor(AColor.BUTTON_DISABLED);
+				setGraphicColor(HColor.BUTTON_DISABLED);
 		} else {
-			setGraphicColor(AColor.BUTTON_IDLE);
+			setGraphicColor(HColor.BUTTON_IDLE);
 			if (!hasEventListener("click"))
 				addEventListener(MouseEvent.CLICK, onMouseClick);
 			if (!hasEventListener("mouseOver"))
@@ -35,24 +35,24 @@ class AButton extends ASprite {
 		return disabled;
 	}
 
-	public var onC:AButton->Void;
+	public var onC:HButton->Void;
 	public var hasSymbol:Bool = false;
 	public var targetSymbol:String = "";
 	public var symbolParams:Array<Dynamic> = [];
 
-	public function new(text:String, rect:Rectangle, onClick:AButton->Void, ?buttonStyle:ButtonStyle = DEFAULT) {
+	public function new(text:String, rect:Rectangle, onClick:HButton->Void, ?buttonStyle:ButtonStyle = DEFAULT) {
 		super(rect.x, rect.y);
 		onC = onClick;
-		makeGraphic(Math.floor(rect.width), Math.floor(rect.height), buttonStyle == ACCENT ? Native.getAccentColor() : AColor.BUTTON_IDLE);
+		makeGraphic(Math.floor(rect.width), Math.floor(rect.height), buttonStyle == ACCENT ? Native.getAccentColor() : HColor.BUTTON_IDLE);
 
 		if (text.trim().startsWith("[SYM:") && text.trim().endsWith(']')) {
-			this.drawIcon(text.split(':')[1].replace("]", "").trim(), 1, AColor.BLACK, AColor.TRANSPARENT);
+			this.drawIcon(text.split(':')[1].replace("]", "").trim(), 1, HColor.BLACK, HColor.TRANSPARENT);
 
 			hasSymbol = true;
 			targetSymbol = text.split(':')[1].replace("]", "").trim();
-			symbolParams = [1, AColor.BLACK, AColor.TRANSPARENT];
+			symbolParams = [1, HColor.BLACK, HColor.TRANSPARENT];
 		} else {
-			label = new AText(0, 0, rect.width, text, 12);
+			label = new HText(0, 0, rect.width, text, 12);
 			label.setFieldSize(rect.width, rect.height);
 			label.alignment = CENTER;
 			addChild(label);
@@ -66,18 +66,18 @@ class AButton extends ASprite {
 	// TODO: add system to fix text width when button is resized. or to uniformly scale the text proportionately
 
 	public function onMouseClick(e:MouseEvent) {
-		setGraphicColor(AColor.BUTTON_CLICK);
+		setGraphicColor(HColor.BUTTON_CLICK);
 		if (hasSymbol) {
 			this.drawIcon(targetSymbol, symbolParams[0], symbolParams[1], symbolParams[2]);
 		}
 		if (onC != null) {
-			ASoundManager.playSound("assets/sounds/buttonClick.wav", 1.0); // TODO: implement volume
+			HSoundManager.playSound("assets/sounds/buttonClick.wav", 1.0); // TODO: implement volume
 			onC(this);
 		}
 	}
 
 	public function onMouseOver(e:MouseEvent) {
-		setGraphicColor(AColor.BUTTON_HOVER);
+		setGraphicColor(HColor.BUTTON_HOVER);
 
 		if (hasSymbol) {
 			this.drawIcon(targetSymbol, symbolParams[0], symbolParams[1], symbolParams[2]);
@@ -92,7 +92,7 @@ class AButton extends ASprite {
 	}
 
 	public function onMouseOut(e:MouseEvent) {
-		setGraphicColor(AColor.BUTTON_IDLE);
+		setGraphicColor(HColor.BUTTON_IDLE);
 		if (hasSymbol) {
 			this.drawIcon(targetSymbol, symbolParams[0], symbolParams[1], symbolParams[2]);
 		}

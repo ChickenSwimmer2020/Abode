@@ -4,7 +4,7 @@ package backend.utils;
  * Math utilities
  * @since 0.00.002
  */
-class AMath {
+class HMath {
 	private static var iSeed:Float = 1;
 
 	public static inline function lerp(a:Float, b:Float, c:Float):Float

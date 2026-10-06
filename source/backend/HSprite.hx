@@ -5,15 +5,15 @@ package backend;
  * @since 0.00.001
  */
 typedef ExtraFilterParams = {
-	@:optional var colorTransform:Null<AColor>;
+	@:optional var colorTransform:Null<HColor>;
 	@:optional var offsets:Null<Rectangle>;
 }
 
 /**
- * ASprite is the building block of Abode, as 90% of classes end up extending this.
+ * HSprite is the building block of HYDRO-FRAME, as 90% of classes end up extending this.
  * @since 0.00.000
  */
-class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implements IDestroyable {
+class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implements IDestroyable {
 	/**
 	 * attributes, currently only used for dropdowns.
 	 * @since 0.00.002
@@ -54,19 +54,19 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * Color transform of the Sprite, affects sub-objects as well.
 	 * @since 0.00.002
 	 */
-	public var color(default, set):AColor = AColor.TRANSPARENT;
+	public var color(default, set):HColor = HColor.TRANSPARENT;
 
 	/**
 	 * set the color transform of this sprite
 	 * @param c transform
-	 * @return AColor
+	 * @return HColor
 	 * @since 0.00.002
 	 */
-	public function set_color(c:AColor):AColor {
+	public function set_color(c:HColor):HColor {
 		color = c;
 		trace(c);
-		trace('transform: ${AColor.toTransform(c)}');
-		transform.colorTransform = AColor.toTransform(c);
+		trace('transform: ${HColor.toTransform(c)}');
+		transform.colorTransform = HColor.toTransform(c);
 		return c;
 	}
 
@@ -74,7 +74,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * scale of the sprite.
 	 * @since 0.00.002
 	 */
-	public var scale(default, set):APoint = new APoint(1.0, 1.0);
+	public var scale(default, set):HPoint = new HPoint(1.0, 1.0);
 
 	/**
 	 * TODO: (NON-FUNCTIONAL, PLEASE FIX)
@@ -96,7 +96,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 */
 	public var frameHeight:Float = 0;
 
-	@:noCompletion private var gColor:AColor;
+	@:noCompletion private var gColor:HColor;
 	@:noCompletion private var gWidth:Int = 0;
 	@:noCompletion private var gHeight:Int = 0;
 	@:noCompletion private var _bitmapData:BitmapData = null; // track it so we can dispose it later
@@ -104,10 +104,10 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	/**
 	 * set the scale of the sprite.
 	 * @param value scale to set.
-	 * @return APoint
+	 * @return HPoint
 	 * @since 0.00.002
 	 */
-	public function set_scale(value:APoint):APoint {
+	public function set_scale(value:HPoint):HPoint {
 		@:bypassAccessor scale.x = value.x;
 		@:bypassAccessor scale.y = value.y;
 		scaleX = value.x;
@@ -136,11 +136,11 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * make a graphic without loading bitmap data.
 	 * @param width width
 	 * @param height height
-	 * @param color AColor
-	 * @return ASprite
+	 * @param color HColor
+	 * @return HSprite
 	 * @since 0.00.000
 	 */
-	public function makeGraphic(width:Int, height:Int, color:AColor = AColor.TRANSPARENT):ASprite {
+	public function makeGraphic(width:Int, height:Int, color:HColor = HColor.TRANSPARENT):HSprite {
 		graphics.clear();
 		graphics.beginFill(color.rgb, color.a);
 		graphics.drawRect(0, 0, width, height);
@@ -153,10 +153,10 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 
 	/**
 	 * Rerender the current graphic of the sprite
-	 * @return ASprite
+	 * @return HSprite
 	 * @since 0.00.002
 	 */
-	public function reRender():ASprite {
+	public function reRender():HSprite {
 		makeGraphic(gWidth, gHeight, gColor);
 		return this;
 	}
@@ -165,10 +165,10 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * load a graphic
 	 * @param graphic graphic to make 
 	 * @param takeOwnership no clue what this does :/
-	 * @return ASprite
+	 * @return HSprite
 	 * @since 0.00.000
 	 */
-	public function loadGraphic(graphic:OneOfThree<String, Image, BitmapData>, takeOwnership:Bool = false):ASprite {
+	public function loadGraphic(graphic:OneOfThree<String, Image, BitmapData>, takeOwnership:Bool = false):HSprite {
 		// dispose previous bitmap if we own it
 		if (_bitmapData != null) {
 			_bitmapData.dispose();
@@ -176,7 +176,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 		}
 		graphics.clear();
 
-		var Graphics:BitmapData = new BitmapData(1, 1, false, AColor.WHITE);
+		var Graphics:BitmapData = new BitmapData(1, 1, false, HColor.WHITE);
 		switch (Type.getClass(graphic)) {
 			case String:
 				Graphics = Assets.getBitmapData(graphic);
@@ -202,21 +202,21 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 
 	/**
 	 * change the color of the sprite background without affecting sub-objects (hopefully)
-	 * @param color AColor
-	 * @return ASprite
+	 * @param color HColor
+	 * @return HSprite
 	 * @since 0.00.002
 	 */
-	public function setGraphicColor(color:AColor):ASprite {
+	public function setGraphicColor(color:HColor):HSprite {
 		makeGraphic(gWidth, gHeight, color);
 		return this;
 	}
 
 	/**
 	 * Center the sprite on the screen
-	 * @return ASprite
+	 * @return HSprite
 	 * @since 0.00.002
 	 */
-	public function screenCenter():ASprite {
+	public function screenCenter():HSprite {
 		x = Main.pWidth / 2 - width / 2;
 		y = Main.pHeight / 2 - height / 2;
 		return this;
@@ -233,7 +233,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 			return;
 		var newScaleX:Float = width / frameWidth;
 		var newScaleY:Float = height / frameHeight;
-		scale = new APoint(newScaleX, newScaleY);
+		scale = new HPoint(newScaleX, newScaleY);
 		if (width <= 0)
 			scale.x = newScaleY;
 		else if (height <= 0)
@@ -283,10 +283,10 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	/**
 	 * apply a global filter to the entire sprite.
 	 * @param filter 
-	 * @return ASprite
+	 * @return HSprite
 	 * @since 0.00.001
 	 */
-	public function applyFilter(filter:BitmapFilter):ASprite {
+	public function applyFilter(filter:BitmapFilter):HSprite {
 		if (filters == null)
 			filters = ([] : Array<BitmapFilter>);
 		var list = filters.copy(); // filters can be null on some versions, see below
@@ -315,10 +315,10 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * @param size rectangle of where to add the filter
 	 * @param filter what filter to add
 	 * @param extraParams extra parameters
-	 * @return ASprite
+	 * @return HSprite
 	 * @since 0.00.001
 	 */
-	public function applyLocalFilter(size:Rectangle, filter:BitmapFilter, ?extraParams:ExtraFilterParams):ASprite {
+	public function applyLocalFilter(size:Rectangle, filter:BitmapFilter, ?extraParams:ExtraFilterParams):HSprite {
 		if (_bitmapData == null) {
 			trace('applyLocalFilter: sprite does not own its bitmap, skipping');
 			return this;
@@ -333,7 +333,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 		var targetBitmap:BitmapData = _bitmapData.clone();
 		if (extraParams != null) {
 			if (extraParams.colorTransform != null) {
-				targetBitmap.colorTransform(targetBitmap.rect, AColor.toTransform(extraParams.colorTransform));
+				targetBitmap.colorTransform(targetBitmap.rect, HColor.toTransform(extraParams.colorTransform));
 			}
 		}
 		src.graphics.beginBitmapFill(targetBitmap, new Matrix(1, 0, 0, 1, -region.x, -region.y), false, true);
@@ -377,7 +377,7 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * @return Bool return new Rectangle(x, y, width, height).containsPoint(point.toOpenflPoint())
 	 * @since 0.00.002 
 	 */
-	public inline function containsPoint(point:APoint):Bool
+	public inline function containsPoint(point:HPoint):Bool
 		return new Rectangle(x, y, width, height).containsPoint(point.toOpenflPoint());
 
 	/**
@@ -399,11 +399,11 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 		#if windows // TODO: support getting desktop background on MacOS
 		var original = BitmapData.fromFile('C:\\Users\\${Sys.getEnv("USERNAME")}\\AppData\\Roaming\\Microsoft\\Windows\\Themes\\TranscodedWallpaper');
 		if (original == null)
-			return BitmapData.fromFile('assets/images/FbutteRautah.png');
+			return BitmapData.fromFile('assets/images/Background.png');
 
 		// if the bitmap isnt 16:9
 		if (!(Math.abs((original.width / original.height) - (16 / 9)) < 0.01))
-			return BitmapData.fromFile('assets/images/FbutteRautah.png');
+			return BitmapData.fromFile('assets/images/Background.png');
 
 		var scaleX = maxWidth / original.width;
 		var scaleY = maxHeight / original.height;
@@ -417,6 +417,6 @@ class ASprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 		original.dispose(); // always dispose the 4k original
 		return scaled;
 		#end
-		return BitmapData.fromFile('assets/images/FbutteRAUtah.png'); // return this as a default fallback.
+		return BitmapData.fromFile('assets/images/Background.png'); // return this as a default fallback.
 	}
 }

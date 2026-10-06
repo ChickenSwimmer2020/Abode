@@ -4,15 +4,15 @@
     "error.networking.NxDomain": "404: Couldnt find request file\nor no connection.",
     "error.networking.UnknownError": "Something when wrong.\nWe dont know what",
 
-    "autoupdater.check.runningLatest": "Abode is up to date!",
+    "autoupdater.check.runningLatest": "HYDRO-FRAME is up to date!",
     "autoupdater.window.title": "An update is available!",
     
 
-    "Splash": "Abode\nHome of animators",
+    "Splash": "HYDRO-FRAME\nWHERE CREATIVITY FLOWS",
 
     "title.newProject": "Create New",
     "title.loadProject": "Open",
-    "title.welcomeMSG": "Welcome to your abode, {USER}! {MSGOFLAUNCH}",
+    "title.welcomeMSG": "Welcome to HYDRO-FRAME, {USER}! {MSGOFLAUNCH}",
         "title.launchMSG0": "What are we moving today?",
         "title.launchMSG1": "Shall we get started?",
         "title.launchMSG2": "What projects await you?",
@@ -25,7 +25,6 @@
         "title.presetButton5": "More Presets",
     "title.menuBar.File": "File",
         "title.menuBar.File.New": "New",
-        "title.menuBar.File.NewFromTemplate": "New from template",
         "title.menuBar.File.Open": "Open",
         "title.menuBar.File.OpenRecent": "Open Recent",
         "title.menuBar.File.Close": "Close",
@@ -90,11 +89,11 @@
         "title.menuBar.Debug.SymbolEditor": "Symbol Editor",
     "title.menuBar.Window": "Window",
     "title.menuBar.Help": "Help",
-        "title.menuBar.Help.Help": "Abode Help",
+        "title.menuBar.Help.Help": "HYDRO-FRAME Help",
         "title.menuBar.Help.ReportBug": "Submit bug report/feature request",
         "title.menuBar.Help.OnlineTutorial": "Online Tutorial",
         "title.menuBar.Help.HandsOnTutorial": "Hands on Tutorial",
         "title.menuBar.Help.ManagePlugins": "Manage Plugins",
         "title.menuBar.Help.CheckforUpdates": "Check for Updates",
-        "title.menuBar.Help.AboutAbode": "About Abode"
+        "title.menuBar.Help.AboutHYDRO-FRAME": "About HYDRO-FRAME"
 }

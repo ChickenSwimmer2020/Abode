@@ -4,27 +4,27 @@ package backend.utils;
  * color class for easy access. basically FlxColor but worse.
  * @since 0.00.001
  */
-abstract AColor(Int) from Int from UInt to Int to UInt {
-	public static inline final TRANSPARENT:AColor = 0x00000000;
-	public static inline final BLACK:AColor = 0xFF000000;
-	public static inline final WHITE:AColor = 0xFFFFFFFF;
-	public static inline final RED:AColor = 0xFFFF0000;
-	public static inline final MAGENTA:AColor = 0xFFFF00FF;
+abstract HColor(Int) from Int from UInt to Int to UInt {
+	public static inline final TRANSPARENT:HColor = 0x00000000;
+	public static inline final BLACK:HColor = 0xFF000000;
+	public static inline final WHITE:HColor = 0xFFFFFFFF;
+	public static inline final RED:HColor = 0xFFFF0000;
+	public static inline final MAGENTA:HColor = 0xFFFF00FF;
 
 	#if debug
-	public static inline final DEBUGGER_BACKGROUND:AColor = 0x99000000;
-	public static inline final DEBUGGER_CONSOLE_TEXT:AColor = 0xFF00FF00;
+	public static inline final DEBUGGER_BACKGROUND:HColor = 0x99000000;
+	public static inline final DEBUGGER_CONSOLE_TEXT:HColor = 0xFF00FF00;
 	#end
 	// ui related colors
-	public static inline final LOADINGIND_MAINCOLOR:AColor = 0xFF7c58e2;
-	public static inline final MAINMENU_PROJECTSLIST_DARKEN:AColor = 0x6A000000;
-	public static inline final MENUBAR_BACKGROUND:AColor = 0xFF7B7B7B;
-	public static inline final MENUBAR_DROPDOWN_BACKGROUND:AColor = 0xFF262626;
-	public static inline final MENUBAR_DROPDOWN_SEPERATOR:AColor = 0xFF000000;
-	public static inline final BUTTON_IDLE:AColor = 0xFFFFFFFF;
-	public static inline final BUTTON_HOVER:AColor = 0xFFA3A3A3;
-	public static inline final BUTTON_CLICK:AColor = 0xFF818181;
-	public static inline final BUTTON_DISABLED:AColor = 0xFF5A5A5A;
+	public static inline final LOADINGIND_MAINCOLOR:HColor = 0xFF7c58e2;
+	public static inline final MAINMENU_PROJECTSLIST_DARKEN:HColor = 0x6A000000;
+	public static inline final MENUBAR_BACKGROUND:HColor = 0xFF7B7B7B;
+	public static inline final MENUBAR_DROPDOWN_BACKGROUND:HColor = 0xFF262626;
+	public static inline final MENUBAR_DROPDOWN_SEPERATOR:HColor = 0xFF000000;
+	public static inline final BUTTON_IDLE:HColor = 0xFFFFFFFF;
+	public static inline final BUTTON_HOVER:HColor = 0xFFA3A3A3;
+	public static inline final BUTTON_CLICK:HColor = 0xFF818181;
+	public static inline final BUTTON_DISABLED:HColor = 0xFF5A5A5A;
 
 	public function new(v:Int = 0xFF000000)
 		this = v;
@@ -80,14 +80,14 @@ abstract AColor(Int) from Int from UInt to Int to UInt {
 		return Math.round(Math.max(0, Math.min(255, v)));
 
 	public inline function toString():String
-		return '[AColor]: rgb:$rgb, r:$r, g:$g, b:$b, a:$a';
+		return '[HColor]: rgb:$rgb, r:$r, g:$g, b:$b, a:$a';
 
 	public inline function toHexString():String
 		return '#${Std.string(this).substr(3, Std.string(this).length)}'; // string manip :3
 
-	public static inline function fromInt(v:Int):AColor
-		return new AColor(v);
+	public static inline function fromInt(v:Int):HColor
+		return new HColor(v);
 
-	public static inline function toTransform(c:AColor):ColorTransform
+	public static inline function toTransform(c:HColor):ColorTransform
 		return new ColorTransform(0, 0, 0, ((c >> 24) & 0xFF) / 255, ((c >> 16) & 0xFF), ((c >> 8) & 0xFF), (c & 0xFF), 0);
 }

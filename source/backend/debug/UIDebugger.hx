@@ -1,39 +1,39 @@
 package backend.debug;
 
-class UIDebugger extends AState {
-	var background:ASprite;
+class UIDebugger extends HState {
+	var background:HSprite;
 
-	var testingButton:AButton;
-	var testingDropdown:AMenuBar;
-	var testingInput:ATextInputBox;
+	var testingButton:HButton;
+	var testingDropdown:HMenuBar;
+	var testingInput:HTextInputBox;
 
 	public function new() {
 		super();
 		Main.addKeyPressed("UIDebuggerExitKey", Keyboard.ESCAPE, true, (_:KeyboardEvent) -> {
 			Main.StateSystem.switchState(InitState);
 		});
-		background = new ASprite(0, 0).makeGraphic(Main.pWidth, Main.pHeight, AColor.LOADINGIND_MAINCOLOR);
+		background = new HSprite(0, 0).makeGraphic(Main.pWidth, Main.pHeight, HColor.LOADINGIND_MAINCOLOR);
 		add(background);
 
-		add(testingButton = new AButton("Testing", new Rectangle(0, 20, 80, 20), (a:AButton) -> {
+		add(testingButton = new HButton("Testing", new Rectangle(0, 20, 80, 20), (a:HButton) -> {
 			trace("This button works!");
 		}));
 
-		testingDropdown = new AMenuBar(TOP, [
+		testingDropdown = new HMenuBar(TOP, [
 			{
-				type: ABUTTON,
+				type: HBUTTON,
 				text: "Button",
-				size: new APoint(100, 20),
+				size: new HPoint(100, 20),
 				onClick: (_) -> {
 					trace("Normal button go brr!!");
 				}
 			},
 			{
-				type: ABUTTON,
+				type: HBUTTON,
 				text: "Dropdown",
-				size: new APoint(100, 20),
+				size: new HPoint(100, 20),
 				onClick: (_) -> {
-					ADropdown.openDropdownMenu(_, [
+					HDropdown.openDropdownMenu(_, [
 						{
 							text: "button",
 							closeOnClick: false,
@@ -74,7 +74,7 @@ class UIDebugger extends AState {
 							keys: [],
 							disabled: false,
 							func: (b) -> {
-								ADropdown.openSubDropdownMenu(b, [
+								HDropdown.openSubDropdownMenu(b, [
 									{
 										text: "sub button",
 										closeOnClick: false,
@@ -142,7 +142,7 @@ class UIDebugger extends AState {
 		]);
 		add(testingDropdown);
 
-		add(testingInput = new ATextInputBox(80, 20, 20, 500, null, "input test!", 12, (_:String) -> {
+		add(testingInput = new HTextInputBox(80, 20, 20, 500, null, "input test!", 12, (_:String) -> {
 			trace('Submitting a textbox with text: "$_"');
 		}));
 	}

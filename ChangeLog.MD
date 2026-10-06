@@ -11,12 +11,12 @@
 >> fails to get the username/pcname, really broken.
 >
 > * added BUILDING.MD, if applicible someone fix this, it might take me a while
-> * Added a TODO to `ASprite`
+> * Added a TODO to `HSprite`
 > * New Function for `Locale`: `getUser`
-> * Updated `makeProject` prefab on `AWindowManager`
-> * `AButton` now has label access
-> * Added `onGroupChange` to `ATabMenu`
-> * `ATextInput` no longer gives invalid text output from non-printable keys
+> * Updated `makeProject` prefab on `HMath`
+> * `HButton` now has label access
+> * Added `onGroupChange` to `HTabMenu`
+> * `HTextInput` no longer gives invalid text output from non-printable keys
 > * New preference! `inverseScrollDirection`
 > * `InitState` refers to you by whats set in the popup on `Splash`
 > * `Main` no longer crashes when *trying* to get desktop wallpaper on MacOS
@@ -32,17 +32,17 @@
 > * * `popup.wav`
 > * * `Printer Sound [Begin Export].wav` (currently unused)
 >
-> * Added `Contributors.MD` (this is a placeholder until the `About Abode` window is finished)
+> * Added `Contributors.MD` (this is a placeholder until the `About HYDRO-FRAME` window is finished)
 > * Fixed `DebugDisplay`, it also now shows if a dropdown/subdropdown is open, and if a text input is selected
 > * `SymbolEditor` got closer to being usable
-> * `AText` now has access to `.selectable`
-> * New premade system for `AWindowManager`
-> * `AButton` has click sounds now.
-> * `AColorPicker` got slightly updated
-> * New Class! `ATabStack` its literally just `ATabMenu` but vertical.
-> * `ATextInputBox` is ***somewhat*** functional now
+> * `HText` now has access to `.selectable`
+> * New premade system for `HMath`
+> * `HButton` has click sounds now.
+> * `HColorPicker` got slightly updated
+> * New Class! `ATabStack` its literally just `HTabMenu` but vertical.
+> * `HTextInputBox` is ***somewhat*** functional now
 > * `UPrefs` is now functional on `HTML5`
-> * `AColor` now has `.toString`
+> * `HColor` now has `.toString`
 > * `InitState` preferences button now opens unfinished preferences window.
 > * `Main` Debugger opening logic is now properly only tied to `F11` being pressed
 > * `SplashScreen` referall window updated slightly
@@ -53,7 +53,7 @@
 >
 > * Added popup for asking how the user wants to be referred to on first launch.
 > * Added a lot of new language keys to the locale system
-> * `ADropdown` was slightly fixed, backgrounds are still fucky.
+> * `HDropdown` was slightly fixed, backgrounds are still fucky.
 > * `UPrefs` can actually read maps properly now.
 > * `InitState` edit dropdown implementation
 > * New popup on Splash screen for first launch to ask what you wanna be referred to.
@@ -81,22 +81,22 @@
 >>>
 >>> Also the reason that Hashlink compilation was removed :/
 >
-> * `AGroup` no longer importrs `backend.ui.AButton` or `openfl.display.DisplayObject`
-> * `ASound` has unused imports removed and a `TODO` added.
+> * `HGroup` no longer importrs `backend.ui.HButton` or `openfl.display.DisplayObject`
+> * `HSound` has unused imports removed and a `TODO` added.
 >
->> * Added a (non-functional) `canInteract` system to `AState`
+>> * Added a (non-functional) `canInteract` system to `HState`
 >> * Also added a `TODO` for auto-removal of `eventListeners`
 >>
 >>> Solar please fix.
 >
-> * `AWindowManager` had unused imports removed.
-> * Untested styling system for `AButton`
-> * New Class `ACheckBox`
-> * New Class `AColorPicker` (unfinished and non-functional ATM)
-> * `ADropdown` is now its own class, and can attach to any `ASprite` instead of being limited to `AButton`/`AMenuBar`
-> * Removed code pertaining to `ADropdown` from `AMenuBar`
-> * New Class `ATabMenu`
-> * New Class `ATextInputBox` (unfinished and non-functional ATM)
+> * `HMath` had unused imports removed.
+> * Untested styling system for `HButton`
+> * New Class `HCheckbox`
+> * New Class `HColorPicker` (unfinished and non-functional ATM)
+> * `HDropdown` is now its own class, and can attach to any `HSprite` instead of being limited to `HButton`/`HMenuBar`
+> * Removed code pertaining to `HDropdown` from `HMenuBar`
+> * New Class `HTabMenu`
+> * New Class `HTextInputBox` (unfinished and non-functional ATM)
 > * `Uprefs` no longer imports `openfl.Assets`
 > * `DrawUtil` has a new icon: `"UICHECK"`.
 > * `DrawUtil` now reset `lineStyle` after drawing an icon.
@@ -116,22 +116,22 @@
 >> * `New()` is now in a `try`-`catch(e)` system
 >> * Support for Sub-Dropdowns.
 >>
->> ## ASprite
+>> ## HSprite
 >>
 >> * New Function! `SetPositionRaw(x, y)`
 >> * Removed some unneeded imports
 >>
->> ## AText
+>> ## HText
 >>
->> * Full Rewrite, now extends `ASprite`
+>> * Full Rewrite, now extends `HSprite`
 >> * New Function! `setFieldSize(w, h)`
 >>
->> ## AMath
+>> ## HMath
 >>
 >> * New Function! `floor(a)`
 >> * New Function! `random(a,b,c)`
 >>
->> ## AColor
+>> ## HColor
 >>
 >> * New Systems!
 >>
@@ -141,7 +141,7 @@
 >
 > * Added user preferences system.
 > * Added en_US.locale
-> * `ADrawableIconGen.html` was updated with new controls
+> * `HDrawableIconGen.html` was updated with new controls
 >
 >> ## Main
 >>
@@ -159,7 +159,7 @@
 >> ## ProjectBox
 >>
 >> * New Function! `loadData()`
->> * `Kind:AText` -> `Desc:AText`
+>> * `Kind:HText` -> `Desc:HText`
 >>
 >> ## ScrollableArea
 >>
@@ -167,20 +167,20 @@
 >>
 >> ## DrawUtil
 >>
->> * `ADrawableIconCommand` now uses `Float` instead of `Int`
+>> * `HDrawableIconCommand` now uses `Float` instead of `Int`
 >> * New Icons!
->> * * `FILE_FLASH`
->> * * `FILE_ABODEPROJECTFORMAT`
+>> * * `FILE_ANIMATE`
+>> * * `FILE_HYDRO-FRAMEPROJECTFORMAT`
 <!---->
 > ## 0.00.002 (The Flixeling)
 >
 ><!---->
->> ## ASound
+>> ## HSound
 >>
 >> * Complete rewrite to use `FlxSound`'s backend
 >> * > Literally just `FlxSound` atp.
 >
->> ## AMath
+>> ## HMath
 >>
 >> * Added `bound()` (From `FlxMath`)
 >> * Added `even()`
@@ -188,38 +188,38 @@
 >
 >> ## New Tools Folder
 >>
->> * New tool for generating `ADrawableIconCommand` arrays.
+>> * New tool for generating `HDrawableIconCommand` arrays.
 >
 >> ## DrawUtil
 >>
 >> * New system for drawing icons on buttons
 >> * Added `DrawIcon()`
->> * New Enum! `ADrawableIconCommandType`
->> * New TypeDef! `ADrawableIconCommand`
->> * New Class! `ADrawableIcons`
+>> * New Enum! `HDrawableIconCommandType`
+>> * New TypeDef! `HDrawableIconCommand`
+>> * New Class! `HDrawableIcons`
 >> * * `SOUND`
 >> * * `MUTE`
 >> * * `WIN_CLOSE`
 >> * * `WIN_MAX`
 >> * * `WIN_MIN`
 >>
->> ## ASprite
+>> ## HSprite
 >>
->> * New Variable! `gColor:Acolor`
+>> * New Variable! `gColor:HColor`
 >> * `makeGraphic` now clears graphic before starting
->> * New Function! `reRender():ASprite`
+>> * New Function! `reRender():HSprite`
 >>
->> ## AColor
+>> ## HColor
 >>
 >> * Finally fixed alpha being buggy
 >> * Removed `getRGB()`
->> * `.rgb` is now an accessible field of `AColor`
->> * `.a` is now an accessible field of `AColor`
+>> * `.rgb` is now an accessible field of `HColor`
+>> * `.a` is now an accessible field of `HColor`
 >>
->> ## AButton
+>> ## HButton
 >>
 >> * New Icon System!
->> * `onClick` now returns `AButton`
+>> * `onClick` now returns `HButton`
 >> * New Function! `changeSymbol`
 >>
 >> ## InitState
@@ -232,11 +232,11 @@
 > * New Main menu song
 > * Started Changelog
 > * Added new `Network` class.
-> * Added new `AGroup<T:DisplayObject>` class.
-> * Added new `ASound` class.
-> * Added new `AWindowManager` class.
-> * Added new `AWindow` class.
-> * Added new `AMath` class.
+> * Added new `HGroup<T:DisplayObject>` class.
+> * Added new `HSound` class.
+> * Added new `HMath` class.
+> * Added new `HWindow` class.
+> * Added new `HMath` class.
 > * Added new `IDestroyable` interface.
 >
 >>>> BASIC support for HTML5 <br>
@@ -251,7 +251,7 @@
 >> * Added `addToMainStage()`.
 >> * Added `removeFromMainStage()`.
 ><!---->
->> ## ASprite
+>> ## HSprite
 >>
 >> * now implements `IDestroyable`.
 >> * `MakeGraphic()` now defaults to `TRANSPARENT`.
@@ -268,23 +268,23 @@
 >> * `segment` is now `public`
 >> * `bg` tween is now `expoInOut`
 ><!---->
->> ## APoint
+>> ## HPoint
 >>
 >> * added `fromOpenflPoint()`
 ><!---->
->> ## AText
+>> ## HText
 >>
 >>* Now implements `IDestroyable`
 >>* Added `destroy()`
 ><!---->
->> ## ATween
+>> ## HTween
 >>
->> * `tween()` now returns `ATween`
+>> * `tween()` now returns `HTween`
 ><!---->
 >> ## ScrollableArea
 >>
 >> * now functional
->> * now extends `AGroup<T>`
+>> * now extends `HGroup<T>`
 ><!---->
 >> ## HasParamsUtil -> HasAttributesUtil
 ><!---->
@@ -292,7 +292,7 @@
 >>
 >> * Now plays `Vectors` looping
 >> * "Check for updates..." is now functional.
->> * "About Abode" is now functional.
+>> * "About HYDRO-FRAME" is now functional.
 >> * `ProjectScroller` is now functional.
 ><!---->
 >> ## SplashScreen

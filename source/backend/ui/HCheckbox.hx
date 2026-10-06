@@ -1,8 +1,8 @@
 package backend.ui;
 
 // TODO: fix the graphics on this because they're being fucky.
-class ACheckBox extends ASprite {
-	public var label:AText;
+class HCheckbox extends HSprite {
+	public var label:HText;
 	public var value(default, set):Bool = false;
 
 	public function set_value(a:Bool):Bool {
@@ -15,18 +15,18 @@ class ACheckBox extends ASprite {
 
 	private final _SIZE:Int = 20;
 	private final _oSIZE:Int = 2;
-	private var box:ASprite; // for holding the actual checkbox and such.
+	private var box:HSprite; // for holding the actual checkbox and such.
 
 	public function new(x:Float, y:Float, text:String, ?oC:(Bool) -> Void) {
 		super(x, y);
 		if (oC != null)
 			onClick = oC;
-		box = new ASprite(0, 0).makeGraphic(_SIZE, _SIZE, AColor.BLACK);
+		box = new HSprite(0, 0).makeGraphic(_SIZE, _SIZE, HColor.BLACK);
 		box.addEventListener(MouseEvent.CLICK, (_:MouseEvent) -> {
 			onBoxClick(_, true);
 		}); // so we can detect clicks and such
 
-		label = new AText(0 + _SIZE + 5, 0, 100, text, 12);
+		label = new HText(0 + _SIZE + 5, 0, 100, text, 12);
 
 		addChild(box);
 		addChild(label);
@@ -41,11 +41,11 @@ class ACheckBox extends ASprite {
 		reRender();
 	}
 
-	override function reRender():ASprite {
+	override function reRender():HSprite {
 		super.reRender();
-		box.addRect(new Rectangle(_oSIZE, _oSIZE, _SIZE - (_oSIZE * 2), _SIZE - (_oSIZE * 2)), AColor.WHITE); // then the icon
+		box.addRect(new Rectangle(_oSIZE, _oSIZE, _SIZE - (_oSIZE * 2), _SIZE - (_oSIZE * 2)), HColor.WHITE); // then the icon
 		if (value)
-			box.drawIcon("UICHECK", 1, AColor.MAGENTA, AColor.TRANSPARENT);
+			box.drawIcon("UICHECK", 1, HColor.MAGENTA, HColor.TRANSPARENT);
 		return this;
 	}
 

@@ -111,7 +111,7 @@ footer{ padding:10px 20px; padding-bottom:calc(10px + env(safe-area-inset-bottom
 
 <header>
   <h1>Icon Path Drawer</h1>
-  <span class="tag">— build ADrawableIconCommand arrays for DrawUtil.drawIcon</span>
+  <span class="tag">— build HDrawableIconCommand arrays for DrawUtil.drawIcon</span>
 </header>
 
 <main>
@@ -164,14 +164,14 @@ footer{ padding:10px 20px; padding-bottom:calc(10px + env(safe-area-inset-bottom
     </div>
 
     <div class="tabpane" id="tab-code">
-      <p class="section-title">Generated ADrawableIcons entry</p>
+      <p class="section-title">Generated HDrawableIcons entry</p>
       <textarea id="exportCode" readonly></textarea>
       <div class="copybar">
         <button id="copyBtn" class="primary">Copy</button>
       </div>
       <div class="divider"></div>
       <p class="section-title">Import existing command array</p>
-      <textarea id="importCode" placeholder="Paste an ADrawableIconCommand array, e.g.&#10;[&#10;  {t:MOVE,a:{x:0,y:0}},&#10;  {t:LINE,a:{x:10,y:10}}&#10;]"></textarea>
+      <textarea id="importCode" placeholder="Paste an HDrawableIconCommand array, e.g.&#10;[&#10;  {t:MOVE,a:{x:0,y:0}},&#10;  {t:LINE,a:{x:10,y:10}}&#10;]"></textarea>
       <div class="copybar">
         <button id="importBtn" class="primary">Parse & load</button>
       </div>
@@ -416,8 +416,8 @@ footer{ padding:10px 20px; padding-bottom:calc(10px + env(safe-area-inset-bottom
     const strokeAlpha = document.getElementById('strokeAlpha').value;
     const thickness = document.getElementById('strokeThickness').value;
 
-    let out = `// Add to ADrawableIcons:\npublic static final ${iconName}:Array<ADrawableIconCommand> = [\n${lines || '        // no commands yet'}\n];\n\n`;
-    out += `// Usage:\nDrawUtil.drawIcon(spr, "${iconName}", ${strokeEnabled?thickness:0}, new AColor(${strokeColor}, ${strokeEnabled?strokeAlpha:0}), new AColor(${fillColor}, ${fillAlpha}));`;
+    let out = `// Add to HDrawableIcons:\npublic static final ${iconName}:Array<HDrawableIconCommand> = [\n${lines || '        // no commands yet'}\n];\n\n`;
+    out += `// Usage:\nDrawUtil.drawIcon(spr, "${iconName}", ${strokeEnabled?thickness:0}, new HColor(${strokeColor}, ${strokeEnabled?strokeAlpha:0}), new HColor(${fillColor}, ${fillAlpha}));`;
     document.getElementById('exportCode').value = out;
   }
   function fmt(n){ return Number.isInteger(n) ? n : Math.round(n*100)/100; }

@@ -2,18 +2,18 @@ package backend.ui;
 
 // TODO: fix the bugs and make it work properly. cuz its being stupid
 // TODO: find way to not use multiple event listeners on stage.
-class ATextInputBox extends AText {
+class HTextInputBox extends HText {
 	public var onSubmit:String->Void;
 
-	private var placeholderText:AText;
+	private var placeholderText:HText;
 
-	public static var selectedTextBox:Null<ATextInputBox> = null;
+	public static var selectedTextBox:Null<HTextInputBox> = null;
 
 	public function new(x:Float, y:Float, height:Float, width:Float, ?text:String, placeholder:String, fontSize:Int, oS:String->Void) {
 		super(x, y, width, text ?? "", fontSize);
 
-		makeGraphic(width.floor(), height.floor(), AColor.MAGENTA);
-		placeholderText = new AText(0, 0, width, placeholder, fontSize);
+		makeGraphic(width.floor(), height.floor(), HColor.MAGENTA);
+		placeholderText = new HText(0, 0, width, placeholder, fontSize);
 		placeholderText.mouseEnabled = false; // let clicks fall through to the box
 		addChild(placeholderText);
 
@@ -21,6 +21,7 @@ class ATextInputBox extends AText {
 		selectable = false; // we handle input ourselves, no native focus needed
 		addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 		addEventListener(Event.ADDED_TO_STAGE, onAdded);
+		addEventListener(Event.ENTER_FRAME, onFrame);
 		setFieldSize(width, height);
 	}
 
@@ -29,9 +30,14 @@ class ATextInputBox extends AText {
 		stage.addEventListener(MouseEvent.MOUSE_DOWN, onStageMouseDown);
 	}
 
+    function onFrame(_:Event) {
+        placeholderText.visible = (text == "");
+    }
+
 	override public function destroy() {
 		stage.removeEventListener(KeyboardEvent.KEY_DOWN, onkeyPressed);
 		stage.removeEventListener(MouseEvent.MOUSE_DOWN, onStageMouseDown);
+		removeEventListener(Event.ENTER_FRAME, onFrame);
 		if (selectedTextBox == this)
 			selectedTextBox = null;
 		super.destroy();
@@ -60,6 +66,5 @@ class ATextInputBox extends AText {
 				if (event.charCode >= 32 && event.charCode <= 126)
 					text += String.fromCharCode(event.charCode);
 		}
-		placeholderText.visible = (text == "");
 	}
 }

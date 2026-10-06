@@ -4,12 +4,12 @@ package backend.objects;
  * text alignment
  * @since 0.00.002
  */
-enum abstract ATextAlign(String) {
+enum abstract HTextAlign(String) {
 	var LEFT;
 	var RIGHT;
 	var CENTER;
 
-	public static function toOpenflAlign(a:ATextAlign):TextFormatAlign {
+	public static function toOpenflAlign(a:HTextAlign):TextFormatAlign {
 		switch (a) {
 			case LEFT:
 				return TextFormatAlign.LEFT;
@@ -26,7 +26,7 @@ enum abstract ATextAlign(String) {
  * its text, not much more to it.
  * @since 0.00.002
  */
-class AText extends ASprite implements IDestroyable {
+class HText extends HSprite implements IDestroyable {
 	@:noCompletion private var format:TextFormat; // dumb way to do it but yeahh
 	@:noCompletion private var field:TextField; // dumb way to do it but yeahh
 
@@ -34,11 +34,11 @@ class AText extends ASprite implements IDestroyable {
 	 * text alignment
 	 * @since 0.00.002
 	 */
-	public var alignment(default, set):ATextAlign = LEFT;
+	public var alignment(default, set):HTextAlign = LEFT;
 
-	public function set_alignment(a:ATextAlign):ATextAlign {
+	public function set_alignment(a:HTextAlign):HTextAlign {
 		alignment = a;
-		format.align = ATextAlign.toOpenflAlign(a);
+		format.align = HTextAlign.toOpenflAlign(a);
 		field.setTextFormat(format);
 		return a;
 	}
@@ -56,7 +56,7 @@ class AText extends ASprite implements IDestroyable {
 		return a;
 	}
 
-	// gets and setters so that this *acts* like a TextField when its actuall a ASprite
+	// gets and setters so that this *acts* like a TextField when its actuall a HSprite
 	public var text(get, set):String;
 
 	public function get_text():String
@@ -75,12 +75,12 @@ class AText extends ASprite implements IDestroyable {
 	public function get_textHeight():Float
 		return field.textHeight;
 
-	public var textColor(get, set):AColor;
+	public var textColor(get, set):HColor;
 
-	public function get_textColor():AColor
-		return AColor.fromInt(field.textColor);
+	public function get_textColor():HColor
+		return HColor.fromInt(field.textColor);
 
-	public function set_textColor(a:AColor):AColor
+	public function set_textColor(a:HColor):HColor
 		return (field.textColor = a);
 
 	public var defaultTextFormat(get, set):TextFormat;
@@ -100,7 +100,7 @@ class AText extends ASprite implements IDestroyable {
 		return field.selectable = a;
 
 	/**
-	 * make a new instance of AText
+	 * make a new instance of HText
 	 * @param x x position
 	 * @param y y position
 	 * @param width field width

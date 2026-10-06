@@ -2,13 +2,13 @@ package backend;
 
 class Network {
 	/**
-	 * Location of the file containing the current newest version of Abode
+	 * Location of the file containing the current newest version of HYDRO-FRAME
 	 * @since 0.00.003
 	 */
-	public static final updateCheckLocation:String = "https://raw.githubusercontent.com/ChickenSwimmer2020/Abode/refs/heads/main/README.md";
+	public static final updateCheckLocation:String = "https://raw.githubusercontent.com/ChickenSwimmer2020/HYDRO-FRAME/refs/heads/main/README.md";
 
 	/**
-	 * Check to see if abode needs an update
+	 * Check to see if HYDRO-FRAME needs an update
 	 * @return Int is an update needed? 0 is yes, 1 is no, -1 is no connection, and -2 is error.
 	 * @since 0.00.002
 	 */

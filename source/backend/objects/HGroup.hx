@@ -1,10 +1,10 @@
 package backend.objects;
 
 /**
- * group extending ASprite
+ * group extending HSprite
  * @since 0.00.002
  */
-class AGroup<T:ASprite> extends ASprite {
+class HGroup<T:HSprite> extends HSprite {
 	/**
 	 * members of the group
 	 * @since 0.00.002
@@ -77,22 +77,22 @@ class AGroup<T:ASprite> extends ASprite {
 	override public function destroy() {
 		for (member in members) {
 			switch (Type.getClass(member)) {
-				case ASprite:
+				case HSprite:
 					members.remove(member);
 					removeChild(member);
-					cast(member, ASprite).destroy();
-				case AButton:
+					cast(member, HSprite).destroy();
+				case HButton:
 					members.remove(member);
 					removeChild(member);
-					cast(member, AButton).destroy();
-				case AGroup:
+					cast(member, HButton).destroy();
+				case HGroup:
 					members.remove(member);
 					removeChild(member);
-					cast(member, AGroup<Dynamic>).destroy();
-				case AText:
+					cast(member, HGroup<Dynamic>).destroy();
+				case HText:
 					members.remove(member);
 					removeChild(member);
-					cast(member, AText).destroy();
+					cast(member, HText).destroy();
 				default:
 					trace('Unknown class: ${Type.getClass(member)}');
 			}

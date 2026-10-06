@@ -1,48 +1,48 @@
 package backend.ui;
 
-enum AMenuBarAlignment {
+enum HMenuBarAlignment {
 	TOP;
 	BOTTOM;
 	LEFT;
 	RIGHT;
 }
 
-enum AMenuBarObjectType {
-	ATEXT;
-	ASPRITE;
-	ABUTTON;
-	ACHECKBOX;
+enum HMenuBarObjectType {
+	HTEXT;
+	HSPRITE;
+	HBUTTON;
+	HCHECKBOX;
 	// todo: support more if needbe
 }
 
-typedef AMenuBarObjectIdentifier = {
-	var type:AMenuBarObjectType;
+typedef HMenuBarObjectIdentifier = {
+	var type:HMenuBarObjectType;
 	@:optional var text:String;
-	@:optional var size:APoint;
+	@:optional var size:HPoint;
 	@:optional var enabled:Bool;
-	@:optional var color:AColor;
+	@:optional var color:HColor;
 	@:optional var onClick:(Dynamic) -> Void;
 };
 
-class AMenuBar extends ASprite {
-	public var members:Array<ASprite> = [];
+class HMenuBar extends HSprite {
+	public var members:Array<HSprite> = [];
 
 	public static final TBHeight:Int = 20;
 
-	public var backing:ASprite;
-	public var objects:Array<{key:String, object:ASprite}> = [];
-	public var align(default, set):AMenuBarAlignment = TOP;
+	public var backing:HSprite;
+	public var objects:Array<{key:String, object:HSprite}> = [];
+	public var align(default, set):HMenuBarAlignment = TOP;
 
-	public function set_align(a:AMenuBarAlignment):AMenuBarAlignment {
+	public function set_align(a:HMenuBarAlignment):HMenuBarAlignment {
 		align = a;
 		return align;
 	}
 
-	public function new(align:AMenuBarAlignment, butts:Array<AMenuBarObjectIdentifier>) {
+	public function new(align:HMenuBarAlignment, butts:Array<HMenuBarObjectIdentifier>) {
 		super(0, 0);
 		this.align = align;
-		var targetPos:APoint = new APoint(0, 0);
-		var targetSize:APoint = new APoint(Lib.application.window.width, TBHeight);
+		var targetPos:HPoint = new HPoint(0, 0);
+		var targetSize:HPoint = new HPoint(Lib.application.window.width, TBHeight);
 		switch (align) {
 			case LEFT:
 				targetPos.set(0, 0); // position doesnt change, but the dimensions will
@@ -60,52 +60,52 @@ class AMenuBar extends ASprite {
 				targetPos.set(0, 0);
 				targetSize.set(Lib.application.window.width, TBHeight);
 		}
-		backing = new ASprite(targetPos.x, targetPos.y).makeGraphic(Math.floor(targetSize.x), Math.floor(targetSize.y), AColor.MENUBAR_BACKGROUND);
+		backing = new HSprite(targetPos.x, targetPos.y).makeGraphic(Math.floor(targetSize.x), Math.floor(targetSize.y), HColor.MENUBAR_BACKGROUND);
 		add(backing);
 
 		var offset:Float = 0;
 		for (i => possibleButton in butts) {
 			switch (possibleButton.type) {
-				case ABUTTON:
-					var newButton:AButton = new AButton(possibleButton.text,
+				case HBUTTON:
+					var newButton:HButton = new HButton(possibleButton.text,
 						new Rectangle(0 + offset, targetPos.y, possibleButton.size.x, possibleButton.size.y), possibleButton.onClick);
 					objects.push({key: possibleButton.text, object: newButton});
 					add(newButton);
 					offset += newButton.width + 5;
-				case ATEXT:
-					var newText:AText = new AText(0 + offset, targetPos.y, possibleButton.size.x, possibleButton.text, 12);
+				case HTEXT:
+					var newText:HText = new HText(0 + offset, targetPos.y, possibleButton.size.x, possibleButton.text, 12);
 					objects.push({key: possibleButton.text, object: newText});
 					add(newText);
 					offset += newText.width + 5;
-				case ASPRITE:
-					var newSprite:ASprite = new ASprite(0 + offset,
+				case HSPRITE:
+					var newSprite:HSprite = new HSprite(0 + offset,
 						targetPos.y).makeGraphic(possibleButton.size.iX, possibleButton.size.iY, possibleButton.color);
 					objects.push({key: possibleButton.text, object: newSprite});
 					add(newSprite);
 					offset += newSprite.width + 5;
-				case ACHECKBOX:
-					var newCheckbox:ACheckBox = new ACheckBox(0 + offset, targetPos.y, possibleButton.text, possibleButton.onClick);
+				case HCHECKBOX:
+					var newCheckbox:HCheckbox = new HCheckbox(0 + offset, targetPos.y, possibleButton.text, possibleButton.onClick);
 					objects.push({key: possibleButton.text, object: newCheckbox});
 					add(newCheckbox);
 					if (possibleButton.enabled)
 						newCheckbox.value = possibleButton.enabled;
 					offset += newCheckbox.width + 5;
 				default:
-					trace('Unknown AMenuBar object type "${possibleButton.type}".');
+					trace('Unknown HMenuBar object type "${possibleButton.type}".');
 					continue; // skip over the invalid one.
 			}
 		}
 	}
 
-	private inline function add(a:ASprite):ASprite {
+	private inline function add(a:HSprite):HSprite {
 		members.push(a);
 		addChild(a);
 		return a;
 	}
 
-	private inline function remove(a:ASprite):Bool {
+	private inline function remove(a:HSprite):Bool {
 		members.remove(a);
-		cast(a, ASprite).destroy(); // auto calls `removeChild` from it.
+		cast(a, HSprite).destroy(); // auto calls `removeChild` from it.
 		return a == null;
 	}
 }

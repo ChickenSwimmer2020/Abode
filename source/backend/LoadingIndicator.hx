@@ -1,17 +1,17 @@
 package backend;
 
-class LoadingIndicator extends ASprite {
+class LoadingIndicator extends HSprite {
 	public var loadingSpeed:Float = 0.4;
 
 	public var segment:LoadingSegment;
-	public var bg:ASprite;
+	public var bg:HSprite;
 
 	var destroyed:Bool = false;
 
 	public function new(x:Float, y:Float) {
 		super(x, y, null);
 		try {
-			bg = new ASprite(0, 0);
+			bg = new HSprite(0, 0);
 			bg.x = 65 / 2; // center of the 65x65 box — rotation pivot
 			bg.y = 65 / 2;
 			addChild(bg);
@@ -34,7 +34,7 @@ class LoadingIndicator extends ASprite {
 				return;
 			segment.rotation = 0;
 
-			new ATween().tween(segment, {rotation: 360}, loadingSpeed * 4, () -> spin(), AEase.expoInOut);
+			new HTween().tween(segment, {rotation: 360}, loadingSpeed * 4, () -> spin(), AEase.expoInOut);
 		} catch (e:Exception)
 			Main.traceError(e);
 	}
@@ -44,7 +44,7 @@ class LoadingIndicator extends ASprite {
 			if (destroyed)
 				return;
 			bg.rotation = 0;
-			new ATween().tween(bg, {rotation: -90}, loadingSpeed * 2, () -> {
+			new HTween().tween(bg, {rotation: -90}, loadingSpeed * 2, () -> {
 				spinBG();
 			}, AEase.expoInOut);
 		} catch (e:Exception)
@@ -86,8 +86,8 @@ class LoadingIndicator extends ASprite {
 			m.translate(w / 2, h / 2);
 
 			// shift every drawn point by (-cx, -cy) so the shape is centered on bg's local (0,0)
-			bg.graphics.lineStyle(2, AColor.BLACK.rgb, 1);
-			bg.graphics.beginFill(AColor.LOADINGIND_MAINCOLOR.rgb, AColor.LOADINGIND_MAINCOLOR.a);
+			bg.graphics.lineStyle(2, HColor.BLACK.rgb, 1);
+			bg.graphics.beginFill(HColor.LOADINGIND_MAINCOLOR.rgb, HColor.LOADINGIND_MAINCOLOR.a);
 			bg.graphics.moveTo(tx(0, 0) - cx, ty(0, 0) - cy);
 			bg.graphics.lineTo(tx(w, 0) - cx, ty(w, 0) - cy);
 			bg.graphics.lineTo(tx(w, h) - cx, ty(w, h) - cy);
@@ -104,7 +104,7 @@ class LoadingIndicator extends ASprite {
 	}
 }
 
-class LoadingSegment extends ASprite {
+class LoadingSegment extends HSprite {
 	private static final PURPLE_SIZE:Int = 6;
 	private static final W:Float = 65;
 	private static final H:Float = 65;
@@ -131,8 +131,8 @@ class LoadingSegment extends ASprite {
 				{x: PURPLE_SIZE - cx, y: HALF - cy}
 			];
 
-			graphics.lineStyle(1, AColor.BLACK.rgb, 1);
-			graphics.beginFill(AColor.LOADINGIND_MAINCOLOR.rgb, AColor.LOADINGIND_MAINCOLOR.a);
+			graphics.lineStyle(1, HColor.BLACK.rgb, 1);
+			graphics.beginFill(HColor.LOADINGIND_MAINCOLOR.rgb, HColor.LOADINGIND_MAINCOLOR.a);
 			graphics.moveTo(points[0].x + (W / 5), points[0].y + (H / 5));
 			for (i in 1...points.length)
 				graphics.lineTo(points[i].x + (W / 5), points[i].y + (H / 5));

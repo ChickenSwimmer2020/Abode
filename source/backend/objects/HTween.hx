@@ -4,7 +4,7 @@ package backend.objects;
  * tween data.
  * @since 0.00.000
  */
-typedef ATweenData = {
+typedef HTweenData = {
 	target:Dynamic,
 	prop:String,
 	startVal:Float,
@@ -19,12 +19,12 @@ typedef ATweenData = {
  * a tween system, yeahhh.
  * @since 0.00.000
  */
-class ATween extends Sprite {
+class HTween extends Sprite {
 	/**
 	 * active tweens
 	 * @since 0.00.000
 	 */
-	private var tweens:Array<ATweenData> = [];
+	private var tweens:Array<HTweenData> = [];
 
 	private var lastTime:Int = 0;
 
@@ -59,10 +59,10 @@ class ATween extends Sprite {
 	 * @param duration how long to take (in seconds)
 	 * @param onComplete what to do on complete
 	 * @param ease ease to use
-	 * @return ATween the tween that was just started
+	 * @return HTween the tween that was just started
 	 * @since 0.00.000
 	 */
-	public function tween(target:Dynamic, props:Dynamic, duration:Float, ?onComplete:Void->Void, ?ease:Float->Float):ATween {
+	public function tween(target:Dynamic, props:Dynamic, duration:Float, ?onComplete:Void->Void, ?ease:Float->Float):HTween {
 		if (target != null) {
 			if (Std.isOfType(target, openfl.display.DisplayObjectContainer)) {
 				var targetSprite = cast(target, openfl.display.DisplayObjectContainer);

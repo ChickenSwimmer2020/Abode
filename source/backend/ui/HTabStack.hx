@@ -1,34 +1,26 @@
 package backend.ui;
 
-class ATabMenu extends ASprite {
-	/**
-	 * called when the group target is changed
-	 * @return name of the newly selected group
-	 * @since 0.00.007
-	 */
-	public var onGroupChange:String->Void = (_:String) -> {};
-
+class ATabStack extends HSprite {
 	var order:Array<String> = []; // for positioning fixes
 	var targetWidth:Float = 0;
 
-	public function new(x:Float, y:Float, size:APoint) {
+	public function new(x:Float, y:Float, size:HPoint) {
 		super(x, y);
-		makeGraphic(size.iX, size.iY, AColor.MENUBAR_DROPDOWN_BACKGROUND);
+		makeGraphic(size.iX, size.iY, HColor.MENUBAR_DROPDOWN_BACKGROUND);
 		targetWidth = size.x;
 	}
 
-	public var buttons:Map<String, AButton> = [];
-	public var groups:Map<String, AGroup<Dynamic>> = [];
+	public var buttons:Map<String, HButton> = [];
+	public var groups:Map<String, HGroup<Dynamic>> = [];
 
-	public function addGroup(n:String, gr:AGroup<Dynamic>):AGroup<Dynamic> {
+	public function addGroup(n:String, gr:HGroup<Dynamic>):HGroup<Dynamic> {
 		groups.set(n, gr);
 		order.push(n);
-		gr.y += 20; // move it down
+		gr.x += 50; // move it aside
 		// gr.scrollRect = new Rectangle(x, y+20, width, height-20); //so group cant render outside of the tabmenu
 
-		var button:AButton = new AButton(n, new Rectangle(0, 0, 50, 20), (_:AButton) -> {
+		var button:HButton = new HButton(n, new Rectangle(0, 0, 50, 20), (_:HButton) -> {
 			activeGroup = n;
-			onGroupChange(n);
 		});
 		buttons.set(n, button);
 		addChild(gr);
@@ -75,11 +67,10 @@ class ATabMenu extends ASprite {
 	private function scaleButtons() {
 		if (order.length == 0)
 			return;
-		var w = targetWidth / order.length;
 		for (i in 0...order.length) {
 			var button = buttons.get(order[i]);
-			button.width = w; // set width first
-			button.x = i * w; // then position
+			button.x = 0;
+			button.y = i * button.gHeight;
 		}
 	}
 }

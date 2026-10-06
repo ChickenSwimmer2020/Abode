@@ -5,7 +5,7 @@ class Main extends Sprite {
 	 * The desktop background, stored as a BitmapData directly within Main so that we only have to load it once.
 	 * @since 0.00.004
 	 */
-	public static #if (sys && !mac) final #else var #end desktopbackgroundImage:BitmapData #if (sys && !mac) = ASprite.getDesktopWallpaper(1280, 720) #end;
+	public static #if (sys && !mac) final #else var #end desktopbackgroundImage:BitmapData #if (sys && !mac) = HSprite.getDesktopWallpaper(1280, 720) #end;
 
 	/**
 	 * For checking when global keys are pressed.
@@ -71,13 +71,13 @@ class Main extends Sprite {
 	 * the current mouse position, relative to the resized/scaled stage
 	 * @since 0.00.002
 	 */
-	public static var vMouse:APoint = new APoint(0, 0);
+	public static var vMouse:HPoint = new HPoint(0, 0);
 
 	/**
-	 * for managing the in-windows windows of Abode
+	 * for managing the in-windows windows of HYDRO-FRAME
 	 * @since 0.00.002
 	 */
-	public static var windowManager:AWindowManager;
+	public static var windowManager:HWindowManager;
 
 	#if debug
 	/**
@@ -89,19 +89,19 @@ class Main extends Sprite {
 	#end
 
 	/**
-	 * State system, controls the actual states of Abode, this is actually a very important thing.
+	 * State system, controls the actual states of HYDRO-FRAME, this is actually a very important thing.
 	 * @since pre-0.00.001
 	 */
 	public static var StateSystem:StateSystemInit = new StateSystemInit(null); // defaults to splashscreen since thats literally the only thing it does on init
 
 	/**
-	 * Entry point of Abode for launching, this is what does stuff before any state loads.
+	 * Entry point of HYDRO-FRAME for launching, this is what does stuff before any state loads.
 	 */
 	public function new() {
 		super();
 		try {
 			#if (html5 || mac)
-			desktopbackgroundImage = ASprite.getDesktopWallpaper(1280, 720); // fix for a crash on startup with html5.
+			desktopbackgroundImage = HSprite.getDesktopWallpaper(1280, 720); // fix for a crash on startup with html5.
 			if ((UPrefs.prefsData.data.preferencesCreated : Bool) == null) { // to actually create preferences.
 				UPrefs.makePrefsFile();
 				UPrefs.prefsData.data.preferencesCreated = true;
@@ -122,8 +122,8 @@ class Main extends Sprite {
 			onStageResize(null); // apply once at startup
 			Application.current.window.title = '${Application.current.window.title}: [${Application.current.meta.get("version")}]';
 
-			ATween.globalParent = this; // so that new Tween() will auto-destroy and not cause memory leaks.
-			windowManager = new AWindowManager();
+			HTween.globalParent = this; // so that new Tween() will auto-destroy and not cause memory leaks.
+			windowManager = new HWindowManager();
 
 			addChild(StateSystem);
 			StateSystem.switchState(SplashScreen); // wait fuck this might work!
@@ -185,11 +185,11 @@ class Main extends Sprite {
 				}
 			}
 
-			if (ADropdown.dropdownOpen) { // TODO: fix this.
-				for (keys => targetOption in ADropdown.dropdownKeys) {
+			if (HDropdown.dropdownOpen) { // TODO: fix this.
+				for (keys => targetOption in HDropdown.dropdownKeys) {
 					if (!keys.contains(e.keyCode) && (!e.shiftKey && (!e.altKey && !e.controlKey))) {
-						if (ADropdown.canCloseInstace)
-							ADropdown.closeDropdownMenu(); // force close any open instance.
+						if (HDropdown.canCloseInstace)
+							HDropdown.closeDropdownMenu(); // force close any open instance.
 					} else {
 						var targetKeys:Array<Bool> = [];
 						var allKeys:Array<Int> = keys;
@@ -216,7 +216,7 @@ class Main extends Sprite {
 						trace(targetKeys);
 
 						// if(targetKeys.allTrue())
-						// AMenuBar.instance.buttons.get(targetOption).onC();
+						// HMenuBar.instance.buttons.get(targetOption).onC();
 					}
 				}
 			}
@@ -231,22 +231,22 @@ class Main extends Sprite {
 	 */
 	private function onMouseClick(e:MouseEvent) {
 		try {
-			if (ADropdown.subDropdownOpen && ADropdown.canCloseSubInstace) {
-				if (!ADropdown.subDropdownBG.containsMouse()) { // if off the backing, then exit.
-					ADropdown.closeSubDropdownMenu(); // force close any open instance.
+			if (HDropdown.subDropdownOpen && HDropdown.canCloseSubInstace) {
+				if (!HDropdown.subDropdownBG.containsMouse()) { // if off the backing, then exit.
+					HDropdown.closeSubDropdownMenu(); // force close any open instance.
 				} else {
-					for (object in ADropdown.members) {
-						if (object == ADropdown.subDropdownBG)
+					for (object in HDropdown.members) {
+						if (object == HDropdown.subDropdownBG)
 							continue; // skip it and dont increase index
-						var obj:ASprite = cast(object, ASprite);
+						var obj:HSprite = cast(object, HSprite);
 						if (obj.containsMouse()) {
 							if (cast(obj.getAttribute("closeFullDropdown"), Bool) == true) {
-								ADropdown.closeSubDropdownMenu();
-								ADropdown.closeDropdownMenu(); // cuz, close the whole thing.
+								HDropdown.closeSubDropdownMenu();
+								HDropdown.closeDropdownMenu(); // cuz, close the whole thing.
 							}
 							if (cast(obj.getAttribute("isSubDropdownObject"), Bool) == true) {
 								if (cast(obj.getAttribute("closeOnClick"), Bool) == true) {
-									ADropdown.closeSubDropdownMenu();
+									HDropdown.closeSubDropdownMenu();
 								} else {
 									continue;
 								}
@@ -256,18 +256,18 @@ class Main extends Sprite {
 						}
 					}
 				}
-			} else if (ADropdown.dropdownOpen && ADropdown.canCloseInstace) {
-				if (!ADropdown.dropdownBG.containsMouse()) { // if off the backing, then exit.
-					ADropdown.closeDropdownMenu(); // force close any open instance.
+			} else if (HDropdown.dropdownOpen && HDropdown.canCloseInstace) {
+				if (!HDropdown.dropdownBG.containsMouse()) { // if off the backing, then exit.
+					HDropdown.closeDropdownMenu(); // force close any open instance.
 				} else {
-					for (object in ADropdown.members) {
-						if (object == ADropdown.dropdownBG)
+					for (object in HDropdown.members) {
+						if (object == HDropdown.dropdownBG)
 							continue; // skip it and dont increase index
-						var obj:ASprite = cast(object, ASprite);
+						var obj:HSprite = cast(object, HSprite);
 						if (obj.containsMouse()) {
 							if (cast(obj.getAttribute("isDropdownObject"), Bool) == true) {
 								if (cast(obj.getAttribute("closeOnClick"), Bool) == true) {
-									ADropdown.closeDropdownMenu();
+									HDropdown.closeDropdownMenu();
 								} else {
 									continue;
 								}

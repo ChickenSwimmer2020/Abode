@@ -1,6 +1,6 @@
 # BUILDING
 
-So you wanna build abode, go ahead
+So you wanna build HYDRO-FRAME, go ahead
 >placeholder MSG, please rewrite this.
 
 ## BUILDING[ios]
@@ -14,7 +14,7 @@ So you wanna build abode, go ahead
 ## BUILDING[windows]
 
 * Install [haxe](https://haxe.org/)
-* download abode's repo (skip if you already have)
+* download HYDRO-FRAME's repo (skip if you already have)
 * in your terminal, run `haxelib install openfl 9.5.2; haxelib install lime 8.3.2`
 * after those two complete, run `haxelib run lime setup`
 * run `lime` in the console and make sure it worked
@@ -26,7 +26,7 @@ So you wanna build abode, go ahead
 
 * Make sure you have XCode installed from the app store
 * Install [haxe](https://haxe.org/)
-* download abode's repo (skip if you already have)
+* download HYDRO-FRAME's repo (skip if you already have)
 * in your terminal, run `haxelib install openfl 9.5.2; haxelib install lime 8.3.2`
 * after those two complete, run `haxelib run lime setup`
 * run `lime` in the console and make sure it worked

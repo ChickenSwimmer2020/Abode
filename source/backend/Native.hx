@@ -46,12 +46,12 @@ class Native {
 	 * * ! Someone please test this.
 	 * @since 0.00.0004
 	 */
-	public static function getAccentColor():AColor {
+	public static function getAccentColor():HColor {
 		#if (windows)
 		var returned:Int = untyped __cpp__("getAccentNative();");
 		if (returned == 0)
 			return 0xFF000000;
-		var toReturn:AColor = AColor.fromInt(returned);
+		var toReturn:HColor = HColor.fromInt(returned);
 		toReturn.a = 1.0;
 		return toReturn;
 		#elseif linux
@@ -59,12 +59,12 @@ class Native {
 		trace('HEY, MINT: SEND THIS LINE BACK TO ME!! "DesktopEnv is: $env"');
 		switch (env) {
 			default:
-				return AColor.BUTTON_IDLE;
+				return HColor.BUTTON_IDLE;
 		}
 		#elseif (html5 || android)
 		trace("getAccentColor: Unsupported!");
 		#end
-		return AColor.BUTTON_IDLE; // fallback
+		return HColor.BUTTON_IDLE; // fallback
 	}
 
 	#if linux

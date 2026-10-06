@@ -10,10 +10,10 @@ class DrawUtil {
 	 * @param spr what to draw too
 	 * @param rect rectangle to draw
 	 * @param color color
-	 * @return ASprite spr
+	 * @return HSprite spr
 	 * @since 0.00.001
 	 */
-	public static function addRect(spr:ASprite, rect:Rectangle, color:AColor):ASprite {
+	public static function addRect(spr:HSprite, rect:Rectangle, color:HColor):HSprite {
 		spr.graphics.beginFill(color.rgb, color.a);
 		spr.graphics.drawRect(rect.x, rect.y, rect.width, rect.height);
 		spr.graphics.endFill();
@@ -30,19 +30,19 @@ class DrawUtil {
 	 * @param thickness line thickness
 	 * @param outlineColor outline color
 	 * @param fillColor fill color
-	 * @return ASprite spr
+	 * @return HSprite spr
 	 * @since 0.00.002
 	 */
-	public static function drawIcon(spr:ASprite, icon:String, thickness:Int, outlineColor:AColor, fillColor:AColor):ASprite {
-		if (!Reflect.hasField(ADrawableIcons, icon)) {
+	public static function drawIcon(spr:HSprite, icon:String, thickness:Int, outlineColor:HColor, fillColor:HColor):HSprite {
+		if (!Reflect.hasField(HDrawableIcons, icon)) {
 			trace('Unrecognized icon $icon, aborting!');
 			return spr;
 		}
-		if (!(spr is backend.ui.ACheckBox))
+		if (!(spr is backend.ui.HCheckbox))
 			spr.reRender(); // reRender graphic so that the icon is cleared. but only if it isnt a checkbox.
-		spr.graphics.lineStyle(thickness, outlineColor.rgb ?? AColor.BLACK.rgb, outlineColor.a ?? 1.0); // set line style
+		spr.graphics.lineStyle(thickness, outlineColor.rgb ?? HColor.BLACK.rgb, outlineColor.a ?? 1.0); // set line style
 		spr.graphics.beginFill(fillColor.rgb, fillColor.a);
-		for (command in (Reflect.field(ADrawableIcons, icon) : Array<ADrawableIconCommand>)) {
+		for (command in (Reflect.field(HDrawableIcons, icon) : Array<HDrawableIconCommand>)) {
 			switch (command.t) {
 				case MOVE:
 					spr.graphics.moveTo(command.a.x, command.a.y);
@@ -60,7 +60,7 @@ class DrawUtil {
  * draw command style for icons
  * @since 0.00.002
  */
-enum ADrawableIconCommandType {
+enum HDrawableIconCommandType {
 	MOVE;
 	LINE;
 }
@@ -69,7 +69,7 @@ enum ADrawableIconCommandType {
  * drawable icon command.
  * @since 0.00.002
  */
-typedef ADrawableIconCommand = {t:ADrawableIconCommandType, a:{x:Float, y:Float}};
+typedef HDrawableIconCommand = {t:HDrawableIconCommandType, a:{x:Float, y:Float}};
 
 /**
 	do **NOT** make these manually.
@@ -77,12 +77,12 @@ typedef ADrawableIconCommand = {t:ADrawableIconCommandType, a:{x:Float, y:Float}
 	accessable in debug build, launch SymbolEditor from the `debug` dropdown on a -debug build
 	@since 0.00.002
  */
-class ADrawableIcons {
+class HDrawableIcons {
 	/**
 	 * sound icon
 	 * @since 0.00.002
 	 */
-	public static final SOUND:Array<ADrawableIconCommand> = [
+	public static final SOUND:Array<HDrawableIconCommand> = [
 		{t: MOVE, a: {x: 7, y: 5}},
 		{t: LINE, a: {x: 7, y: 14}},
 		{t: LINE, a: {x: 3, y: 11}},
@@ -116,7 +116,7 @@ class ADrawableIcons {
 	 * mute icon
 	 * @since 0.00.002
 	 */
-	public static final MUTE:Array<ADrawableIconCommand> = [
+	public static final MUTE:Array<HDrawableIconCommand> = [
 		{t: MOVE, a: {x: 7, y: 5}},
 		{t: LINE, a: {x: 7, y: 14}},
 		{t: LINE, a: {x: 3, y: 11}},
@@ -160,7 +160,7 @@ class ADrawableIcons {
 	 * window close icon
 	 * @since 0.00.002
 	 */
-	public static final WIN_CLOSE:Array<ADrawableIconCommand> = [
+	public static final WIN_CLOSE:Array<HDrawableIconCommand> = [
 		{t: MOVE, a: {x: 3, y: 3}},
 		{t: LINE, a: {x: 16, y: 17}},
 		{t: LINE, a: {x: 17, y: 17}},
@@ -177,7 +177,7 @@ class ADrawableIcons {
 	 * window maximize icon
 	 * @since 0.00.002
 	 */
-	public static final WIN_MAX:Array<ADrawableIconCommand> = [
+	public static final WIN_MAX:Array<HDrawableIconCommand> = [
 		{t: MOVE, a: {x: 3, y: 3}},
 		{t: LINE, a: {x: 3, y: 3}},
 		{t: LINE, a: {x: 17, y: 3}},
@@ -190,7 +190,7 @@ class ADrawableIcons {
 	 * window minimize icon
 	 * @since 0.00.002
 	 */
-	public static final WIN_MIN:Array<ADrawableIconCommand> = [
+	public static final WIN_MIN:Array<HDrawableIconCommand> = [
 		{t: MOVE, a: {x: 3, y: 7}},
 		{t: LINE, a: {x: 3, y: 7}},
 		{t: LINE, a: {x: 17, y: 7}},
@@ -203,7 +203,7 @@ class ADrawableIcons {
 	 * .FLA Project Icon
 	 * @since 0.00.003
 	 */
-	public static final FILE_FLASH:Array<ADrawableIconCommand> = [
+	public static final FILE_FLASH:Array<HDrawableIconCommand> = [
 		{t: MOVE, a: {x: 15, y: 67}},
 		{t: LINE, a: {x: 60, y: 67}},
 		{t: LINE, a: {x: 60, y: 29}},
@@ -278,7 +278,7 @@ class ADrawableIcons {
 	 * .APF Project Icon
 	 * @since 0.00.003
 	 */
-	public static final FILE_ABODEPROJECTFORMAT:Array<ADrawableIconCommand> = [
+	public static final FILE_HFPROJECTFORMAT:Array<HDrawableIconCommand> = [
 		{t: MOVE, a: {x: 15, y: 67}},
 		{t: LINE, a: {x: 60, y: 67}},
 		{t: LINE, a: {x: 60, y: 29}},
@@ -372,7 +372,7 @@ class ADrawableIcons {
 	 * checkbox check.
 	 * @since 0.00.003
 	 */
-	public static final UICHECK:Array<ADrawableIconCommand> = [
+	public static final UICHECK:Array<HDrawableIconCommand> = [
 		{t: MOVE, a: {x: 5, y: 10}},
 		{t: LINE, a: {x: 10, y: 14}},
 		{t: LINE, a: {x: 20, y: 0}},

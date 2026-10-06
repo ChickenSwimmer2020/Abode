@@ -4,7 +4,7 @@ package backend.objects;
  * a timer, it waits then does something.
  * @since 0.00.000
  */
-class ATimer {
+class HTimer {
 	/**
 	 * easily start a new timer, much like how Flixel does it. because timers in openfl are FUCKING. STUPID.
 	 * @param time how long to wait
