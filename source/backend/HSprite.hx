@@ -77,8 +77,6 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	public var scale(default, set):HPoint = new HPoint(1.0, 1.0);
 
 	/**
-	 * TODO: (NON-FUNCTIONAL, PLEASE FIX)
-	 * 
 	 * should the sprite antialias
 	 * @since 0.00.002 
 	 */
@@ -417,6 +415,6 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 		original.dispose(); // always dispose the 4k original
 		return scaled;
 		#end
-		return BitmapData.fromFile('assets/images/Background.png'); // return this as a default fallback.
+		return Assets.getBitmapData('assets/images/Background.png'); // return this as a default fallback.
 	}
 }

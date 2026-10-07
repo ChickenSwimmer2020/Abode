@@ -48,10 +48,12 @@ class Locale { // overrall, very simple system. for now.
 		for (target => enabled in UPrefs.perferredReference.value) {
 			if (enabled) {
 				switch (target) {
-					case "WINUser":
-						return Sys.getEnv("USERNAME");
-					case "PCName":
-						return Sys.getEnv(#if (windows) "COMPUTERNAME" #else "HOSTNAME" #end);
+                    #if(!html5)
+                        case "WINUser":
+                            return Sys.getEnv("USERNAME");
+                        case "PCName":
+                            return Sys.getEnv(#if (windows) "COMPUTERNAME" #else "HOSTNAME" #end);
+                    #end
 					case "Custom":
 						return UPrefs.customReferenceName.value ?? "[[USER]]";
 					default:

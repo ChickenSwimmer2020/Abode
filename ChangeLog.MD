@@ -2,6 +2,16 @@
 <!--markdownlint-disable MD033 -->
 # CHANGELOG
 
+> ## 0.00.007.1 {pre-0.00.008}
+>
+> * `HSprite` fallback graphic is now fixed on `HTML5`
+> * `HSprite.antialiasing` finally functional.
+> * `Locale` no longer tries to read `Sys.getEnv` on `HTML5`
+> * `ProjectBox` now works with new name
+> * `DrawUtil` now works with new name
+> * `InitState` quick-start buttons now work
+> * `Sys` builds no longer attempt to access `UPrefs.prefsData` as thats for `HTML5` only
+>
 > ## 0.00.007 (ui changes, mac support, and building guide)
 >
 >> MacOS now compiles! (Thanks [Rex](https://github.com/RX-739)!)

@@ -50,12 +50,24 @@ class InitState extends HState {
 
             for(i in 0...6) {
                 var button = new HButton(Locale.get('title.presetButton$i'), new Rectangle(7+((82*i)+(14*i)), 40, 82, 140), [
-                    (one)->{},
-                    (two)->{},
-                    (three)->{},
-                    (four)->{},
-                    (five)->{},
-                    (six)->{},
+                    (one)->{
+                        Main.StateSystem.switchState(EditorState, [1920, 1080, 30, "HScript 2.7", "pixels"]);
+                    },
+                    (two)->{
+                        Main.StateSystem.switchState(EditorState, [1280, 720, 30, "HTML5", "pixels"]);
+                    },
+                    (three)->{
+                        Main.StateSystem.switchState(EditorState, [468, 60, 24, "HTML5", "pixels"]);
+                    },
+                    (four)->{
+                        Main.StateSystem.switchState(EditorState, [2048, 1536, 30, "HTML5", "pixels"]);
+                    },
+                    (five)->{
+                        Main.StateSystem.switchState(EditorState, [550, 400, 24, "HTML5", "pixels"]);
+                    },
+                    (six)->{
+                        Main.windowManager.makePrefabWindow("makeProject");
+                    },
                 ][i]);
                 add(button);
             }
@@ -68,7 +80,7 @@ class InitState extends HState {
                     onClick: (_:HButton)->{
                         HDropdown.openDropdownMenu(_, false, [
                             {text: '${Locale.get("title.menuBar.File.New")}...', keys:[Keyboard.CONTROL, Keyboard.N], func: (butt:HButton)->{
-                                trace("Make new project.");
+                                Main.windowManager.makePrefabWindow("makeProject");
                             }},
                             {text: Locale.get("title.menuBar.File.Open"), func: (butt:HButton)->{
                                 trace('Open project from file.');
@@ -443,7 +455,7 @@ class InitState extends HState {
             add(projectScroller);
             for(i in 0...15) {
                 var pBox:ProjectBox = new ProjectBox(0, 0+((75+15)*i));
-                pBox.loadData(i%2==0?"TestFlashProject":"TestHYDRO-FRAMEProjet", i%2==0?"Flash":"HYDRO-FRAMEProjectFormat", "Yesterday");
+                pBox.loadData(i%2==0?"TestFlashProject":"TestHYDRO-FRAMEProjet", i%2==0?"Flash":"HFPF", "Yesterday");
                 projectScroller.add(pBox); //for testing and getting it ready.
             }
         }catch(e:Exception) Main.traceError(e);

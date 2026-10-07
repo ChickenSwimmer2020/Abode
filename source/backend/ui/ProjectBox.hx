@@ -35,7 +35,7 @@ class ProjectBox extends HSprite {
 	}
 
 	public function loadData(name:String, type:String, lastModded:String, ?description:String) {
-		title.text = '$name.${type == "Flash" ? "Fla" : "APF"}';
+		title.text = '$name.${type == "Flash" ? "Fla" : "HFPF"}';
 		if (type == "Flash") {
 			title.textColor = HColor.WHITE;
 			lastUsed.textColor = HColor.WHITE;
@@ -47,8 +47,8 @@ class ProjectBox extends HSprite {
 		switch (type) { // graphic, *then* icon.
 			case "Flash":
 				DrawUtil.drawIcon(this, "FILE_FLASH", 1, 0xFF9999FF, 0xFF00005B);
-			case "HYDRO-FRAMEProjectFormat":
-				DrawUtil.drawIcon(this, "FILE_HYDRO-FRAMEPROJECTFORMAT", 1, 0xFF9173B5, 0xFF89B2B7);
+			case "HFPF":
+				DrawUtil.drawIcon(this, "FILE_HFPF", 1, 0xFF9173B5, 0xFF89B2B7);
 		}
 	}
 }

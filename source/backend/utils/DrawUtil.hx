@@ -278,7 +278,7 @@ class HDrawableIcons {
 	 * .APF Project Icon
 	 * @since 0.00.003
 	 */
-	public static final FILE_HFPROJECTFORMAT:Array<HDrawableIconCommand> = [
+	public static final FILE_HFPF:Array<HDrawableIconCommand> = [
 		{t: MOVE, a: {x: 15, y: 67}},
 		{t: LINE, a: {x: 60, y: 67}},
 		{t: LINE, a: {x: 60, y: 29}},
