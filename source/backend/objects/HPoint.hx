@@ -7,21 +7,19 @@ package backend.objects;
 class HPoint {
 	public var x:Float = 0;
 	public var y:Float = 0;
-	public var iX:Int = 0;
-	public var iY:Int = 0;
+	public var iX(get, never):Int;
+	public function get_iX():Int return Math.floor(x);
+	public var iY(get, never):Int;
+	public function get_iY():Int return Math.floor(y);
 
 	public function new(x:Float, y:Float) {
 		this.x = x;
 		this.y = y;
-		iX = Math.floor(x);
-		iY = Math.floor(y);
 	}
 
 	public function set(x:Float, y:Float) {
 		this.x = x;
 		this.y = y;
-		iX = Math.floor(x);
-		iY = Math.floor(y);
 	}
 
 	public function toOpenflPoint():Point

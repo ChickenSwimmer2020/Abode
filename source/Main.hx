@@ -83,19 +83,20 @@ class Main extends Sprite {
 	/**
 	 * DEBUG EXCLUSIVE
 	 * Debugger stats, inclueds fps, memory, and loaded objects.
-	 * @since pre-0.00.001
+	 * @since 0.00.000
 	 */
 	public var stats:DebugDisplay;
 	#end
 
 	/**
 	 * State system, controls the actual states of HYDRO-FRAME, this is actually a very important thing.
-	 * @since pre-0.00.001
+	 * @since 0.00.000
 	 */
 	public static var StateSystem:StateSystemInit = new StateSystemInit(null); // defaults to splashscreen since thats literally the only thing it does on init
 
 	/**
 	 * Entry point of HYDRO-FRAME for launching, this is what does stuff before any state loads.
+     * @since 0.00.000
 	 */
 	public function new() {
 		super();
@@ -111,7 +112,7 @@ class Main extends Sprite {
 			#end
 			#end
 			Native.flashTaskbar();
-			Log.throwErrors = false; // STOP CRASHING MAH GAME!
+			Log.throwErrors = false; // STOP CRASHING MEH!!
 			instance = this;
 			#if (hl && !debug) hl.UI.closeConsole(); #end
 			stage.scaleMode = #if html5 StageScaleMode.EXACT_FIT; #else StageScaleMode.NO_SCALE; #end

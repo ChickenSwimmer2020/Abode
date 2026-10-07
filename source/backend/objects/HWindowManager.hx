@@ -307,6 +307,13 @@ class HWindowManager {
  * @since 0.00.002
  */
 class HWindow extends HGroup<HSprite> {
+	/**
+	 * Triggered when the window moves.
+	 * @since 0.00.007.2
+	 */
+	public var onWindowMove:Null<HPoint->Void>=null;
+
+
 	@:isVar public var dragBar(get, null):Null<HSprite> = null;
 
 	public function get_dragBar():Null<HSprite>
@@ -420,6 +427,7 @@ class HWindow extends HGroup<HSprite> {
 				return;
 			}
 			setPosition(vx - dragOffset.x, vy - dragOffset.y);
+			if(onWindowMove!=null) onWindowMove(new HPoint(this.x, this.y));
 		}
 	}
 

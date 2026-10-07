@@ -26,8 +26,6 @@ class Locale { // overrall, very simple system. for now.
 			return '[[$key]]';
 		else {
 			var toReturn:String = target;
-			// TODO: fix
-			// TODO /*if(Date.now().getMonth()==3&&Date.now().getDate()==1)?*/toReturn = toReturn.replace("HYDRO-FRAME", "aboat");
 			if (replacer != null) {
 				for (get => to in replacer) {
 					toReturn = toReturn.replace(get, Std.string(to)); // whoops.
@@ -44,7 +42,6 @@ class Locale { // overrall, very simple system. for now.
 	 * @since 0.00.007
 	 */
 	public static function getUser():String {
-		trace(UPrefs.perferredReference.value);
 		for (target => enabled in UPrefs.perferredReference.value) {
 			if (enabled) {
 				switch (target) {

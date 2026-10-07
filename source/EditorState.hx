@@ -4,45 +4,43 @@ package;
  * The different selectable tools of HYDRO-FRAME!
  * @since 0.00.008
  */
-enum Tool {
-    SELECTION;
-    SUBSELECTION;
-    FREE_TRANSFORM;
-    GRADIENT_TRANSFORM;
-    LASSO;
-    POLYGON;
-    MAGIC_WAND;
-    FLUID_BRUSH;
-    CLASSIC_BRUSH;
-    ERASOR;
-    RECTANGLE;
-    RECTANGLE_PRIMITIVE;
-    OVAL;
-    OVAL_PRIMITIVE;
-    POLYSTAR;
-    LINE;
-    PEN;
-    ADD_ANCHOR_POINT;
-    DELETE_ANCHOR_POINT;
-    CONVERT_ANCHOR_POINT;
-    TEXT;
-    PAINT_BUCKET;
-    INK_BOTTLE;
-    EYEDROPPER;
-    IMAGE_WARP; //asset_warp
-    HAND;
-    ROTATION;
-    TIME_SCRUB;
-    ZOOM;
+enum abstract Tool(String) from String to String{
+    var SELECTION:String = "SELECTION";
+    var SUBSELECTION:String = "SUBSELECTION";
+    var FREE_TRANSFORM:String = "FREE_TRANSFORM";
+    var GRADIENT_TRANSFORM:String = "GRADIENT_TRANSFORM";
+    var LASSO:String = "LASSO";
+    var POLYGON:String = "POLYGON";
+    var MAGIC_WAND:String = "MAGIC_WAND";
+    var FLUID_BRUSH:String = "FLUID_BRUSH";
+    var CLASSIC_BRUSH:String = "CLASSIC_BRUSH";
+    var ERASOR:String = "ERASOR";
+    var RECTANGLE:String = "RECTANGLE";
+    var RECTANGLE_PRIMITIVE:String = "RECTANGLE_PRIMITIVE";
+    var OVAL:String = "OVAL";
+    var OVAL_PRIMITIVE:String = "OVAL_PRIMITIVE";
+    var POLYSTAR:String = "POLYSTAR";
+    var LINE:String = "LINE";
+    var PEN:String = "PEN";
+    var ADD_ANCHOR_POINT:String = "ADD_ANCHOR_POINT";
+    var DELETE_ANCHOR_POINT:String = "DELETE_ANCHOR_POINT";
+    var CONVERT_ANCHOR_POINT:String = "CONVERT_ANCHOR_POINT";
+    var TEXT:String = "TEXT";
+    var PAINT_BUCKET:String = "PAINT_BUCKET";
+    var INK_BOTTLE:String = "INK_BOTTLE";
+    var EYEDROPPER:String = "EYEDROPPER";
+    var IMAGE_WARP:String = "IMAGE_WARP"; //asset_warp
+    var HAND:String = "HAND";
+    var ROTATION:String = "ROTATION";
+    var TIME_SCRUB:String = "TIME_SCRUB";
+    var ZOOM:String = "ZOOM";
 }
 /**
  * Information for saving where tab was stored on the editor UI area.
  * dumps to UPrefs on program close.
  * @since 0.00.008
  */
-//TODO: make dump to uPrefs for every tab when HYDRO-FRAME closes.
 typedef SavedTabInfo = {
-    var name:String;
     var size:Float;
     var position:HPoint;
 };
@@ -89,8 +87,27 @@ class EditorState extends HState {
 
 
     private function makeToolsWindow() {
-        toolsTabArea = Main.windowManager.makeWindow("Tools", 0, 20, 295, Main.pHeight-20, false, true);
+        toolsTabArea = Main.windowManager.makeWindow("Tools", 0, 20, 125, 125, false, true);
 
+        //for making tool buttons
+        for(i in 0...15) {
+            var butt:HButton = new HButton("A", new Rectangle(5+(20*(i%5)), 5+(20*(Math.floor(i/5))), 15, 15), (_:HButton)->{
+                //TODO: dropdown on certain buttons.
+            });
+            toolsTabArea.addContent(butt);
+        }
 
+        if(UPrefs.getWorkspaceFile()!="{}") {
+            var targetPos:HPoint = ((UPrefs.getFromWorkspace("WINDOW_TOOLS"):Map<String, Dynamic>).get("position"):HPoint);
+            if(targetPos==null) {
+                trace("Failed to get last saved position of WINDOW_TOOLS!!!!");
+                return;
+            }
+            toolsTabArea.setPositionRaw(targetPos.x, targetPos.y);
+            //toolsTabArea.set(targetPos.x, targetPos.y); //TODO: window resizing.
+        }
+        toolsTabArea.onWindowMove = (_:HPoint)->{
+            UPrefs.writeToWorkspace("WINDOW_TOOLS", {size: new HPoint(295, Main.pHeight-20), position: _});
+        };
     }
 }

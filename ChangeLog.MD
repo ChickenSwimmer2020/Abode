@@ -2,6 +2,17 @@
 <!--markdownlint-disable MD033 -->
 # CHANGELOG
 
+> ## 0.00.007.2 {TBA}
+>
+> * `Main:114` no longer refers to Hydro-Frame as a ***"game"***
+> * Fixed some inconsistancies in the `since` tags in comments on `Main`
+> * Removed some unneeded traces from `Locale`
+> * `HPoint` `iX` and `iY` are now `get`/`set`
+> * `HWindowManager` now has a new Variable `onWindowMove`
+> * `UPrefs` now has a `workspace` file for `EditorState`
+> * `EditorState` `Tools` enum is now abstract and `String` based
+> * `EditorState` Tools window now has non-functional buttons
+>
 > ## 0.00.007.1.1 {whoops}
 >
 > * Fixed a wrong conditional block.

@@ -12,6 +12,13 @@ class UPrefs {
          * @since 0.00.006
          */
         public static var prefsData:SharedObject = SharedObject.getLocal("HYDRO-FRAMEPrefs");
+
+        /**
+         * HTML5 EXCLUSIVE VARIABLE
+         * * Contains the workspace save data.
+         * @since 0.00.007.2
+         */
+        public static var workspaceData:SharedObject = SharedObject.getLocal("HYDRO-FRAMEWorkspace");
     #end
     /**
      * Default Preferences
@@ -92,6 +99,28 @@ class UPrefs {
             return (Reflect.field(prefsData.data, a):T);
         #end
     }
+
+    /**
+     * Return a target workspace object
+     * @param a What we what to try to find
+     * @param <T> (HTML5 ONLY) Used for casting.
+     * @since 0.00.007.2
+     */
+    public static function getFromWorkspace #if(html5)<T>#end(a:String):#if(sys)Dynamic#else T#end{
+        #if(sys)
+            var v:Dynamic = Reflect.getProperty(Json.parse(getWorkspaceFile()), a); //inital json data.
+            if(v!=null&&Type.typeof(v)==TObject) { //map fix, so maps can be parsed correctly cuz apparently casting is stupid.
+                var m = new Map<Dynamic, Dynamic>();
+                for(f in Reflect.fields(v)) m.set(f, Reflect.field(v, f));
+                return m;
+            }
+            return v;
+        #else
+            return (Reflect.field(workspaceData.data, a):T);
+        #end
+    }
+
+
     /**
      * Write to preferences
      * @param a key
@@ -113,12 +142,34 @@ class UPrefs {
         return b;
     }
 
+
+    public static function writeToWorkspace(a:String, b:Dynamic):Dynamic {
+        #if(sys)
+            var json:Dynamic = Json.parse(getWorkspaceFile());
+            Reflect.setField(json, a, b);
+            trace('Setting field $a to $b in workspace.');
+            File.saveContent("workspace.json", Json.stringify(json, null,"    "));
+        #else
+            Reflect.setField(workspaceData.data, a, b);
+            workspaceData.flush();
+            trace('Tried to set "$a" to "$b" in workspace(SharedObject), returned ${Reflect.getProperty(workspaceData.data, a)}');
+        #end
+        return b;
+    }
+
     #if(sys)
         /**
          * Returns the preferences file, and makes it if it doesnt exist (SYS ONLY)
          * @return String json file
          */
         public static inline function getPrefsFile():String return (FileSystem.exists("uPrefs.json"))?File.getContent("uPrefs.json"):makePrefsFile();
+
+        /**
+         * get the workspace file, and make it if it doesnt exist.
+         * @return String the workspace save data
+         * @since 0.00.007.2
+         */
+        public static inline function getWorkspaceFile():String return (FileSystem.exists("workspace.json"))?File.getContent("workspace.json"):makeWorkspacefile();
 
         /**
          * Makes the preferences file (SYS ONLY)
@@ -128,6 +179,16 @@ class UPrefs {
         public static function makePrefsFile():String {
             File.saveContent("uPrefs.json", Json.stringify(DEFAULT_PREFERENCES, null, "    "));
             return File.getContent("uPrefs.json");
+        }
+
+        /**
+         * make the workspace json file.
+         * @return String the new workspace file data
+         * @since 0.00.007.2
+         */
+        public static function makeWorkspacefile():String{ 
+            File.saveContent("workspace.json", Json.stringify({}, null, "    "));
+            return File.getContent("workspace.json");
         }
     #else
         /**
@@ -140,6 +201,16 @@ class UPrefs {
                 prefsData.flush();
             }
             trace('Prefs sent to cookies!');
+        }
+
+        /**
+         * generate the workspace object. (HTML5 ONLY)
+         * @since 0.00.007.2
+         */
+        public static function makeWorkspaceFile() {
+            Reflect.setField(workspaceData.data, "init", true);
+            workspaceData.flush();
+            trace("Workspace cookies generated!");
         }
     #end
 }
