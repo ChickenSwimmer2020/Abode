@@ -102,7 +102,7 @@ class Main extends Sprite {
 		try {
 			#if (html5 || mac)
 			desktopbackgroundImage = HSprite.getDesktopWallpaper(1280, 720); // fix for a crash on startup with html5.
-			#if (!sys) // dont do this on mac beacuse mac actually has fileSystem
+			#if (!mac) // dont do this on mac beacuse mac actually has fileSystem
 			if ((UPrefs.prefsData.data.preferencesCreated : Bool) == null) { // to actually create preferences.
 				UPrefs.makePrefsFile();
 				UPrefs.prefsData.data.preferencesCreated = true;

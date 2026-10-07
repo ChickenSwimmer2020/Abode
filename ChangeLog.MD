@@ -2,6 +2,10 @@
 <!--markdownlint-disable MD033 -->
 # CHANGELOG
 
+> ## 0.00.007.1.1 {whoops}
+>
+> * Fixed a wrong conditional block.
+>
 > ## 0.00.007.1 {pre-0.00.008}
 >
 > * `HSprite` fallback graphic is now fixed on `HTML5`
