@@ -81,39 +81,31 @@ class Main extends Sprite {
 	/**
 	 * DEBUG EXCLUSIVE
 	 * Debugger stats, inclueds fps, memory, and loaded objects.
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public var stats:DebugDisplay;
 	#end
 
 	/**
 	 * State system, controls the actual states of Hydro-Frame, this is actually a very important thing.
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public static var StateSystem:StateSystemInit; // defaults to splashscreen since thats literally the only thing it does on init
 
 	/**
 	 * Entry point of Hydro-Frame for launching, this is what does stuff before any state loads.
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public function new() {
 		super();
 		StateSystem = new StateSystemInit(null);
-		#if (html5 || mac)
-		desktopbackgroundImage = HSprite.getDesktopWallpaper(1280, 720); // fix for a crash on startup with html5.
-		#if (!mac) // dont do this on mac beacuse mac actually has fileSystem
-		if ((UPrefs.prefsData.data.preferencesCreated : Bool) == null) { // to actually create preferences.
-			UPrefs.makePrefsFile();
-			UPrefs.prefsData.data.preferencesCreated = true;
-			UPrefs.prefsData.flush();
-		}
-		#end
+		#if (mac)
+		desktopbackgroundImage = HSprite.getDesktopWallpaper(1280, 720); // fix for a crash on startup with mac.
 		#end
 		Native.flashTaskbar();
 		Log.throwErrors = false; // STOP CRASHING MEH!!
 		instance = this;
-		#if (hl && !debug) hl.UI.closeConsole(); #end
-		stage.scaleMode = #if html5 StageScaleMode.EXACT_FIT; #else StageScaleMode.NO_SCALE; #end
+		stage.scaleMode = StageScaleMode.NO_SCALE;
 		stage.align = StageAlign.TOP_LEFT;
 		Lib.application.window.onClose.add(onClosing);
 		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrashing);
@@ -284,7 +276,6 @@ class Main extends Sprite {
 	 * @since 0.1.0
 	 */
 	private function onStageResize(_:Event):Void {
-		#if sys
 		var w = stage.stageWidth;
 		var h = stage.stageHeight;
 		var s = Math.min(w / pWidth, h / pHeight);
@@ -292,10 +283,6 @@ class Main extends Sprite {
 		scaleX = scaleY = s;
 		x = (w - pWidth * s) / 2;
 		y = (h - pHeight * s) / 2;
-		#elseif html5
-		pWidth = Application.current.window.width;
-		pHeight = Application.current.window.height;
-		#end
 		updateVirtualMouse();
 	}
 

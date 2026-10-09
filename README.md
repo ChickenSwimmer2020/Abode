@@ -1,4 +1,4 @@
-<!-- Version: 0.7.0 -->
+<!-- Version: 0.8.1 -->
 <!-- markdownlint-disable MD033 -->
 <h1 align="center">Hydro-Frame</h1> <!--Hey can we get a design for this? i wanna use an image kinda like what foxlite did. -ChickenSwimmer2020 -->
 <p>Have you ever wanted to simply animate something? Not have to worry about subscriptions, or not owning what you make, or having to let a certain company spy on you while you work?<br>Have you ever wanted to not worry about your projects getting deleted because a company desides they dont want to support the application you use?<br>Well not anymore!<br><br>Introducing: Hydro-Frame<br>The open-source, openfl-written animation software. We hope to beat Adobe at their <i><strong>own. game!</strong></i>.<br>But you're probably saying to yourself right now: <q>But, Adobe is a multi-billion dollar company?</q> And whereas thats true, we have something they dont, commits and pull requests.<br>Where Animate is closed source and stale, Hydro-Frame is open source, and will be getting constant updates, either by me and my team, or the community of animation<br>So whats stopping you? scroll up and start contributing today!

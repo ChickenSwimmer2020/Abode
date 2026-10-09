@@ -85,13 +85,9 @@ import lime.graphics.RenderContext;
 import lime.ui.Window;
 import lime.utils.Log;
 // sys imports
-#if sys
 import sys.io.File;
 import sys.FileSystem;
 import sys.Http;
-#elseif html5
-import haxe.Http;
-#end
 // haxe imports
 import haxe.Json;
 import haxe.zip.Reader;

@@ -19,7 +19,7 @@ class ScrollableArea extends HGroup<HSprite> {
 	public function onMouseScroll(e:MouseEvent) {
 		if (interactable) {
 			if (containsMouse()) {
-				final delta:Int = (#if (html5) e.delta #else e.delta * 40 #end);
+				final delta:Int = (e.delta * 40);
 				if (UPrefs.inverseScrollDirection.value)
 					index += delta; // delta is fucky on html.
 				else

@@ -19,7 +19,6 @@ class InitState extends HState {
 		Mouse.show();
 		wallpaperBackground = new HSprite(0, 0).loadGraphic(Main.desktopbackgroundImage, true);
 		add(wallpaperBackground);
-		#if html5 wallpaperBackground.setGraphicSize(Main.pWidth, Main.pHeight); #end
 
 		if (!appliedDarkenOnlyOnce) { // holy shit, didnt realize there was a bug here!
 			// projects list darken.
@@ -610,7 +609,6 @@ class InitState extends HState {
 						{text: 'seperator', func: null},
 						{
 							text: '${Locale.get("title.menuBar.Help.ManagePlugins")}...',
-							disabled: #if (html5) true #else false #end,
 							func: (butt:HButton) -> {
 								trace('TODO: sub dropdown');
 							}

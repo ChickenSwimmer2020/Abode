@@ -1,6 +1,5 @@
 package engine.vfs;
 
-import engine.utils.OneOfTwo;
 import engine.vfs.HFile;
 import haxe.io.Bytes;
 import haxe.io.BytesBuffer;

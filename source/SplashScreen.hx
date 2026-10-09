@@ -37,7 +37,6 @@ class SplashScreen extends HState {
 		var properSprite:HSprite = new HSprite(-640 / 2, -360 / 2, 'assets/images/splash/art.png');
 		properSprite.alpha = 0;
 		add(properSprite);
-		#if html5 properSprite.setGraphicSize(Main.pWidth, Main.pHeight); #end
 
 		new HTween().tween(properSprite, {alpha: 1}, 1.25, null, AEase.quadInOut);
 		new HTween().tween(introSprite, {alpha: 0}, 1.25, () -> {

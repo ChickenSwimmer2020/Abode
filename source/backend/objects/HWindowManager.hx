@@ -305,7 +305,7 @@ class HWindowManager {
 class HWindow extends HGroup<HSprite> {
 	/**
 	 * Triggered when the window moves.
-	 * @since 0.00.007.2
+	 * @since 0.7.2
 	 */
 	public var onWindowMove:Null<HPoint->Void>=null;
 

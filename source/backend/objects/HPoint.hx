@@ -2,7 +2,7 @@ package backend.objects;
 
 /**
  * openfl.geom.point, but float. with int options.
- * @since 0.00.000
+ * @since 0.0.0
  */
 class HPoint {
 	public var x:Float = 0;

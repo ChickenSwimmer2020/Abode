@@ -27,14 +27,14 @@ class Native {
 	/**
 	 * SYS EXCLUSIVE
 	 * Flash the taskbar
-	 * @since 0.00.0004
+	 * @since 0.0.04
 	 */
 	public static inline function flashTaskbar() {
 		#if (windows)
 		trace("flashTaskbar: Not Implemented");
 		#elseif linux
 		trace("flashTaskbar: Not Implemented");
-		#elseif (html5 || android)
+		#elseif (ios||android)
 		trace("flashTaskbar: Unsupported!");
 		#end
 	}
@@ -44,7 +44,7 @@ class Native {
 	 * Get the System accent color
 	 * * ! LINUX/MACOS UNTESTED AS OF 0.6.0 !
 	 * * ! Someone please test this.
-	 * @since 0.00.0004
+	 * @since 0.0.04
 	 */
 	public static function getAccentColor():HColor {
 		#if (windows)
@@ -61,7 +61,7 @@ class Native {
 			default:
 				return HColor.BUTTON_IDLE;
 		}
-		#elseif (html5 || android)
+		#elseif (ios || android)
 		trace("getAccentColor: Unsupported!");
 		#end
 		return HColor.BUTTON_IDLE; // fallback

@@ -2,7 +2,7 @@ package backend.objects;
 
 /**
  * tween data.
- * @since 0.00.000
+ * @since 0.0.0
  */
 typedef HTweenData = {
 	target:Dynamic,
@@ -17,12 +17,12 @@ typedef HTweenData = {
 
 /**
  * a tween system, yeahhh.
- * @since 0.00.000
+ * @since 0.0.0
  */
 class HTween extends Sprite {
 	/**
 	 * active tweens
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	private var tweens:Array<HTweenData> = [];
 
@@ -30,19 +30,19 @@ class HTween extends Sprite {
 
 	/**
 	 * should auto-started tweens destroy on finish
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public var autoDestroy:Bool = true; // set false if you want it to persist
 
 	/**
 	 * always set to Main on startup
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public static var globalParent:openfl.display.DisplayObjectContainer;
 
 	/**
 	 * make a new tween
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public function new() {
 		super();
@@ -60,7 +60,7 @@ class HTween extends Sprite {
 	 * @param onComplete what to do on complete
 	 * @param ease ease to use
 	 * @return HTween the tween that was just started
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public function tween(target:Dynamic, props:Dynamic, duration:Float, ?onComplete:Void->Void, ?ease:Float->Float):HTween {
 		if (target != null) {
@@ -101,21 +101,21 @@ class HTween extends Sprite {
 	/**
 	 * cancel all the tweens of `target`
 	 * @param target object to stop tweens of
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public inline function cancelTweensOf(target:Dynamic)
 		tweens = tweens.filter(t -> t.target != target);
 
 	/**
 	 * cancel every tween
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public inline function cancelAll()
 		tweens = [];
 
 	/**
 	 * destroy the tween.
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public function destroy():Void {
 		removeEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -156,7 +156,7 @@ class HTween extends Sprite {
 
 /**
  * Its FlxEase.
- * @since 0.00.000
+ * @since 0.0.0
  */
 class AEase {
 	static var PI2:Float = Math.PI / 2;

@@ -2,16 +2,27 @@
 <!--markdownlint-disable MD033 -->
 # CHANGELOG
 
+> ## 0.8.1 (The fucky hotfix!)
+>
+> * Sadly removed the ability to compile to HTML5, due to cne-lime problems. :/ (this angers me.)
+> * Reformated the new changelog entries because ZSolarDev messed it up.
+> * Fixed a missing step that prevented lime from compiling.
+> * This is a REALLY fucky build
+>
 > ## 0.8.0 (Project format(.hfp), Virtual File System, Crash handling, and more.) - By ZSolarDev
+>
 > * Working on the `engine.` package. This package is only separated from the backend because it contains things that are at the core *functionality* of Hydro-Frame rather than being a part of the UI/Application used to interface with it. Also, this is one of the few packages HScript will be able to access and use. This is so that we can have a slim runtime that only requires `engine.` and some logic to actually load and run the project. Like Adobe Flash Player. This does mean that any code under `source/engine/` shouldn't need any code outside of it, so that the runtime is self contained.
 >
-> * Added Virtual File System
+>
+>> ## Added Virtual File System
+>>
 >> * Added `HFileSystem` class under `engine.vfs`
 >> * Added `HFile` class under `engine.vfs`
 >> * Added `HFolder` class under `engine.vfs`
 >> * Added `HFileObj` class under `engine.vfs`
 >
-> * Added .hfp project parsing, based on VFS for major format flexibility.
+> ## .hfp project parsing, based on VFS for major format flexibility
+>>
 >> * Added `HProject` class under `engine.project.data`
 >> * Added `HProjectFileMetadata` class under `engine.project.data`
 >> * Added `HProjectValidationResult` class under `engine.project.data`
@@ -21,23 +32,23 @@
 >> * Added `HProjectFileWriter` class under `engine.project`
 >> * Added `HProjectHander` class under `engine.project`
 >> * Added `HProjectUtils` class under `engine.utils`
->
-> * Updated libraries (See `BUILDING.MD` for more info)
->> * Switched `lime` to `cne-lime`. 
->>> * To update, use `haxelib git lime https://github.com/CodenameCrew/cne-lime develop; lime rebuild [platform here]; lime rebuild tools`
->> * Switched `openfl` to `cne-openfl`.
->>> * To update, use `haxelib git openfl https://github.com/CodenameCrew/cne-openfl develop`
->> * Added `svg`.
->>> * To install, use `haxelib install svg 1.2.0`
->
-> * Added crash handling
+><!---->
+>> ## Update Libraries
+>>
+>> * Lime->cne-Lime || `haxelib git lime https://github.com/CodenameCrew/cne-lime develop; lime rebuild [platform here]; lime rebuild tools`
+>> * OpenFL->cne-OpenFL || `haxelib git openfl https://github.com/CodenameCrew/cne-openfl develop`
+>> * Added `svg` || `haxelib install svg 1.2.0`
+>>
+>> ## Crash Handling
+>>
 >> * Added `Safe` under `backend.utils` (meant for error handling, don't use).
->> * Added `MethodUtil` under `backend.utils` which is a utility for getting the method signatures of a compiled method *in the codebase*(not in libraries or scripts). Used for error handling.
+>> * Added `MethodUtil` under `backend.utils` (meat for error handling, don't use)
+compiled method *in the codebase*(not in libraries or scripts). Used for error handling.
 >> * Added the `Stamper` and `SafeBuild` classes under `backend.macro` (meant for error handling, don't use). ALSO, any function that you don't want error ensurance for whatever reason, annotate it with `@:unwrapSafe`.
 >
 > * Added `OneOfTwo` class under `engine.utils`
 > * Added `resetState()` and `stateFormula` to `InitialState.StateSystemInit`
->> * I really need to rework the state system eventually.
+> * I really need to rework the state system soon.
 > * Updated `LICENSE` to actually fill in the placeholders(`[yyyy] [name of copyright owner]`)
 >
 > ## 0.7.3 (bugfixing, editor improvements, etc)

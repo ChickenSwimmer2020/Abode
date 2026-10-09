@@ -2,19 +2,19 @@ package backend.objects;
 
 /**
  * the starting state of everything, this is initilized in Main
- * @since 0.00.000
+ * @since 0.0.0
  */
 class StateSystemInit extends Sprite {
 	/**
 	 * the currently loaded state, as a string!
 	 * (Used for debugging)
-	 * @since 0.00.001
+	 * @since 0.0.1
 	 */
 	public var currentState:String = "UNKNOWN!!";
 
 	/**
 	 * the currently loaded state
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public var state:HState;
 
@@ -28,7 +28,7 @@ class StateSystemInit extends Sprite {
 	/**
 	 * initilize the state system
 	 * @param initState what state to load (can be null)
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public function new(?initState:Null<Class<HState>>, ?args:Array<Dynamic>) {
 		super();
@@ -40,7 +40,7 @@ class StateSystemInit extends Sprite {
 	 * @param newState state to switch to
 	 * @param args optional arguments
 	 * @return the new state
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public function switchState(newState:Class<HState>, ?args:Array<Dynamic>):HState {
 		// clean up old state

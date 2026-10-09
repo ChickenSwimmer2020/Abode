@@ -11,7 +11,7 @@ typedef ExtraFilterParams = {
 
 /**
  * HSprite is the building block of Hydro-Frame, as 90% of classes end up extending this.
- * @since 0.00.000
+ * @since 0.0.0
  */
 class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implements IDestroyable {
 	/**
@@ -54,7 +54,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * Color transform of the Sprite, affects sub-objects as well.
 	 * @since 0.2.0
 	 */
-	public var color(default, set):HColor = HColor.TRANSPARENT;
+	public var color(default, set):HColor = HColor.WHITE;
 
 	/**
 	 * set the color transform of this sprite
@@ -118,7 +118,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * @param x position
 	 * @param y position
 	 * @param graphic image to load
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public function new(x:Float, y:Float, ?graphic:OneOfThree<String, Image, BitmapData>) {
 		super();
@@ -136,7 +136,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * @param height height
 	 * @param color HColor
 	 * @return HSprite
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public function makeGraphic(width:Int, height:Int, color:HColor = HColor.TRANSPARENT):HSprite {
 		graphics.clear();
@@ -164,7 +164,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * @param graphic graphic to make 
 	 * @param takeOwnership no clue what this does :/
 	 * @return HSprite
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public function loadGraphic(graphic:OneOfThree<String, Image, BitmapData>, takeOwnership:Bool = false):HSprite {
 		// dispose previous bitmap if we own it
@@ -224,7 +224,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * change the graphic size.
 	 * @param width 
 	 * @param height 
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public function setGraphicSize(width:Float, height:Float) {
 		if (width <= 0 && height <= 0)
@@ -244,7 +244,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * set position
 	 * @param x 
 	 * @param y 
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public function setPosition(x:Float, y:Float) {
 		this.x = x + width / 2;
@@ -264,7 +264,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 
 	/**
 	 * self explanitory.
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public function destroy() {
 		graphics.clear();

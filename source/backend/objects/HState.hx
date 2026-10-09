@@ -2,12 +2,12 @@ package backend.objects;
 
 /**
  * HState, its a state. functions like FlxState from Flixel
- * @since 0.00.000
+ * @since 0.0.0
  */
 class HState extends Sprite {
 	/**
 	 * members of the state
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public var members:Array<Dynamic> = [];
 
@@ -48,7 +48,7 @@ class HState extends Sprite {
 
 	/**
 	 * make a new state
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public function new() {
 		super();
@@ -58,7 +58,7 @@ class HState extends Sprite {
 	 * add a new object to the state
 	 * @param basic basic to add
 	 * @return Dynamic the basic that was added
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public function add(basic:Dynamic):Dynamic {
 		trace('added basic $basic');
@@ -71,7 +71,7 @@ class HState extends Sprite {
 	 * remove an object from the state
 	 * @param basic object to remove
 	 * @return Bool was it removed successfully
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public function remove(basic:Dynamic):Bool {
 		if (basic == null)
@@ -84,7 +84,7 @@ class HState extends Sprite {
 
 	/**
 	 * destroy the state
-	 * @since 0.00.000
+	 * @since 0.0.0
 	 */
 	public function destroy() {
 		// iterate a copy so removing mid-loop doesnt cause skips
