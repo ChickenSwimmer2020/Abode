@@ -26,7 +26,7 @@ class HTween extends Sprite {
 	 */
 	private var tweens:Array<HTweenData> = [];
 
-	private var lastTime:Int = 0;
+	private var lastTime:Float = 0;
 
 	/**
 	 * should auto-started tweens destroy on finish

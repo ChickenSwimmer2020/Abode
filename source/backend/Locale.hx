@@ -1,14 +1,14 @@
 package backend;
 
 /**
- * Localization system to allow for different languages to enjoy HYDRO-FRAME!
- * @since 0.00.003
+ * Localization system to allow for different languages to enjoy Hydro-Frame!
+ * @since 0.3.0
  */
 class Locale { // overrall, very simple system. for now.
 
 	/**
 	 * Current target language
-	 * @since 0.00.003
+	 * @since 0.3.0
 	 */
 	public static var lang:String = "en_US";
 
@@ -18,7 +18,7 @@ class Locale { // overrall, very simple system. for now.
 	 * @param replacer if words need to be replaced, use this
 	 * @param overrideLanguage if the language needs to be overriden, use this.
 	 * @return String translated key
-	 * @since 0.00.003
+	 * @since 0.3.0
 	 */
 	public static function get(key:String, ?replacer:Map<String, Dynamic>, ?overrideLanguage:String):String {
 		var target:String = Reflect.getProperty(getLocaleFile(overrideLanguage ?? lang), key);
@@ -39,18 +39,18 @@ class Locale { // overrall, very simple system. for now.
 
 	/**
 	 * get the current referall name, set on first program launch
-	 * @since 0.00.007
+	 * @since 0.7.0
 	 */
 	public static function getUser():String {
 		for (target => enabled in UPrefs.perferredReference.value) {
 			if (enabled) {
 				switch (target) {
-                    #if(!html5)
-                        case "WINUser":
-                            return Sys.getEnv("USERNAME");
-                        case "PCName":
-                            return Sys.getEnv(#if (windows) "COMPUTERNAME" #else "HOSTNAME" #end);
-                    #end
+					#if (!html5)
+					case "WINUser":
+						return Sys.getEnv("USERNAME");
+					case "PCName":
+						return Sys.getEnv(#if (windows) "COMPUTERNAME" #else "HOSTNAME" #end);
+					#end
 					case "Custom":
 						return UPrefs.customReferenceName.value ?? "[[USER]]";
 					default:
@@ -65,7 +65,7 @@ class Locale { // overrall, very simple system. for now.
 	 * get a locale file
 	 * @param t target lang
 	 * @return Dynamic data from file
-	 * @since 0.00.003
+	 * @since 0.3.0
 	 */
 	private static inline function getLocaleFile(t:String):Dynamic
 		return Json.parse(Assets.getText('assets/data/locale/$t.locale') ?? "{}");

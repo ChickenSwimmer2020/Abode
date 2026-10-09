@@ -13,20 +13,20 @@ class HState extends Sprite {
 
 	/**
 	 * UNFINISHED
-	 * @since 0.00.004
+	 * @since 0.4.0
 	 */
 	public var canInteract(default, set):Bool = true;
 
 	/**
 	 * UNFINISHED
-	 * @since 0.00.004
+	 * @since 0.4.0
 	 */
 	private var lastButtonStates:Map<HButton, Bool> = new Map<HButton, Bool>();
 
 	/**
 	 * UNFINISHED
 	 * @param a UNFINISHED
-	 * @since 0.00.004
+	 * @since 0.4.0
 	 */
 	public function set_canInteract(a:Bool):Bool {
 		canInteract = a;

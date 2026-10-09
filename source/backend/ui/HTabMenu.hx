@@ -4,7 +4,7 @@ class HTabMenu extends HSprite {
 	/**
 	 * called when the group target is changed
 	 * @return name of the newly selected group
-	 * @since 0.00.007
+	 * @since 0.7.0
 	 */
 	public var onGroupChange:String->Void = (_:String) -> {};
 

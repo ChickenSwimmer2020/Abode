@@ -2,7 +2,7 @@ package backend.utils;
 
 /**
  * Drawing util, used mostly for adding icons to Buttons
- * @since 0.00.001
+ * @since 0.1.0
  */
 class DrawUtil {
 	/**
@@ -11,7 +11,7 @@ class DrawUtil {
 	 * @param rect rectangle to draw
 	 * @param color color
 	 * @return HSprite spr
-	 * @since 0.00.001
+	 * @since 0.1.0
 	 */
 	public static function addRect(spr:HSprite, rect:Rectangle, color:HColor):HSprite {
 		spr.graphics.beginFill(color.rgb, color.a);
@@ -31,7 +31,7 @@ class DrawUtil {
 	 * @param outlineColor outline color
 	 * @param fillColor fill color
 	 * @return HSprite spr
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public static function drawIcon(spr:HSprite, icon:String, thickness:Int, outlineColor:HColor, fillColor:HColor):HSprite {
 		if (!Reflect.hasField(HDrawableIcons, icon)) {
@@ -58,7 +58,7 @@ class DrawUtil {
 
 /**
  * draw command style for icons
- * @since 0.00.002
+ * @since 0.2.0
  */
 enum HDrawableIconCommandType {
 	MOVE;
@@ -67,7 +67,7 @@ enum HDrawableIconCommandType {
 
 /**
  * drawable icon command.
- * @since 0.00.002
+ * @since 0.2.0
  */
 typedef HDrawableIconCommand = {t:HDrawableIconCommandType, a:{x:Float, y:Float}};
 
@@ -75,12 +75,12 @@ typedef HDrawableIconCommand = {t:HDrawableIconCommandType, a:{x:Float, y:Float}
 	do **NOT** make these manually.
 	use the utility.
 	accessable in debug build, launch SymbolEditor from the `debug` dropdown on a -debug build
-	@since 0.00.002
+	@since 0.2.0
  */
 class HDrawableIcons {
 	/**
 	 * sound icon
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public static final SOUND:Array<HDrawableIconCommand> = [
 		{t: MOVE, a: {x: 7, y: 5}},
@@ -114,7 +114,7 @@ class HDrawableIcons {
 
 	/**
 	 * mute icon
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public static final MUTE:Array<HDrawableIconCommand> = [
 		{t: MOVE, a: {x: 7, y: 5}},
@@ -158,7 +158,7 @@ class HDrawableIcons {
 
 	/**
 	 * window close icon
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public static final WIN_CLOSE:Array<HDrawableIconCommand> = [
 		{t: MOVE, a: {x: 3, y: 3}},
@@ -175,7 +175,7 @@ class HDrawableIcons {
 
 	/**
 	 * window maximize icon
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public static final WIN_MAX:Array<HDrawableIconCommand> = [
 		{t: MOVE, a: {x: 3, y: 3}},
@@ -188,7 +188,7 @@ class HDrawableIcons {
 
 	/**
 	 * window minimize icon
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public static final WIN_MIN:Array<HDrawableIconCommand> = [
 		{t: MOVE, a: {x: 3, y: 7}},
@@ -201,7 +201,7 @@ class HDrawableIcons {
 
 	/**
 	 * .FLA Project Icon
-	 * @since 0.00.003
+	 * @since 0.3.0
 	 */
 	public static final FILE_FLASH:Array<HDrawableIconCommand> = [
 		{t: MOVE, a: {x: 15, y: 67}},
@@ -276,7 +276,7 @@ class HDrawableIcons {
 
 	/**
 	 * .APF Project Icon
-	 * @since 0.00.003
+	 * @since 0.3.0
 	 */
 	public static final FILE_HFPF:Array<HDrawableIconCommand> = [
 		{t: MOVE, a: {x: 15, y: 67}},
@@ -370,7 +370,7 @@ class HDrawableIcons {
 
 	/**
 	 * checkbox check.
-	 * @since 0.00.003
+	 * @since 0.3.0
 	 */
 	public static final UICHECK:Array<HDrawableIconCommand> = [
 		{t: MOVE, a: {x: 5, y: 10}},

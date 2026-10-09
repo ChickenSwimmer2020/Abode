@@ -2,7 +2,7 @@ package backend.utils;
 
 /**
  * Math utilities
- * @since 0.00.002
+ * @since 0.2.0
  */
 class HMath {
 	private static var iSeed:Float = 1;

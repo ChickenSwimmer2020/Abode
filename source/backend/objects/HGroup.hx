@@ -2,18 +2,18 @@ package backend.objects;
 
 /**
  * group extending HSprite
- * @since 0.00.002
+ * @since 0.2.0
  */
 class HGroup<T:HSprite> extends HSprite {
 	/**
 	 * members of the group
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public var members:Array<T>;
 
 	/**
 	 * maximum size of the group
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public var maxSize(default, set):Int = -1;
 
@@ -27,7 +27,7 @@ class HGroup<T:HSprite> extends HSprite {
 	 * @param x x position
 	 * @param y y position
 	 * @param maxSize maximum size (optional)
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public function new(x:Float, y:Float, ?maxSize:Int) {
 		super(x, y);
@@ -42,7 +42,7 @@ class HGroup<T:HSprite> extends HSprite {
 	 * Add a T to the group
 	 * @param a object to add
 	 * @return T object that was added
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public function add(a:T):T {
 		if (maxSize == -1 || members.length < maxSize) {
@@ -58,7 +58,7 @@ class HGroup<T:HSprite> extends HSprite {
 	 * remove an object from the group
 	 * @param a object to remove
 	 * @return Bool was it removed
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public function remove(a:T):Bool {
 		if (members.indexOf(a) == -1) {
@@ -72,7 +72,7 @@ class HGroup<T:HSprite> extends HSprite {
 
 	/**
 	 * destroy the group and every object in it
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	override public function destroy() {
 		for (member in members) {

@@ -4,15 +4,15 @@
     "error.networking.NxDomain": "404: Couldnt find request file\nor no connection.",
     "error.networking.UnknownError": "Something when wrong.\nWe dont know what",
 
-    "autoupdater.check.runningLatest": "HYDRO-FRAME is up to date!",
+    "autoupdater.check.runningLatest": "Hydro-Frame is up to date!",
     "autoupdater.window.title": "An update is available!",
     
 
-    "Splash": "HYDRO-FRAME\nWHERE CREATIVITY FLOWS",
+    "Splash": "Hydro-Frame\nWHERE CREATIVITY FLOWS",
 
     "title.newProject": "Create New",
     "title.loadProject": "Open",
-    "title.welcomeMSG": "Welcome to HYDRO-FRAME, {USER}! {MSGOFLAUNCH}",
+    "title.welcomeMSG": "Welcome to Hydro-Frame, {USER}! {MSGOFLAUNCH}",
         "title.launchMSG0": "What are we moving today?",
         "title.launchMSG1": "Shall we get started?",
         "title.launchMSG2": "What projects await you?",
@@ -89,11 +89,11 @@
         "title.menuBar.Debug.SymbolEditor": "Symbol Editor",
     "title.menuBar.Window": "Window",
     "title.menuBar.Help": "Help",
-        "title.menuBar.Help.Help": "HYDRO-FRAME Help",
+        "title.menuBar.Help.Help": "Hydro-Frame Help",
         "title.menuBar.Help.ReportBug": "Submit bug report/feature request",
         "title.menuBar.Help.OnlineTutorial": "Online Tutorial",
         "title.menuBar.Help.HandsOnTutorial": "Hands on Tutorial",
         "title.menuBar.Help.ManagePlugins": "Manage Plugins",
         "title.menuBar.Help.CheckforUpdates": "Check for Updates",
-        "title.menuBar.Help.AboutHYDRO-FRAME": "About HYDRO-FRAME"
+        "title.menuBar.Help.AboutHydro-Frame": "About Hydro-Frame"
 }

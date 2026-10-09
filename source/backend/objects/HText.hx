@@ -2,7 +2,7 @@ package backend.objects;
 
 /**
  * text alignment
- * @since 0.00.002
+ * @since 0.2.0
  */
 enum abstract HTextAlign(String) {
 	var LEFT;
@@ -24,7 +24,7 @@ enum abstract HTextAlign(String) {
 
 /**
  * its text, not much more to it.
- * @since 0.00.002
+ * @since 0.2.0
  */
 class HText extends HSprite implements IDestroyable {
 	@:noCompletion private var format:TextFormat; // dumb way to do it but yeahh
@@ -32,7 +32,7 @@ class HText extends HSprite implements IDestroyable {
 
 	/**
 	 * text alignment
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public var alignment(default, set):HTextAlign = LEFT;
 
@@ -45,7 +45,7 @@ class HText extends HSprite implements IDestroyable {
 
 	/**
 	 * font size
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public var fontSize(default, set):Int = 12;
 
@@ -106,7 +106,7 @@ class HText extends HSprite implements IDestroyable {
 	 * @param width field width
 	 * @param text text to show
 	 * @param fontSize font size
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public function new(x:Float = 0, y:Float = 0, width:Float = 0, text:String = "", fontSize:Int = 12) {
 		super(x, y);
@@ -126,7 +126,7 @@ class HText extends HSprite implements IDestroyable {
 	 * set the text internal field size
 	 * @param x x size
 	 * @param y y size
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public function setFieldSize(x:Float, y:Float) {
 		if (x != -1)
@@ -137,7 +137,7 @@ class HText extends HSprite implements IDestroyable {
 
 	/**
 	 * destroy the text
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	override public function destroy() {
 		super.destroy();

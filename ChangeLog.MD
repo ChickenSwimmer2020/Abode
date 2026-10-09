@@ -2,7 +2,45 @@
 <!--markdownlint-disable MD033 -->
 # CHANGELOG
 
-> ## 0.00.007.2 {TBA}
+> ## 0.8.0 (Project format(.hfp), Virtual File System, Crash handling, and more.) - By ZSolarDev
+> * Working on the `engine.` package. This package is only separated from the backend because it contains things that are at the core *functionality* of Hydro-Frame rather than being a part of the UI/Application used to interface with it. Also, this is one of the few packages HScript will be able to access and use. This is so that we can have a slim runtime that only requires `engine.` and some logic to actually load and run the project. Like Adobe Flash Player. This does mean that any code under `source/engine/` shouldn't need any code outside of it, so that the runtime is self contained.
+>
+> * Added Virtual File System
+>> * Added `HFileSystem` class under `engine.vfs`
+>> * Added `HFile` class under `engine.vfs`
+>> * Added `HFolder` class under `engine.vfs`
+>> * Added `HFileObj` class under `engine.vfs`
+>
+> * Added .hfp project parsing, based on VFS for major format flexibility.
+>> * Added `HProject` class under `engine.project.data`
+>> * Added `HProjectFileMetadata` class under `engine.project.data`
+>> * Added `HProjectValidationResult` class under `engine.project.data`
+>> * Added `HRawProjectFile` class under `engine.project.data`
+>> * Added `HProjectFactory` class under `engine.project`
+>> * Added `HProjectFileParser` class under `engine.project`
+>> * Added `HProjectFileWriter` class under `engine.project`
+>> * Added `HProjectHander` class under `engine.project`
+>> * Added `HProjectUtils` class under `engine.utils`
+>
+> * Updated libraries (See `BUILDING.MD` for more info)
+>> * Switched `lime` to `cne-lime`. 
+>>> * To update, use `haxelib git lime https://github.com/CodenameCrew/cne-lime develop; lime rebuild [platform here]; lime rebuild tools`
+>> * Switched `openfl` to `cne-openfl`.
+>>> * To update, use `haxelib git openfl https://github.com/CodenameCrew/cne-openfl develop`
+>> * Added `svg`.
+>>> * To install, use `haxelib install svg 1.2.0`
+>
+> * Added crash handling
+>> * Added `Safe` under `backend.utils` (meant for error handling, don't use).
+>> * Added `MethodUtil` under `backend.utils` which is a utility for getting the method signatures of a compiled method *in the codebase*(not in libraries or scripts). Used for error handling.
+>> * Added the `Stamper` and `SafeBuild` classes under `backend.macro` (meant for error handling, don't use). ALSO, any function that you don't want error ensurance for whatever reason, annotate it with `@:unwrapSafe`.
+>
+> * Added `OneOfTwo` class under `engine.utils`
+> * Added `resetState()` and `stateFormula` to `InitialState.StateSystemInit`
+>> * I really need to rework the state system eventually.
+> * Updated `LICENSE` to actually fill in the placeholders(`[yyyy] [name of copyright owner]`)
+>
+> ## 0.7.3 (bugfixing, editor improvements, etc)
 >
 > * `Main:114` no longer refers to Hydro-Frame as a ***"game"***
 > * Fixed some inconsistancies in the `since` tags in comments on `Main`
@@ -13,11 +51,11 @@
 > * `EditorState` `Tools` enum is now abstract and `String` based
 > * `EditorState` Tools window now has non-functional buttons
 >
-> ## 0.00.007.1.1 {whoops}
+> ## 0.7.2 (whoops)
 >
 > * Fixed a wrong conditional block.
 >
-> ## 0.00.007.1 {pre-0.00.008}
+> ## 0.7.1 (pre-0.8.0)
 >
 > * `HSprite` fallback graphic is now fixed on `HTML5`
 > * `HSprite.antialiasing` finally functional.
@@ -27,7 +65,7 @@
 > * `InitState` quick-start buttons now work
 > * `Sys` builds no longer attempt to access `UPrefs.prefsData` as thats for `HTML5` only
 >
-> ## 0.00.007 (ui changes, mac support, and building guide)
+> ## 0.7.0 (ui changes, mac support, and building guide)
 >
 >> MacOS now compiles! (Thanks [Rex](https://github.com/RX-739)!)
 >
@@ -47,7 +85,7 @@
 > * `Main` no longer crashes when *trying* to get desktop wallpaper on MacOS
 > * `SplashScreen` popup finished.
 >
-> ## 0.00.006 (sounds and input)
+> ## 0.6.0 (sounds and input)
 >
 > * New Sounds! (Thanks [HarukaStudios](https://github.com/HarukaStudios)!)
 > * * `buttonClick.wav`
@@ -57,7 +95,7 @@
 > * * `popup.wav`
 > * * `Printer Sound [Begin Export].wav` (currently unused)
 >
-> * Added `Contributors.MD` (this is a placeholder until the `About HYDRO-FRAME` window is finished)
+> * Added `Contributors.MD` (this is a placeholder until the `About Hydro-Frame` window is finished)
 > * Fixed `DebugDisplay`, it also now shows if a dropdown/subdropdown is open, and if a text input is selected
 > * `SymbolEditor` got closer to being usable
 > * `HText` now has access to `.selectable`
@@ -74,7 +112,7 @@
 > * `TODO` finally has an entry
 >
 ><!---->
-> ## 0.00.005 (No Clue what to name this update. :/)
+> ## 0.5.0 (No Clue what to name this update. :/)
 >
 > * Added popup for asking how the user wants to be referred to on first launch.
 > * Added a lot of new language keys to the locale system
@@ -84,7 +122,7 @@
 > * New popup on Splash screen for first launch to ask what you wanna be referred to.
 >
 <!---->
-> ## 0.00.004 (Debugging, Symbol maker, and sub-dropdowns)
+> ## 0.4.0 (Debugging, Symbol maker, and sub-dropdowns)
 >
 > * New ui debugging system.
 > * `DebugDisplay` only updates fields when needed
@@ -162,7 +200,7 @@
 >>
 >>> r, g, b, rgb, and a now have `get` and `set` functions.
 <!---->
-> ## 0.00.003 (Locales, Preferences, and project boxes)
+> ## 0.3.0 (Locales, Preferences, and project boxes)
 >
 > * Added user preferences system.
 > * Added en_US.locale
@@ -195,9 +233,9 @@
 >> * `HDrawableIconCommand` now uses `Float` instead of `Int`
 >> * New Icons!
 >> * * `FILE_ANIMATE`
->> * * `FILE_HYDRO-FRAMEPROJECTFORMAT`
+>> * * `FILE_Hydro-FramePROJECTFORMAT`
 <!---->
-> ## 0.00.002 (The Flixeling)
+> ## 0.2.0 (The Flixeling)
 >
 ><!---->
 >> ## HSound
@@ -251,7 +289,7 @@
 >>
 >> * Added a mute button for the music
 <!---->
-> ## 0.00.001 (New stuff!)
+> ## 0.1.0 (New stuff!)
 >
 > * New startup sound.
 > * New Main menu song
@@ -317,7 +355,7 @@
 >>
 >> * Now plays `Vectors` looping
 >> * "Check for updates..." is now functional.
->> * "About HYDRO-FRAME" is now functional.
+>> * "About Hydro-Frame" is now functional.
 >> * `ProjectScroller` is now functional.
 ><!---->
 >> ## SplashScreen

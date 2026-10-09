@@ -21,7 +21,7 @@ package backend;
 /**
  * Native support for computers, including things like getting system accent color, flashing the taskbar
  * and other window things
- * @since 0.00.004
+ * @since 0.4.0
  */
 class Native {
 	/**
@@ -42,7 +42,7 @@ class Native {
 	/**
 	 * SYS EXCLUSIVE
 	 * Get the System accent color
-	 * * ! LINUX/MACOS UNTESTED AS OF 0.00.006 !
+	 * * ! LINUX/MACOS UNTESTED AS OF 0.6.0 !
 	 * * ! Someone please test this.
 	 * @since 0.00.0004
 	 */
@@ -72,7 +72,7 @@ class Native {
 	 * LINUX EXCLUSIVE FUNCTION
 	 * will be used in tandem with `getAccentColor` so linux desktops can have their colors gotten.
 	 * @return String current Desktop Environment
-	 * @since 0.00.004
+	 * @since 0.4.0
 	 */
 	private static function getDesktopEnv():String {
 		var desktop:String = "FALLBACK";

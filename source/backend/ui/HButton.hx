@@ -4,11 +4,12 @@ enum ButtonStyle {
 	DEFAULT;
 	ACCENT;
 }
-//TODO: support double clicking.
+
+// TODO: support double clicking.
 class HButton extends HSprite {
 	/**
 	 * label access
-	 * @since 0.00.007
+	 * @since 0.7.0
 	 */
 	public var label:Null<HText> = null;
 

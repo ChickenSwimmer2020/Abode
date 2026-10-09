@@ -4,24 +4,24 @@ import backend.ui.HTabStack;
 
 /**
  * manager for in-window windows
- * @since 0.00.002
+ * @since 0.2.0
  */
 class HWindowManager {
 	/**
 	 * the window that is currently being dragged
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public static var heldWindow:Null<HWindow> = null;
 
 	/**
 	 * all currently open windows
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public static var windows:Array<HWindow> = [];
 
 	/**
 	 * initiate
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public function new() {
 		if (windows == null)
@@ -32,7 +32,7 @@ class HWindowManager {
 	 * add a window both to the manager and the stage
 	 * @param win window to add
 	 * @return HWindow window that was added
-	 * @since 0.00.006
+	 * @since 0.6.0
 	 */
 	public function addWindow(win:HWindow):HWindow {
 		windows.push(win);
@@ -52,14 +52,14 @@ class HWindowManager {
 	 * @param borderless borderless
 	 * @param resizeable resizable
 	 * @return window that was made
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public inline function makeWindow(title:String, x:Int, y:Int, w:Int, h:Int, borderless:Bool = false, resizeable:Bool = false):HWindow
 		return addWindow(new HWindow(title, x, y, w, h, borderless, resizeable));
 
 	/**
 	 * prefab windows, for `makePrefabWindow`
-	 * @since 0.00.006
+	 * @since 0.6.0
 	 */
 	final prefabWindows:Map<String, Void->HWindow> = [
 		"makeProject" => () -> {
@@ -73,138 +73,134 @@ class HWindowManager {
 			var projectFpsInput:HTextInputBox = null;
 			var projectTypeDropdown:HButton = null;
 			var projectMeasureDropdown:HButton = null;
-
-            final width:Int = 775;
+			final width:Int = 775;
 			final height:Int = (740 / 2).floor();
-            var premade:HWindow = new HWindow("New Project", Main.pWidth / 2 - width / 2, Main.pHeight / 2 - height / 2, width, height, false, false);
+			var premade:HWindow = new HWindow("New Project", Main.pWidth / 2 - width / 2, Main.pHeight / 2 - height / 2, width, height, false, false);
 			function onProjectCreate() {
-                Main.StateSystem.switchState(EditorState, [projWidth, projHeight, projFPS, projectTypeDropdown.label.text, projectMeasureDropdown.label.text]);
-                premade.destroy();
+				Main.StateSystem.switchState(EditorState, [
+					projWidth,
+					projHeight,
+					projFPS,
+					projectTypeDropdown.label.text,
+					projectMeasureDropdown.label.text
+				]);
+				premade.destroy();
 			}
 			var tabGroup:HTabMenu = new HTabMenu(0, 0, new HPoint(width / 2, height));
-                var charAnimGroup:HGroup<HButton> = new HGroup(0, 0);
-                    for(i in 0...4) {
-                        final names:Array<String> = [
-                            "Standard\n640x480",
-                            "HD\n1280x720",
-                            "Full HD\n1920x1080",
-                            "4K\n3840x2160"
-                        ];
-                        var button:HButton = new HButton(names[i], new Rectangle(5+(90*i), 5, 85, 85), (_:HButton)->{
-                            final w:String = names[i].split("\n")[1].split('x')[0];
-                            final h:String = names[i].split("\n")[1].split('x')[1];
-                            projectWidthInput.text = w;
-                            projectHeightInput.text = h;
-                            projectFpsInput.text = "30";
-                            projWidth = Std.parseInt(projectWidthInput.text);
-                            projHeight = Std.parseInt(projectHeightInput.text);
-                            projFPS = Std.parseInt(projectFpsInput.text);
-                            projectTypeDropdown.label.text = "HScript 2.7";
-                            projectMeasureDropdown.label.text = "Pixels";
-                        });
-                        charAnimGroup.add(button);
-                    }
+			var charAnimGroup:HGroup<HButton> = new HGroup(0, 0);
+			for (i in 0...4) {
+				final names:Array<String> = ["Standard\n640x480", "HD\n1280x720", "Full HD\n1920x1080", "4K\n3840x2160"];
+				var button:HButton = new HButton(names[i], new Rectangle(5 + (90 * i), 5, 85, 85), (_:HButton) -> {
+					final w:String = names[i].split("\n")[1].split('x')[0];
+					final h:String = names[i].split("\n")[1].split('x')[1];
+					projectWidthInput.text = w;
+					projectHeightInput.text = h;
+					projectFpsInput.text = "30";
+					projWidth = Std.parseInt(projectWidthInput.text);
+					projHeight = Std.parseInt(projectHeightInput.text);
+					projFPS = Std.parseInt(projectFpsInput.text);
+					projectTypeDropdown.label.text = "HScript 2.7";
+					projectMeasureDropdown.label.text = "Pixels";
+				});
+				charAnimGroup.add(button);
+			}
 			tabGroup.addGroup("Character Animation", charAnimGroup); // we dont use locales yet, fuck you copilot.
-                var socialGroup:HGroup<HButton> = new HGroup(0, 0);
-                    for(i in 0...12) {
-                        final names:Array<String> = [
-                            "Standard\n640x480\nYouTube",
-                            "HD\n1280x720\nYouTube",
-                            "Full HD\n1920x1080\nYouTube",
-                            "4K\n3840x2160\nYouTube",
-                            "Small\n256x144\nFaceBook",
-                            "Large\n3840x2160\nFaceBook",
-                            "Landscape\n600x315\nFaceBook",
-                            "Square\n600x600\nFaceBook",
-                            "Vertical\n600x750\nFaceBook", 
-                            "In-stream Photo\n440x220\nTwitter",
-                            "Profile Photo\n400x400\nTwitter",
-                            "Header Photo\n1500x500\nTwitter"
-                        ];
-                        var button:HButton = new HButton(names[i], new Rectangle(5+(90*(i%4)), 5+(90*(Math.floor(i/4))), 85, 85), (_:HButton)->{
-                            final w:String = names[i].split("\n")[1].split('x')[0];
-                            final h:String = names[i].split("\n")[1].split('x')[1];
-                            projectWidthInput.text = w;
-                            projectHeightInput.text = h;
-                            projectFpsInput.text = names[i].split("\n")[2]=="Twitter"?"24":"30";
-                            projWidth = Std.parseInt(projectWidthInput.text);
-                            projHeight = Std.parseInt(projectHeightInput.text);
-                            projFPS = Std.parseInt(projectFpsInput.text);
-                            projectTypeDropdown.label.text = "HScript 2.7";
-                            projectMeasureDropdown.label.text = "Pixels";
-                        });
-                        socialGroup.add(button);
-                    }
+			var socialGroup:HGroup<HButton> = new HGroup(0, 0);
+			for (i in 0...12) {
+				final names:Array<String> = [
+					"Standard\n640x480\nYouTube",
+					"HD\n1280x720\nYouTube",
+					"Full HD\n1920x1080\nYouTube",
+					"4K\n3840x2160\nYouTube",
+					"Small\n256x144\nFaceBook",
+					"Large\n3840x2160\nFaceBook",
+					"Landscape\n600x315\nFaceBook",
+					"Square\n600x600\nFaceBook",
+					"Vertical\n600x750\nFaceBook",
+					"In-stream Photo\n440x220\nTwitter",
+					"Profile Photo\n400x400\nTwitter",
+					"Header Photo\n1500x500\nTwitter"
+				];
+				var button:HButton = new HButton(names[i], new Rectangle(5 + (90 * (i % 4)), 5 + (90 * (Math.floor(i / 4))), 85, 85), (_:HButton) -> {
+					final w:String = names[i].split("\n")[1].split('x')[0];
+					final h:String = names[i].split("\n")[1].split('x')[1];
+					projectWidthInput.text = w;
+					projectHeightInput.text = h;
+					projectFpsInput.text = names[i].split("\n")[2] == "Twitter" ? "24" : "30";
+					projWidth = Std.parseInt(projectWidthInput.text);
+					projHeight = Std.parseInt(projectHeightInput.text);
+					projFPS = Std.parseInt(projectFpsInput.text);
+					projectTypeDropdown.label.text = "HScript 2.7";
+					projectMeasureDropdown.label.text = "Pixels";
+				});
+				socialGroup.add(button);
+			}
 			tabGroup.addGroup("Social", socialGroup);
-                var gameGroup:HGroup<HButton> = new HGroup(0, 0);
-                    for(i in 0...14) {
-                        final names:Array<String> = [
-                            "Low\n640x480\nWeb",
-                            "Medium\n800x600\nWeb",
-                            "High\n960x640\nWeb",
-                            "Very High\n1024x768\nWeb",
-
-                            "iPhone-5\n1136x640\nphone",
-                            "iPhone-4\n960x640\nphone",
-                            "iPhone 1-3 Gen\n480x320\nphone",
-                            "Android 16:9\n1280x720\nphone",
-                            "Android 16:10\n1680x1050\nphone",
-                            "Android 5:3\n1280x768\nphone",
-                            "Android 3:2\n960x640\nphone",
-                            "Android 4:3\n1024x768\nphone",
-
-                            "iPad 3-4 Gen\n2048x1536\ntablet",
-                            "iPad 1-3 Gen\n1024x768\ntablet",
-                        ];
-                        var button:HButton = new HButton(names[i], new Rectangle(5+(90*(i%4)), 5+(90*(Math.floor(i/4))), 85, 85), (_:HButton)->{
-                            final w:String = names[i].split("\n")[1].split('x')[0];
-                            final h:String = names[i].split("\n")[1].split('x')[1];
-                            projectWidthInput.text = w;
-                            projectHeightInput.text = h;
-                            projectFpsInput.text = "30";
-                            projWidth = Std.parseInt(projectWidthInput.text);
-                            projHeight = Std.parseInt(projectHeightInput.text);
-                            projFPS = Std.parseInt(projectFpsInput.text);
-                            projectTypeDropdown.label.text = "HTML5";
-                            projectMeasureDropdown.label.text = "Pixels";
-                        });
-                        gameGroup.add(button);
-                    } 
+			var gameGroup:HGroup<HButton> = new HGroup(0, 0);
+			for (i in 0...14) {
+				final names:Array<String> = [
+					"Low\n640x480\nWeb",
+					"Medium\n800x600\nWeb",
+					"High\n960x640\nWeb",
+					"Very High\n1024x768\nWeb",
+					"iPhone-5\n1136x640\nphone",
+					"iPhone-4\n960x640\nphone",
+					"iPhone 1-3 Gen\n480x320\nphone",
+					"Android 16:9\n1280x720\nphone",
+					"Android 16:10\n1680x1050\nphone",
+					"Android 5:3\n1280x768\nphone",
+					"Android 3:2\n960x640\nphone",
+					"Android 4:3\n1024x768\nphone",
+					"iPad 3-4 Gen\n2048x1536\ntablet",
+					"iPad 1-3 Gen\n1024x768\ntablet",
+				];
+				var button:HButton = new HButton(names[i], new Rectangle(5 + (90 * (i % 4)), 5 + (90 * (Math.floor(i / 4))), 85, 85), (_:HButton) -> {
+					final w:String = names[i].split("\n")[1].split('x')[0];
+					final h:String = names[i].split("\n")[1].split('x')[1];
+					projectWidthInput.text = w;
+					projectHeightInput.text = h;
+					projectFpsInput.text = "30";
+					projWidth = Std.parseInt(projectWidthInput.text);
+					projHeight = Std.parseInt(projectHeightInput.text);
+					projFPS = Std.parseInt(projectFpsInput.text);
+					projectTypeDropdown.label.text = "HTML5";
+					projectMeasureDropdown.label.text = "Pixels";
+				});
+				gameGroup.add(button);
+			}
 			tabGroup.addGroup("Game", gameGroup);
-                var webGroup:HGroup<HButton> = new HGroup(0, 0);
-                    for(i in 0...14) {
-                        final names:Array<String> = [
-                            "Low\n640x480\nWeb",
-                            "Medium\n800x600\nWeb",
-                            "High\n960x640\nWeb",
-                            "Very High\n1024x768\nWeb",
-
-                            "iPhone-5\n1136x640\nphone",
-                            "iPhone-4\n960x640\nphone",
-                            "iPhone 1-3 Gen\n480x320\nphone",
-                            "Android 16:9\n1280x720\nphone",
-                            "Android 16:10\n1680x1050\nphone",
-                            "Android 5:3\n1280x768\nphone",
-                            "Android 3:2\n960x640\nphone",
-                            "Android 4:3\n1024x768\nphone",
-
-                            "iPad 3-4 Gen\n2048x1536\ntablet",
-                            "iPad 1-3 Gen\n1024x768\ntablet",
-                        ];
-                        var button:HButton = new HButton(names[i], new Rectangle(5+(90*(i%4)), 5+(90*(Math.floor(i/4))), 85, 85), (_:HButton)->{
-                            final w:String = names[i].split("\n")[1].split('x')[0];
-                            final h:String = names[i].split("\n")[1].split('x')[1];
-                            projectWidthInput.text = w;
-                            projectHeightInput.text = h;
-                            projectFpsInput.text = "24";
-                            projWidth = Std.parseInt(projectWidthInput.text);
-                            projHeight = Std.parseInt(projectHeightInput.text);
-                            projFPS = Std.parseInt(projectFpsInput.text);
-                            projectTypeDropdown.label.text = "HTML5";
-                            projectMeasureDropdown.label.text = "Pixels";
-                        });
-                        webGroup.add(button);
-                    } 
+			var webGroup:HGroup<HButton> = new HGroup(0, 0);
+			for (i in 0...14) {
+				final names:Array<String> = [
+					"Low\n640x480\nWeb",
+					"Medium\n800x600\nWeb",
+					"High\n960x640\nWeb",
+					"Very High\n1024x768\nWeb",
+					"iPhone-5\n1136x640\nphone",
+					"iPhone-4\n960x640\nphone",
+					"iPhone 1-3 Gen\n480x320\nphone",
+					"Android 16:9\n1280x720\nphone",
+					"Android 16:10\n1680x1050\nphone",
+					"Android 5:3\n1280x768\nphone",
+					"Android 3:2\n960x640\nphone",
+					"Android 4:3\n1024x768\nphone",
+					"iPad 3-4 Gen\n2048x1536\ntablet",
+					"iPad 1-3 Gen\n1024x768\ntablet",
+				];
+				var button:HButton = new HButton(names[i], new Rectangle(5 + (90 * (i % 4)), 5 + (90 * (Math.floor(i / 4))), 85, 85), (_:HButton) -> {
+					final w:String = names[i].split("\n")[1].split('x')[0];
+					final h:String = names[i].split("\n")[1].split('x')[1];
+					projectWidthInput.text = w;
+					projectHeightInput.text = h;
+					projectFpsInput.text = "24";
+					projWidth = Std.parseInt(projectWidthInput.text);
+					projHeight = Std.parseInt(projectHeightInput.text);
+					projFPS = Std.parseInt(projectFpsInput.text);
+					projectTypeDropdown.label.text = "HTML5";
+					projectMeasureDropdown.label.text = "Pixels";
+				});
+				webGroup.add(button);
+			}
 			tabGroup.addGroup("Web", webGroup);
 			premade.addContent(tabGroup);
 			var detailsArea:HSprite = premade.addContent(new HSprite(width / 2,
@@ -279,7 +275,7 @@ class HWindowManager {
 	 * make a pre-made window, so we dont clutter other places in code.
 	 * @param type what prefab to use
 	 * @return HWindow the window that was generated
-	 * @since 0.00.006
+	 * @since 0.6.0
 	 */
 	public function makePrefabWindow(type:String):HWindow
 		return addWindow(prefabWindows.get(type)());
@@ -287,7 +283,7 @@ class HWindowManager {
 	/**
 	 * focus a window to the front
 	 * @param w what window to focus
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public static function focusWindow(w:HWindow):Void {
 		if (w == null || w.stage == null)
@@ -304,7 +300,7 @@ class HWindowManager {
 
 /**
  * an in-window window.
- * @since 0.00.002
+ * @since 0.2.0
  */
 class HWindow extends HGroup<HSprite> {
 	/**
@@ -435,7 +431,7 @@ class HWindow extends HGroup<HSprite> {
 	 * set the window position
 	 * @param x x
 	 * @param y y
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	override public function setPosition(x:Float, y:Float) {
 		this.x = x;
@@ -464,7 +460,7 @@ class HWindow extends HGroup<HSprite> {
 	 * add content to the window
 	 * @param a what to add
 	 * @return HSprite sprite that was added
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public function addContent(a:HSprite):HSprite {
 		a.y += TBHeight;
@@ -474,7 +470,7 @@ class HWindow extends HGroup<HSprite> {
 
 	/**
 	 * destroy the window
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	override public function destroy() {
 		this.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);

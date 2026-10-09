@@ -2,7 +2,7 @@ package backend;
 
 /**
  * used for creation of local filters
- * @since 0.00.001
+ * @since 0.1.0
  */
 typedef ExtraFilterParams = {
 	@:optional var colorTransform:Null<HColor>;
@@ -10,13 +10,13 @@ typedef ExtraFilterParams = {
 }
 
 /**
- * HSprite is the building block of HYDRO-FRAME, as 90% of classes end up extending this.
+ * HSprite is the building block of Hydro-Frame, as 90% of classes end up extending this.
  * @since 0.00.000
  */
 class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implements IDestroyable {
 	/**
 	 * attributes, currently only used for dropdowns.
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public var attributes:Map<String, Dynamic>;
 
@@ -25,7 +25,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * @param a key
 	 * @param b value
 	 * @return String
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public function setAttribute(a:String, b:Dynamic):String {
 		attributes.set(a, b);
@@ -36,7 +36,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * get an attribute from this object
 	 * @param a key
 	 * @return Dynamic
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public inline function getAttribute(a:String):Dynamic
 		return attributes.get(a);
@@ -45,14 +45,14 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * remove an attribute from this object
 	 * @param a key
 	 * @return Bool return attributes.remove(a)
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public inline function removeAttribute(a:String):Bool
 		return attributes.remove(a);
 
 	/**
 	 * Color transform of the Sprite, affects sub-objects as well.
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public var color(default, set):HColor = HColor.TRANSPARENT;
 
@@ -60,7 +60,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * set the color transform of this sprite
 	 * @param c transform
 	 * @return HColor
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public function set_color(c:HColor):HColor {
 		color = c;
@@ -72,25 +72,25 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 
 	/**
 	 * scale of the sprite.
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public var scale(default, set):HPoint = new HPoint(1.0, 1.0);
 
 	/**
 	 * should the sprite antialias
-	 * @since 0.00.002 
+	 * @since 0.2.0 
 	 */
 	public var antialiasing:Bool = true;
 
 	/**
 	 * frame width of the sprite
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public var frameWidth:Float = 0;
 
 	/**
 	 * frame height of the sprite
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public var frameHeight:Float = 0;
 
@@ -103,7 +103,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * set the scale of the sprite.
 	 * @param value scale to set.
 	 * @return HPoint
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public function set_scale(value:HPoint):HPoint {
 		@:bypassAccessor scale.x = value.x;
@@ -152,7 +152,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	/**
 	 * Rerender the current graphic of the sprite
 	 * @return HSprite
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public function reRender():HSprite {
 		makeGraphic(gWidth, gHeight, gColor);
@@ -202,7 +202,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * change the color of the sprite background without affecting sub-objects (hopefully)
 	 * @param color HColor
 	 * @return HSprite
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public function setGraphicColor(color:HColor):HSprite {
 		makeGraphic(gWidth, gHeight, color);
@@ -212,7 +212,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	/**
 	 * Center the sprite on the screen
 	 * @return HSprite
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public function screenCenter():HSprite {
 		x = Main.pWidth / 2 - width / 2;
@@ -255,7 +255,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * set the position without doing +width/2
 	 * @param x 
 	 * @param y 
-	 * @since 0.00.004
+	 * @since 0.4.0
 	 */
 	public function setPositionRaw(x:Float, y:Float) {
 		this.x = x;
@@ -282,7 +282,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * apply a global filter to the entire sprite.
 	 * @param filter 
 	 * @return HSprite
-	 * @since 0.00.001
+	 * @since 0.1.0
 	 */
 	public function applyFilter(filter:BitmapFilter):HSprite {
 		if (filters == null)
@@ -298,7 +298,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * Remove a global filter from the sprite
 	 * @param index was filter.
 	 * @return Bool was the filter removed
-	 * @since 0.00.001
+	 * @since 0.1.0
 	 */
 	public function removeGlobalFilter(index:Int):Bool
 		return ((filters[index] != null) ? filters.remove(filters[index]) : false);
@@ -314,7 +314,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * @param filter what filter to add
 	 * @param extraParams extra parameters
 	 * @return HSprite
-	 * @since 0.00.001
+	 * @since 0.1.0
 	 */
 	public function applyLocalFilter(size:Rectangle, filter:BitmapFilter, ?extraParams:ExtraFilterParams):HSprite {
 		if (_bitmapData == null) {
@@ -373,7 +373,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * check if the sprite contains a point.
 	 * @param point point to check.
 	 * @return Bool return new Rectangle(x, y, width, height).containsPoint(point.toOpenflPoint())
-	 * @since 0.00.002 
+	 * @since 0.2.0 
 	 */
 	public inline function containsPoint(point:HPoint):Bool
 		return new Rectangle(x, y, width, height).containsPoint(point.toOpenflPoint());
@@ -381,7 +381,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	/**
 	 * check if the mouse is contained within the object
 	 * @return Bool if the mouse is contained
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public inline function containsMouse():Bool
 		return containsPoint(Main.vMouse);
@@ -391,7 +391,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * @param maxWidth max width of the graphic
 	 * @param maxHeight max height of the graphic
 	 * @return BitmapData the desktop wallpaper.
-	 * @since 0.00.001
+	 * @since 0.1.0
 	 */
 	public static function getDesktopWallpaper(maxWidth:Int, maxHeight:Int):BitmapData {
 		#if windows // TODO: support getting desktop background on MacOS

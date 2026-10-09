@@ -1,5 +1,6 @@
 package;
 
+#if !macro
 #if debug
 // debugging imports
 import backend.debug.DebugDisplay;
@@ -41,7 +42,6 @@ import backend.ui.HTabMenu;
 import backend.ui.HCheckbox;
 import backend.ui.HTextInputBox;
 import backend.ui.HDropdown;
-import backend.flashfile.FLAParser.FlashReader;
 // openfl imports
 import openfl.display.BitmapData;
 import openfl.display.Sprite;
@@ -105,3 +105,5 @@ using backend.utils.DrawUtil;
 using backend.utils.ArrayUtil;
 using backend.utils.HMath;
 using StringTools;
+
+#end

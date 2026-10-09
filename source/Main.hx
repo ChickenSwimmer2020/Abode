@@ -1,15 +1,19 @@
 package;
 
+import backend.utils.MethodUtil;
+import haxe.CallStack;
+import openfl.events.UncaughtErrorEvent;
+
 class Main extends Sprite {
 	/**
 	 * The desktop background, stored as a BitmapData directly within Main so that we only have to load it once.
-	 * @since 0.00.004
+	 * @since 0.4.0
 	 */
 	public static #if (sys && !mac) final #else var #end desktopbackgroundImage:BitmapData #if (sys && !mac) = HSprite.getDesktopWallpaper(1280, 720) #end;
 
 	/**
 	 * For checking when global keys are pressed.
-	 * @since 0.00.004
+	 * @since 0.4.0
 	 */
 	private static var onKeyPressed:Map<String, {k:String, ar:Bool, c:KeyboardEvent->Void}>;
 
@@ -19,63 +23,57 @@ class Main extends Sprite {
 	 * @param k the key to listen to (set to "*" for any key)
 	 * @param autoRemove should the listener remove automatically?
 	 * @param c the function to run
-	 * @since 0.00.004
+	 * @since 0.4.0
 	 */
 	public static function addKeyPressed(a:String, k:Dynamic, autoRemove:Bool = true, c:KeyboardEvent->Void) {
-		try {
-			if (onKeyPressed == null)
-				onKeyPressed = new Map<String, {k:String, ar:Bool, c:KeyboardEvent->Void}>();
-			if (onKeyPressed.get(a) != null)
-				return; // cuz it already exists, so why add it again?
-			onKeyPressed.set(a, {k: Std.string(k), ar: autoRemove, c: c});
-			trace('added "$a" to keyboard listener.');
-		} catch (e:Exception)
-			traceError(e);
+		if (onKeyPressed == null)
+			onKeyPressed = new Map<String, {k:String, ar:Bool, c:KeyboardEvent->Void}>();
+		if (onKeyPressed.get(a) != null)
+			return; // cuz it already exists, so why add it again?
+		onKeyPressed.set(a, {k: Std.string(k), ar: autoRemove, c: c});
+		trace('added "$a" to keyboard listener.');
 	}
 
 	/**
 	 * Remove a listener from the event pool, only realled used when autoRemove is true
 	 * @param a target listener
 	 * @return Bool if the listener was removed correctly
-	 * @since 0.00.004
+	 * @since 0.4.0
 	 */
 	public static function removeKeyPressed(a:String):Bool {
-		try {
-			onKeyPressed.remove(a);
-			trace('removed "$a" from keyboard listener.');
-			return (onKeyPressed.get(a) == null);
-		} catch (e:Exception)
-			traceError(e);
+		onKeyPressed.remove(a);
+		trace('removed "$a" from keyboard listener.');
+		return (onKeyPressed.get(a) == null);
 		return false;
 	}
 
 	/**
 	 * Instance access to Main
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public static var instance:Main;
 
 	/**
 	 * Program internal width
-	 * @since 0.00.001
+	 * @since 0.1.0
 	 */
 	public static var pWidth:Int = 1280;
 
 	/**
 	 * Program internal height
-	 * @since 0.00.001
+	 * @since 0.1.0
 	 */
 	public static var pHeight:Int = 720;
 
 	/**
 	 * the current mouse position, relative to the resized/scaled stage
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public static var vMouse:HPoint = new HPoint(0, 0);
 
 	/**
-	 * for managing the in-windows windows of HYDRO-FRAME
-	 * @since 0.00.002
+	 * for managing the in-windows windows of Hydro-Frame
+	 * @since 0.2.0
 	 */
 	public static var windowManager:HWindowManager;
 
@@ -89,200 +87,193 @@ class Main extends Sprite {
 	#end
 
 	/**
-	 * State system, controls the actual states of HYDRO-FRAME, this is actually a very important thing.
+	 * State system, controls the actual states of Hydro-Frame, this is actually a very important thing.
 	 * @since 0.00.000
 	 */
-	public static var StateSystem:StateSystemInit = new StateSystemInit(null); // defaults to splashscreen since thats literally the only thing it does on init
+	public static var StateSystem:StateSystemInit; // defaults to splashscreen since thats literally the only thing it does on init
 
 	/**
-	 * Entry point of HYDRO-FRAME for launching, this is what does stuff before any state loads.
-     * @since 0.00.000
+	 * Entry point of Hydro-Frame for launching, this is what does stuff before any state loads.
+	 * @since 0.00.000
 	 */
 	public function new() {
 		super();
-		try {
-			#if (html5 || mac)
-			desktopbackgroundImage = HSprite.getDesktopWallpaper(1280, 720); // fix for a crash on startup with html5.
-			#if (!mac) // dont do this on mac beacuse mac actually has fileSystem
-			if ((UPrefs.prefsData.data.preferencesCreated : Bool) == null) { // to actually create preferences.
-				UPrefs.makePrefsFile();
-				UPrefs.prefsData.data.preferencesCreated = true;
-				UPrefs.prefsData.flush();
-			}
-			#end
-			#end
-			Native.flashTaskbar();
-			Log.throwErrors = false; // STOP CRASHING MEH!!
-			instance = this;
-			#if (hl && !debug) hl.UI.closeConsole(); #end
-			stage.scaleMode = #if html5 StageScaleMode.EXACT_FIT; #else StageScaleMode.NO_SCALE; #end
-			stage.align = StageAlign.TOP_LEFT;
-			Lib.application.window.onClose.add(onClosing);
-			stage.addEventListener(MouseEvent.MOUSE_MOVE, onStageMouseMove);
-			stage.addEventListener(Event.RESIZE, onStageResize);
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-			stage.addEventListener(MouseEvent.CLICK, onMouseClick);
-			onStageResize(null); // apply once at startup
-			Application.current.window.title = '${Application.current.window.title}: [${Application.current.meta.get("version")}]';
+		StateSystem = new StateSystemInit(null);
+		#if (html5 || mac)
+		desktopbackgroundImage = HSprite.getDesktopWallpaper(1280, 720); // fix for a crash on startup with html5.
+		#if (!mac) // dont do this on mac beacuse mac actually has fileSystem
+		if ((UPrefs.prefsData.data.preferencesCreated : Bool) == null) { // to actually create preferences.
+			UPrefs.makePrefsFile();
+			UPrefs.prefsData.data.preferencesCreated = true;
+			UPrefs.prefsData.flush();
+		}
+		#end
+		#end
+		Native.flashTaskbar();
+		Log.throwErrors = false; // STOP CRASHING MEH!!
+		instance = this;
+		#if (hl && !debug) hl.UI.closeConsole(); #end
+		stage.scaleMode = #if html5 StageScaleMode.EXACT_FIT; #else StageScaleMode.NO_SCALE; #end
+		stage.align = StageAlign.TOP_LEFT;
+		Lib.application.window.onClose.add(onClosing);
+		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrashing);
+		stage.addEventListener(MouseEvent.MOUSE_MOVE, onStageMouseMove);
+		stage.addEventListener(Event.RESIZE, onStageResize);
+		stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+		stage.addEventListener(MouseEvent.CLICK, onMouseClick);
+		onStageResize(null); // apply once at startup
+		Application.current.window.title = '${Application.current.window.title}: [${Application.current.meta.get("version")}]';
 
-			HTween.globalParent = this; // so that new Tween() will auto-destroy and not cause memory leaks.
-			windowManager = new HWindowManager();
+		HTween.globalParent = this; // so that new Tween() will auto-destroy and not cause memory leaks.
+		windowManager = new HWindowManager();
 
-			addChild(StateSystem);
-			StateSystem.switchState(SplashScreen); // wait fuck this might work!
+		addChild(StateSystem);
+		StateSystem.switchState(SplashScreen); // wait fuck this might work!
 
-			#if debug
-			stats = new DebugDisplay();
-			stage.addChild(stats); // add to stage directly so it's always on top
-			stats.x = 10;
-			stats.y = 10;
-			stats.visible = UPrefs.debuggerVisible.value;
-			#end
+		#if debug
+		stats = new DebugDisplay();
+		stage.addChild(stats); // add to stage directly so it's always on top
+		stats.x = 10;
+		stats.y = 10;
+		stats.visible = UPrefs.debuggerVisible.value;
+		#end
 
-			Mouse.hide();
-		} catch (e:Exception)
-			traceError(e);
+		Mouse.hide();
 	}
 
 	/**
 	 * Used with the listener system for checking when a key is pressed and doing an associated action
 	 * @param e 
-	 * @since 0.00.001
+	 * @since 0.1.0
 	 */
 	private function onKeyDown(e:KeyboardEvent) {
-		try {
-			#if (debug) // whoops.
-			if (e.keyCode == Keyboard.F1) {
-				stats.visible = !stats.visible;
-				UPrefs.debuggerVisible.value = stats.visible;
-			}
-			#end
+		#if (debug) // whoops.
+		if (e.keyCode == Keyboard.F1) {
+			stats.visible = !stats.visible;
+			UPrefs.debuggerVisible.value = stats.visible;
+		}
+		#end
 
-			if (onKeyPressed != null) {
-				for (label => info in onKeyPressed) {
-					if (label == null || info == null)
+		if (onKeyPressed != null) {
+			for (label => info in onKeyPressed) {
+				if (label == null || info == null)
+					continue;
+				if (info.k == "*") {
+					if (info.c != null) {
+						info.c(e);
+						info.ar ? removeKeyPressed(label) : null;
+					} else {
+						trace('Null info found with $label!!');
+					}
+				} else {
+					var tk:Null<Int> = Std.parseInt(info.k);
+					if (tk == null) {
+						trace('Couldnt parse ${info.k} on $label, so we\'re skipping it.');
 						continue;
-					if (info.k == "*") {
+					}
+					if (e.keyCode == tk) {
 						if (info.c != null) {
 							info.c(e);
 							info.ar ? removeKeyPressed(label) : null;
 						} else {
 							trace('Null info found with $label!!');
 						}
-					} else {
-						var tk:Null<Int> = Std.parseInt(info.k);
-						if (tk == null) {
-							trace('Couldnt parse ${info.k} on $label, so we\'re skipping it.');
-							continue;
-						}
-						if (e.keyCode == tk) {
-							if (info.c != null) {
-								info.c(e);
-								info.ar ? removeKeyPressed(label) : null;
-							} else {
-								trace('Null info found with $label!!');
-							}
-						} else
-							continue;
-					}
+					} else
+						continue;
 				}
 			}
+		}
 
-			if (HDropdown.dropdownOpen) { // TODO: fix this.
-				for (keys => targetOption in HDropdown.dropdownKeys) {
-					if (!keys.contains(e.keyCode) && (!e.shiftKey && (!e.altKey && !e.controlKey))) {
-						if (HDropdown.canCloseInstace)
-							HDropdown.closeDropdownMenu(); // force close any open instance.
-					} else {
-						var targetKeys:Array<Bool> = [];
-						var allKeys:Array<Int> = keys;
-						for (key in allKeys) {
-							if (key == Keyboard.CONTROL) {
-								targetKeys.push(e.controlKey);
-								allKeys.splice(allKeys.indexOf(17), 1);
-								continue;
-							}
-							if (key == Keyboard.ALTERNATE) {
-								targetKeys.push(e.altKey);
-								allKeys.splice(allKeys.indexOf(18), 1);
-								continue;
-							}
-							if (key == Keyboard.SHIFT) {
-								targetKeys.push(e.shiftKey);
-								allKeys.splice(allKeys.indexOf(16), 1); // remove the key from the array
-								continue; // then skip over the index
-							}
-							// targetKeys.push((e.keyCode == e.));
-							allKeys.splice(allKeys.indexOf(e.keyCode), 1); // remove the key from the array
+		if (HDropdown.dropdownOpen) { // TODO: fix this.
+			for (keys => targetOption in HDropdown.dropdownKeys) {
+				if (!keys.contains(e.keyCode) && (!e.shiftKey && (!e.altKey && !e.controlKey))) {
+					if (HDropdown.canCloseInstace)
+						HDropdown.closeDropdownMenu(); // force close any open instance.
+				} else {
+					var targetKeys:Array<Bool> = [];
+					var allKeys:Array<Int> = keys;
+					for (key in allKeys) {
+						if (key == Keyboard.CONTROL) {
+							targetKeys.push(e.controlKey);
+							allKeys.splice(allKeys.indexOf(17), 1);
+							continue;
 						}
-
-						trace(targetKeys);
-
-						// if(targetKeys.allTrue())
-						// HMenuBar.instance.buttons.get(targetOption).onC();
+						if (key == Keyboard.ALTERNATE) {
+							targetKeys.push(e.altKey);
+							allKeys.splice(allKeys.indexOf(18), 1);
+							continue;
+						}
+						if (key == Keyboard.SHIFT) {
+							targetKeys.push(e.shiftKey);
+							allKeys.splice(allKeys.indexOf(16), 1); // remove the key from the array
+							continue; // then skip over the index
+						}
+						// targetKeys.push((e.keyCode == e.));
+						allKeys.splice(allKeys.indexOf(e.keyCode), 1); // remove the key from the array
 					}
+
+					trace(targetKeys);
+
+					// if(targetKeys.allTrue())
+					// HMenuBar.instance.buttons.get(targetOption).onC();
 				}
 			}
-		} catch (e:Exception)
-			traceError(e);
+		}
 	}
 
 	/**
 	 * Used mostly for closing dropdowns when needed, might be expanded in the future.
 	 * @param e mouseEvent, this is called by underlying Lime layers 
-	 * @since 0.00.001
+	 * @since 0.1.0
 	 */
 	private function onMouseClick(e:MouseEvent) {
-		try {
-			if (HDropdown.subDropdownOpen && HDropdown.canCloseSubInstace) {
-				if (!HDropdown.subDropdownBG.containsMouse()) { // if off the backing, then exit.
-					HDropdown.closeSubDropdownMenu(); // force close any open instance.
-				} else {
-					for (object in HDropdown.members) {
-						if (object == HDropdown.subDropdownBG)
-							continue; // skip it and dont increase index
-						var obj:HSprite = cast(object, HSprite);
-						if (obj.containsMouse()) {
-							if (cast(obj.getAttribute("closeFullDropdown"), Bool) == true) {
-								HDropdown.closeSubDropdownMenu();
-								HDropdown.closeDropdownMenu(); // cuz, close the whole thing.
-							}
-							if (cast(obj.getAttribute("isSubDropdownObject"), Bool) == true) {
-								if (cast(obj.getAttribute("closeOnClick"), Bool) == true) {
-									HDropdown.closeSubDropdownMenu();
-								} else {
-									continue;
-								}
-							} else {
-								continue;
-							}
+		if (HDropdown.subDropdownOpen && HDropdown.canCloseSubInstace) {
+			if (!HDropdown.subDropdownBG.containsMouse()) { // if off the backing, then exit.
+				HDropdown.closeSubDropdownMenu(); // force close any open instance.
+			} else {
+				for (object in HDropdown.members) {
+					if (object == HDropdown.subDropdownBG)
+						continue; // skip it and dont increase index
+					var obj:HSprite = cast(object, HSprite);
+					if (obj.containsMouse()) {
+						if (cast(obj.getAttribute("closeFullDropdown"), Bool) == true) {
+							HDropdown.closeSubDropdownMenu();
+							HDropdown.closeDropdownMenu(); // cuz, close the whole thing.
 						}
-					}
-				}
-			} else if (HDropdown.dropdownOpen && HDropdown.canCloseInstace) {
-				if (!HDropdown.dropdownBG.containsMouse()) { // if off the backing, then exit.
-					HDropdown.closeDropdownMenu(); // force close any open instance.
-				} else {
-					for (object in HDropdown.members) {
-						if (object == HDropdown.dropdownBG)
-							continue; // skip it and dont increase index
-						var obj:HSprite = cast(object, HSprite);
-						if (obj.containsMouse()) {
-							if (cast(obj.getAttribute("isDropdownObject"), Bool) == true) {
-								if (cast(obj.getAttribute("closeOnClick"), Bool) == true) {
-									HDropdown.closeDropdownMenu();
-								} else {
-									continue;
-								}
+						if (cast(obj.getAttribute("isSubDropdownObject"), Bool) == true) {
+							if (cast(obj.getAttribute("closeOnClick"), Bool) == true) {
+								HDropdown.closeSubDropdownMenu();
 							} else {
 								continue;
 							}
+						} else {
+							continue;
 						}
 					}
 				}
 			}
-		} catch (e:Exception)
-			traceError(e);
+		} else if (HDropdown.dropdownOpen && HDropdown.canCloseInstace) {
+			if (!HDropdown.dropdownBG.containsMouse()) { // if off the backing, then exit.
+				HDropdown.closeDropdownMenu(); // force close any open instance.
+			} else {
+				for (object in HDropdown.members) {
+					if (object == HDropdown.dropdownBG)
+						continue; // skip it and dont increase index
+					var obj:HSprite = cast(object, HSprite);
+					if (obj.containsMouse()) {
+						if (cast(obj.getAttribute("isDropdownObject"), Bool) == true) {
+							if (cast(obj.getAttribute("closeOnClick"), Bool) == true) {
+								HDropdown.closeDropdownMenu();
+							} else {
+								continue;
+							}
+						} else {
+							continue;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -290,95 +281,132 @@ class Main extends Sprite {
 	 * 
 	 * Resizes the window, but also the stage properly, its based on the way that flixel sizes FlxGame.
 	 * @param _ Event, called by underlying Lime Layers
-	 * @since 0.00.001
+	 * @since 0.1.0
 	 */
 	private function onStageResize(_:Event):Void {
-		try {
-			#if sys
-			var w = stage.stageWidth;
-			var h = stage.stageHeight;
-			var s = Math.min(w / pWidth, h / pHeight);
+		#if sys
+		var w = stage.stageWidth;
+		var h = stage.stageHeight;
+		var s = Math.min(w / pWidth, h / pHeight);
 
-			scaleX = scaleY = s;
-			x = (w - pWidth * s) / 2;
-			y = (h - pHeight * s) / 2;
-			#elseif html5
-			pWidth = Application.current.window.width;
-			pHeight = Application.current.window.height;
-			#end
-			updateVirtualMouse();
-		} catch (e:Exception)
-			traceError(e);
+		scaleX = scaleY = s;
+		x = (w - pWidth * s) / 2;
+		y = (h - pHeight * s) / 2;
+		#elseif html5
+		pWidth = Application.current.window.width;
+		pHeight = Application.current.window.height;
+		#end
+		updateVirtualMouse();
 	}
 
 	/**
 	 * Called whenever the mouse moves, only used to update the `vMouse` variable.
 	 * @param _ MouseEvent
-	 * @since 0.00.001
+	 * @since 0.1.0
 	 */
 	private inline function onStageMouseMove(_:MouseEvent):Void
-		try {
-			updateVirtualMouse();
-		} catch (e:Exception)
-			traceError(e);
+		updateVirtualMouse();
 
 	/**
 	 * Actually updates the `vMouse` variable.
 	 */
 	private inline function updateVirtualMouse():Void
-		try {
-			vMouse.set(((stage.mouseX - x) / scaleX), ((stage.mouseY - y) / scaleY));
-		} catch (e:Exception)
-			traceError(e);
+		vMouse.set(((stage.mouseX - x) / scaleX), ((stage.mouseY - y) / scaleY));
 
 	/**
 	 * Adds to the main stage, so it adds above everything, including the state
 	 * @param a DisplayObject to add
-	 * @since 0.00.001
+	 * @since 0.1.0
 	 */
 	public function addToMainStage(a:DisplayObject)
-		try {
-			addChild(a);
-		} catch (e:Exception)
-			traceError(e);
+		addChild(a);
 
 	/**
 	 * remove from the main stage
 	 * @param a DisplayObject to add
-	 * @since 0.00.001
+	 * @since 0.1.0
 	 */
 	public function removeFromMainStage(a:DisplayObject)
-		try {
-			removeChild(a);
-		} catch (e:Exception)
-			traceError(e);
+		removeChild(a);
 
 	/**
 	 * Called when the window is closing, currently used for cleanup.
-	 * @since 0.00.001
+	 * @since 0.1.0
 	 */
 	public function onClosing() {
-		try {
-			#if debug
-			stats.destroy();
-			#end
+		#if debug
+		stats.destroy();
+		#end
 
-			stage.removeEventListener(MouseEvent.MOUSE_MOVE, onStageMouseMove);
-			stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-			stage.removeEventListener(Event.RESIZE, onStageResize);
-			Lib.application.window.onClose.remove(onClosing);
-		} catch (e:Exception)
-			traceError(e);
+		stage.removeEventListener(MouseEvent.MOUSE_MOVE, onStageMouseMove);
+		stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+		stage.removeEventListener(Event.RESIZE, onStageResize);
+		Lib.application.window.onClose.remove(onClosing);
 	}
 
-	/**
-	 * traces an error with pos information and errors
-	 * @param e Exception, contains the file information
-	 * @param _ PosInfos, dont add anything here, its done automatically.
-	 * @since 0.00.004
-	 */
-	public static function traceError(e:Exception, ?_:PosInfos) {
-		trace('AN ERROR OCCURED: ${e.message} FROM FILE ${_.fileName} LINE ${_.lineNumber}');
-		trace('WITH STACK: ${e.stack.toString()}');
+	@:unwrapSafe
+	function onCrashing(e:UncaughtErrorEvent):Void {
+		e.preventDefault();
+		if (showCrash(e.error, CallStack.callStack(), true) == 1)
+			StateSystem.resetState();
+		else
+			Sys.exit(1);
+	}
+
+	@:unwrapSafe
+	public static function showCrash(message:String, stack:CallStack, isFatal:Bool = false):Int {
+		var error:String = '$message\nPlease report this on the github: https://github.com/ChickenSwimmer2020/Hydro-Frame/issues\n\nCall Stack:\n';
+		@:privateAccess stack.asArray().reverse();
+
+		function pushStack(stackItem:StackItem) {
+			switch (stackItem) {
+				case Method(classname, method):
+					error += 'Called from ${(classname == null ? '<???>' : classname)}::$method ';
+				case FilePos(s, file, line, _):
+					if (s != null) {
+						switch (s) {
+							case Method(_, method):
+								var finalClass = file.replace('/', '.').replace('.hx', '');
+								error += '$finalClass line $line\n    ${MethodUtil.getSig(finalClass, method)}\n';
+							default:
+								pushStack(s);
+						}
+					} else
+						error += '$file line $line\n';
+				default:
+					trace(stackItem);
+			}
+		}
+
+		for (stackItem in stack)
+			pushStack(stackItem);
+
+		trace('\n$error');
+
+		if (!isFatal) {
+			function runNonFatal():Int {
+				switch (Application.current.window.alert(ERROR, error, 'Error', ['Exit', 'Retry', 'Continue'])) {
+					case 0:
+						return 0;
+					case 1:
+						return 1;
+					case 2:
+						return Application.current.window.alert(WARNING, 'Are you sure? This could cause undefined behavior.', 'Continue?',
+							['Go Back', 'Continue']) == 1 ? 2 : runNonFatal();
+				}
+				return 0;
+			}
+			return runNonFatal();
+		} else {
+			switch (Application.current.window.alert(ERROR, error, 'FATAL ERROR', ['Exit', 'Retry'])) {
+				case 0:
+					return 0;
+				case 1:
+					return Application.current.window.alert(WARNING, 'Are you sure? This could cause undefined behavior.', 'RETRY',
+						['Exit', 'Retry']) == 1 ? 1 : 0;
+			}
+		}
+
+		return 0;
 	}
 }

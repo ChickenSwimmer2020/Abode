@@ -19,36 +19,55 @@ class StateSystemInit extends Sprite {
 	public var state:HState;
 
 	/**
+	 * The formula used to create the current state. Used in `restartState`.
+	 * 
+	 * @since 0.8.0
+	 */
+	public var stateFormula:{clazz:Class<HState>, args:Array<Dynamic>} = null;
+
+	/**
 	 * initilize the state system
-	 * @param state what state to load (can be null)
+	 * @param initState what state to load (can be null)
 	 * @since 0.00.000
 	 */
-	public function new(state:Null<Class<HState>>) {
+	public function new(?initState:Null<Class<HState>>, ?args:Array<Dynamic>) {
 		super();
-		if (state == null) {
-			this.state = new HState();
-		} else {
-			this.state = Type.createInstance(state, []);
-		}
-		addChild(this.state); // moved out — always add it
-		currentState = this.state.toString().replace("[", "").replace(']', "").replace('object', "").trim();
+		state = initState == null ? new HState() : switchState(initState, args);
 	}
 
 	/**
 	 * switch to a new state
-	 * @param state state to switch to
+	 * @param newState state to switch to
+	 * @param args optional arguments
+	 * @return the new state
 	 * @since 0.00.000
 	 */
-	public function switchState(state:Class<HState>, ?args:Array<Dynamic>) {
+	public function switchState(newState:Class<HState>, ?args:Array<Dynamic>):HState {
 		// clean up old state
-		this.state.destroy();
-		if (contains(this.state))
-			removeChild(this.state);
-		this.state = null; // let GC collect it
+		if (state != null) {
+			state.destroy();
+			if (contains(state))
+				removeChild(state);
+			state = null; // let GC collect it
+		}
 
 		// create and add new state
-		this.state = Type.createInstance(state, args??[]);
-		addChild(this.state);
-		currentState = this.state.toString().replace("[", "").replace(']', "").replace('object', "").trim();
+		state = Type.createInstance(newState, args ?? []);
+		addChild(state);
+		stateFormula = {clazz: newState, args: args};
+		currentState = state.toString().replace("[", "").replace(']', "").replace('object', "").trim();
+		return state;
+	}
+
+	/**
+	 * Restarts the current state. Does nothing if the `stateFormula` wasn't set.
+	 * `stateFormula` is set automatically when `switchState` is called.
+	 * 
+	 * @since 0.8.0
+	 */
+	public function resetState() {
+		if (stateFormula == null)
+			return;
+		switchState(stateFormula.clazz, stateFormula.args);
 	}
 }

@@ -2,28 +2,28 @@ package backend;
 
 /**
  * User Preferences system.
- * @since 0.00.003
+ * @since 0.3.0
  */
 class UPrefs {
     #if(html5)
         /**
          * HTML5 EXCLUSIVE VARIABLE
          * * Contains the save data for the program
-         * @since 0.00.006
+         * @since 0.6.0
          */
-        public static var prefsData:SharedObject = SharedObject.getLocal("HYDRO-FRAMEPrefs");
+        public static var prefsData:SharedObject = SharedObject.getLocal("Hydro-FramePrefs");
 
         /**
          * HTML5 EXCLUSIVE VARIABLE
          * * Contains the workspace save data.
          * @since 0.00.007.2
          */
-        public static var workspaceData:SharedObject = SharedObject.getLocal("HYDRO-FRAMEWorkspace");
+        public static var workspaceData:SharedObject = SharedObject.getLocal("Hydro-FrameWorkspace");
     #end
     /**
      * Default Preferences
      * * These get written to the UPrefs file if the file isnt found.
-     * @since 0.00.003
+     * @since 0.3.0
      */
     private static final DEFAULT_PREFERENCES:Dynamic = {
         mainMenuMuted: false,
@@ -84,7 +84,7 @@ class UPrefs {
      * Return a target preference
      * @param a What we what to try to find
      * @param <T> (HTML5 ONLY) Used for casting.
-     * @since 0.00.003
+     * @since 0.3.0
      */
     public static function getFromFile #if(html5)<T>#end(a:String):#if(sys)Dynamic#else T#end{
         #if(sys)
@@ -126,7 +126,7 @@ class UPrefs {
      * @param a key
      * @param b value
      * @return Dynamic returns whatever `b` was
-     * @since 0.00.003
+     * @since 0.3.0
      */
     public static function writeToFile(a:String, b:Dynamic):Dynamic {
         #if(sys)
@@ -174,7 +174,7 @@ class UPrefs {
         /**
          * Makes the preferences file (SYS ONLY)
          * @return String the content of the file
-         * @since 0.00.003
+         * @since 0.3.0
          */
         public static function makePrefsFile():String {
             File.saveContent("uPrefs.json", Json.stringify(DEFAULT_PREFERENCES, null, "    "));
@@ -193,7 +193,7 @@ class UPrefs {
     #else
         /**
          * Make the preferences Object (HTML5 ONLY)
-         * @since 0.00.006
+         * @since 0.6.0
          */
         public static function makePrefsFile() {
             for(key=>value in (DEFAULT_PREFERENCES:DynamicAccess<Dynamic>)){
@@ -219,38 +219,38 @@ class UPrefs {
 /**
  * Preference container class
  * @param <T> Type.
- * @since 0.00.003
+ * @since 0.3.0
  */
 class Preference<T> {
     /**
      * Name of the preference.
      * Generally used internally.
-     * @since 0.00.003
+     * @since 0.3.0
      */
     public var name:String;
     /**
      * Value, this is what the preference is equal to.
      * uses get/set functions to get/set to the file
-     * @since 0.00.003
+     * @since 0.3.0
      */
     @:isVar public var value(get, set):T;
     /**
      * returns the value of the preference
      * @return T the preference (Casted to <T>)
-     * @since 0.00.003
+     * @since 0.3.0
      */
     public inline function get_value():T return (UPrefs.getFromFile(name):T); //safety
     /**
      * sets the current value to something
      * @return the input
-     * @since 0.00.003
+     * @since 0.3.0
      */
     public inline function set_value(a:T):T return UPrefs.writeToFile(name, a);
     /**
      * Initiate a new Preference
      * @param n the name of the preference
      * @param v the value of the preference
-     * @since 0.00.003
+     * @since 0.3.0
      */
     public function new(n:String, v:T) {
         name = n;

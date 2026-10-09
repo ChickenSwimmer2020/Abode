@@ -2,7 +2,7 @@ package backend.utils;
 
 /**
  * color class for easy access. basically FlxColor but worse.
- * @since 0.00.001
+ * @since 0.1.0
  */
 abstract HColor(Int) from Int from UInt to Int to UInt {
 	public static inline final TRANSPARENT:HColor = 0x00000000;

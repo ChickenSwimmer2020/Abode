@@ -6,7 +6,7 @@ class DebugDisplay extends Sprite {
 	private var frameCount:Int = 0;
 	private var fps:Float = 0;
 	private var fpsTimer:Float = 0;
-	private var lastTime:Int = 0;
+	private var lastTime:Float = 0;
 
 	public function new() {
 		super();

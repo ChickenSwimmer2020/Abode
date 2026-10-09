@@ -2,12 +2,12 @@ package backend.objects;
 
 /**
  * Sound manager, everything here is static so we dont need to isntance this
- * @since 0.00.002
+ * @since 0.2.0
  */
 class HSoundManager {
 	/**
 	 * for looping music
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public static var music:Null<HSound>; // TODO: make fade in/out based on if the window is focused or not.
 
@@ -16,7 +16,7 @@ class HSoundManager {
 	 * @param asset full path to sound to play
 	 * @param vol volume of the sound
 	 * @return HSound the sound that wsa just started, aka `music`
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public static function playMusic(asset:String, ?vol:Float = 1.0):HSound {
 		if (music == null)
@@ -33,7 +33,7 @@ class HSoundManager {
 	 * @param asset asset path
 	 * @param vol sound volume
 	 * @return HSound the sound that was just started
-	 * @since 0.00.002
+	 * @since 0.2.0
 	 */
 	public static function playSound(asset:String, ?vol:Float = 1.0):HSound {
 		var sound:HSound = new HSound().load(asset, true);
@@ -49,7 +49,7 @@ class HSoundManager {
 
 /**
  * you want api information? refer to the flixel api.
- * @since 0.00.002
+ * @since 0.2.0
  */
 class HSound implements IDestroyable {
 	// other
