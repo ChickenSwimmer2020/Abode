@@ -13,7 +13,6 @@ class ProjectBox extends HSprite {
 		super(x, y);
 
 		makeGraphic(SIZE.iX, SIZE.iY, HColor.RED);
-		this.addRect(new Rectangle(0, 0, SIZE.y, SIZE.y), HColor.MAGENTA); // debug fallback if the image cant load
 
 		title = new HText(0 + SIZE.y, 0, width, "[project].(apf/fla)", 12);
 		title.setFieldSize(-1, height);

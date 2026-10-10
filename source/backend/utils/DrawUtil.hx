@@ -1,22 +1,34 @@
 package backend.utils;
 
+import openfl.display.Bitmap;
+
 /**
  * Drawing util, used mostly for adding icons to Buttons
  * @since 0.1.0
  */
 class DrawUtil {
 	/**
-	 * draw a rectangle onto a sprite
-	 * @param spr what to draw too
-	 * @param rect rectangle to draw
-	 * @param color color
-	 * @return HSprite spr
+	 * Draw a rectangle onto the given `HSprite`.
+	 * This is not persistent, as it will be cleared on every `loadGraphic()`, `makeGraphic()`,
+	 *  `reRenderMakeGraphic()`, and `applyLocalFilter()`.
+	 * 
+	 * @param spr The sprite to draw the rectangle on.
+	 * @param rect The rectangle to draw.
+	 * @param color The color of the rectangle.
+	 * @return `HSprite` This `HSprite`, for chaining.
 	 * @since 0.1.0
 	 */
 	public static function addRect(spr:HSprite, rect:Rectangle, color:HColor):HSprite {
-		spr.graphics.beginFill(color.rgb, color.a);
-		spr.graphics.drawRect(rect.x, rect.y, rect.width, rect.height);
-		spr.graphics.endFill();
+		@:privateAccess
+		if (spr._bitmap != null) {
+			@:privateAccess
+			var bitmap:Bitmap = new Bitmap(new BitmapData(cast rect.width, cast rect.height, true, color));
+			bitmap.x = rect.x;
+			bitmap.y = rect.y;
+			spr.addChild(bitmap);
+			spr.clearObjects.push(bitmap);
+			spr.reRender();
+		}
 		return spr;
 	}
 
@@ -38,20 +50,25 @@ class DrawUtil {
 			trace('Unrecognized icon $icon, aborting!');
 			return spr;
 		}
-		if (!(spr is backend.ui.HCheckbox))
-			spr.reRender(); // reRender graphic so that the icon is cleared. but only if it isnt a checkbox.
-		spr.graphics.lineStyle(thickness, outlineColor.rgb ?? HColor.BLACK.rgb, outlineColor.a ?? 1.0); // set line style
-		spr.graphics.beginFill(fillColor.rgb, fillColor.a);
+		spr.reRenderMakeGraphic();
+
+		var nSpr = new Sprite();
+		nSpr.graphics.lineStyle(thickness, outlineColor.rgb ?? HColor.BLACK.rgb, outlineColor.a ?? 1.0); // set line style
+		nSpr.graphics.beginFill(fillColor.rgb, fillColor.a);
 		for (command in (Reflect.field(HDrawableIcons, icon) : Array<HDrawableIconCommand>)) {
 			switch (command.t) {
 				case MOVE:
-					spr.graphics.moveTo(command.a.x, command.a.y);
+					nSpr.graphics.moveTo(command.a.x, command.a.y);
 				case LINE:
-					spr.graphics.lineTo(command.a.x, command.a.y);
+					nSpr.graphics.lineTo(command.a.x, command.a.y);
 			}
 		}
-		spr.graphics.endFill();
-		spr.graphics.lineStyle(null, 0, 1); // reset linestyle to default.
+		nSpr.graphics.endFill();
+		nSpr.graphics.lineStyle(null, 0, 1); // reset linestyle to default.
+
+		spr.addChild(nSpr);
+		spr.clearObjects.push(nSpr);
+
 		return spr;
 	}
 }

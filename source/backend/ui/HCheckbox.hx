@@ -30,7 +30,7 @@ class HCheckbox extends HSprite {
 
 		addChild(box);
 		addChild(label);
-		reRender();
+		reRenderMakeGraphic();
 	}
 
 	function onBoxClick(_:MouseEvent, ?set:Bool = true) {
@@ -38,11 +38,11 @@ class HCheckbox extends HSprite {
 			value = !value;
 		if (onClick != null)
 			onClick(value); // yay return.
-		reRender();
+		reRenderMakeGraphic();
 	}
 
-	override function reRender():HSprite {
-		super.reRender();
+	override function reRenderMakeGraphic():HSprite {
+		super.reRenderMakeGraphic();
 		box.addRect(new Rectangle(_oSIZE, _oSIZE, _SIZE - (_oSIZE * 2), _SIZE - (_oSIZE * 2)), HColor.WHITE); // then the icon
 		if (value)
 			box.drawIcon("UICHECK", 1, HColor.MAGENTA, HColor.TRANSPARENT);

@@ -1,5 +1,8 @@
 package backend;
 
+import openfl.display.Bitmap;
+import openfl.display3D.textures.TextureBase;
+
 /**
  * used for creation of local filters
  * @since 0.1.0
@@ -19,6 +22,13 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * @since 0.2.0
 	 */
 	public var attributes:Map<String, Dynamic>;
+
+	/**
+	 * The array of `DisplayObject` objects that are children of this `HSprite` object that need to be cleared on any re-render.
+	 * 
+	 * @since 0.8.2
+	 */
+	public var clearObjects:Array<DisplayObject> = [];
 
 	/**
 	 * set an attribute to this object
@@ -97,7 +107,8 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	@:noCompletion private var gColor:HColor;
 	@:noCompletion private var gWidth:Int = 0;
 	@:noCompletion private var gHeight:Int = 0;
-	@:noCompletion private var _bitmapData:BitmapData = null; // track it so we can dispose it later
+	@:noCompletion private var _bitmap:Bitmap = null;
+	@:noCompletion private var _bitmapData:BitmapData = null;
 
 	/**
 	 * set the scale of the sprite.
@@ -139,25 +150,55 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * @since 0.0.0
 	 */
 	public function makeGraphic(width:Int, height:Int, color:HColor = HColor.TRANSPARENT):HSprite {
-		graphics.clear();
-		graphics.beginFill(color.rgb, color.a);
-		graphics.drawRect(0, 0, width, height);
-		graphics.endFill();
 		gColor = color;
-		gWidth = width;
-		gHeight = height;
+		return loadGraphic(new BitmapData(width, height, true, color));
+	}
+
+	// ^^^
+	// graphics.clear();
+	// graphics.beginFill(color.rgb, color.a);
+	// graphics.drawRect(0, 0, width, height);
+	// graphics.endFill();
+	// gWidth = width;
+	// gHeight = height;
+
+	/**
+	 * Rerender the current graphic of the sprite.
+	 * Only works if the sprite is made with `makeGraphic()`.
+	 * 
+	 * @return `HSprite` This sprite, for chaining.
+	 * @since 0.2.0
+	 */
+	public function reRenderMakeGraphic():HSprite {
+		makeGraphic(gWidth, gHeight, gColor);
 		return this;
 	}
 
 	/**
-	 * Rerender the current graphic of the sprite
-	 * @return HSprite
-	 * @since 0.2.0
+	 * Rerender the current graphic of the sprite, and puts it on top.
+	 * 
+	 * @return `HSprite` This sprite, for chaining.
+	 * @since 0.8.0
 	 */
 	public function reRender():HSprite {
-		makeGraphic(gWidth, gHeight, gColor);
+		var highestIdx = 0;
+		if (bitmapIsChild) {
+			highestIdx = getChildIndex(_bitmap);
+			removeChild(_bitmap);
+		}
+
+		for (clearObj in clearObjects)
+			if (highestIdx < getChildIndex(clearObj))
+				highestIdx = getChildIndex(clearObj);
+
+		_bitmap = new Bitmap(_bitmapData, null, antialiasing);
+		addChildAt(_bitmap, highestIdx);
+		bitmapIsChild = true;
+
 		return this;
 	}
+
+	var bitmapIsChild:Bool = false;
 
 	/**
 	 * load a graphic
@@ -172,7 +213,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 			_bitmapData.dispose();
 			_bitmapData = null;
 		}
-		graphics.clear();
+		// graphics.clear();
 
 		var Graphics:BitmapData = new BitmapData(1, 1, false, HColor.WHITE);
 		switch (Type.getClass(graphic)) {
@@ -188,9 +229,25 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 					_bitmapData = Graphics; // sprite auto-disposes later i guess
 		}
 
-		graphics.beginBitmapFill(Graphics, new Matrix(), false, antialiasing);
-		graphics.drawRect(0, 0, Graphics.width, Graphics.height);
-		graphics.endFill();
+		var oldIdx = -1;
+		if (bitmapIsChild) {
+			oldIdx = getChildIndex(_bitmap);
+			removeChild(_bitmap);
+		}
+
+		for (clearObj in clearObjects)
+			removeChild(clearObj);
+
+		_bitmap = new Bitmap(Graphics, null, antialiasing);
+		if (oldIdx != -1)
+			addChildAt(_bitmap, oldIdx);
+		else
+			addChild(_bitmap);
+		bitmapIsChild = true;
+
+		// graphics.beginBitmapFill(Graphics, new Matrix(), false, antialiasing);
+		// graphics.drawRect(0, 0, Graphics.width, Graphics.height);
+		// graphics.endFill();
 		frameWidth = Graphics.rect.width;
 		frameHeight = Graphics.rect.height;
 		gWidth = Math.floor(Graphics.rect.width);
@@ -267,7 +324,7 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 	 * @since 0.0.0
 	 */
 	public function destroy() {
-		graphics.clear();
+		// graphics.clear();
 		// dispose our bitmap if we own it
 		if (_bitmapData != null) {
 			_bitmapData.dispose();
@@ -276,6 +333,8 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 
 		if (parent != null)
 			parent.removeChild(this);
+		if (bitmapIsChild)
+			removeChild(_bitmap);
 	}
 
 	/**
@@ -362,10 +421,25 @@ class HSprite extends Sprite implements IHasAttributes<String, Dynamic> implemen
 		src.filters = null;
 
 		// 6. redraw this sprite's fill so it shows the new pixels
-		graphics.clear();
-		graphics.beginBitmapFill(_bitmapData, new Matrix(), false, antialiasing);
-		graphics.drawRect(0, 0, _bitmapData.width, _bitmapData.height);
-		graphics.endFill();
+		var oldIdx = -1;
+		if (bitmapIsChild) {
+			oldIdx = getChildIndex(_bitmap);
+			removeChild(_bitmap);
+		}
+
+		for (clearObj in clearObjects)
+			removeChild(clearObj);
+
+		_bitmap = new Bitmap(_bitmapData, null, antialiasing);
+		if (oldIdx != -1)
+			addChildAt(_bitmap, oldIdx);
+		else
+			addChild(_bitmap);
+		bitmapIsChild = true;
+		// graphics.clear();
+		// graphics.beginBitmapFill(_bitmapData, new Matrix(), false, antialiasing);
+		// graphics.drawRect(0, 0, _bitmapData.width, _bitmapData.height);
+		// graphics.endFill();
 		return this;
 	}
 

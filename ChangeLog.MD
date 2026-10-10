@@ -2,6 +2,28 @@
 <!--markdownlint-disable MD033 -->
 # CHANGELOG
 
+> ## 0.8.2 (Compatibility with cne-openfl) - By ZSolarDev
+> 
+> * Fixed a bug where `ScrollableArea` would not scroll when the mouse wasn't hovering over any *children* (not the rect).
+>> * This was because the mouse scroll event listener were added to the display object, and didn't fire the mouse wheel event when the mouse wasn't hovering over any children of the `ScrollableArea`.
+>> * This was fixed by adding the mouse scroll event listener to `Lib.current.stage` instead of the `ScrollableArea`.
+> * Fixed a bug where the desktop background image would be blue.
+>> * This was due to statically loading the BitmapData instead of waiting for openfl to initialize. This wasn't an issue before switching to `cne-openfl`.
+>> * This was fixed by only getting the desktop background image at the end of `Main`.
+> * Removed inline imports in `HTween`(`openfl.display.DisplayObjectContainer` -> `DisplayObjectContainer`).
+>
+>> ## Reworked `HSprite`
+>>
+>> * Select children of `HSprite` are now removed on every graphic load or filter application. It will be removed if the child is in `clearObjects`.
+>>> * `clearObjects` will not check if the child is actually added to the `HSprite` as a child. It will assume it.
+>> * Instead of using `graphics` to draw, it now uses a `Bitmap` to draw onto.
+>>> * This was because `cne-openfl` seems to have issues rendering some things with `graphics` instead of `Bitmap`.
+>> * The change above warrented a rework of `DrawUtil` as well.
+>>> * Inside of `drawIcon`, `DrawUtil` now creates a separate `Sprite` and adds it as a child of the `HSprite` on top. This child is added to `clearObjects`.
+>>> * Inside of `addRect`, `DrawUtil` now creates a separate `Bitmap` and adds it as a child of the `HSprite` on top. This child is added to `clearObjects`.
+>> * Renamed `reRender()` to `reRenderMakeGraphic()`. It adds nuance to the name and comment, as it only worked as intended when the sprite was made with `makeGraphic()`. This re-creates the `Bitmap`, and does not touch `clearObjects`. It does not put the `Bitmap` on top. For that, use `reRender()`.
+>> * Added `reRender()`, which only re-renders the `Bitmap` and puts it on top of the highest child in `clearObjects`. Does not touch `clearObjects`, and it doesn't re-create the `Bitmap`.
+>
 > ## 0.8.1 (The fucky hotfix!) -- Build 1
 >
 > * `PULL_REQUEST_TEMPLATE.MD` was reformated/updated.

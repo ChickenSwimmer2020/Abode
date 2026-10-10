@@ -1,5 +1,7 @@
 package backend.objects;
 
+import openfl.display.DisplayObjectContainer;
+
 /**
  * tween data.
  * @since 0.0.0
@@ -38,7 +40,7 @@ class HTween extends Sprite {
 	 * always set to Main on startup
 	 * @since 0.0.0
 	 */
-	public static var globalParent:openfl.display.DisplayObjectContainer;
+	public static var globalParent:DisplayObjectContainer;
 
 	/**
 	 * make a new tween
@@ -64,8 +66,8 @@ class HTween extends Sprite {
 	 */
 	public function tween(target:Dynamic, props:Dynamic, duration:Float, ?onComplete:Void->Void, ?ease:Float->Float):HTween {
 		if (target != null) {
-			if (Std.isOfType(target, openfl.display.DisplayObjectContainer)) {
-				var targetSprite = cast(target, openfl.display.DisplayObjectContainer);
+			if (Std.isOfType(target, DisplayObjectContainer)) {
+				var targetSprite = cast(target, DisplayObjectContainer);
 				if (parent != null)
 					targetSprite.addChild(this);
 			} else

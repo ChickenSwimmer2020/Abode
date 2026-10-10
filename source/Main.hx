@@ -9,7 +9,7 @@ class Main extends Sprite {
 	 * The desktop background, stored as a BitmapData directly within Main so that we only have to load it once.
 	 * @since 0.4.0
 	 */
-	public static #if (sys && !mac) final #else var #end desktopbackgroundImage:BitmapData #if (sys && !mac) = HSprite.getDesktopWallpaper(1280, 720) #end;
+	public static var desktopbackgroundImage:BitmapData;
 
 	/**
 	 * For checking when global keys are pressed.
@@ -131,6 +131,10 @@ class Main extends Sprite {
 		#end
 
 		Mouse.hide();
+
+		#if (sys && !mac)
+		desktopbackgroundImage = HSprite.getDesktopWallpaper(1280, 720);
+		#end
 	}
 
 	/**

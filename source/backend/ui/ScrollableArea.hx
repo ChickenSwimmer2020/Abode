@@ -7,7 +7,7 @@ class ScrollableArea extends HGroup<HSprite> {
 
 	public function new(x:Float, y:Float) {
 		super(x, y);
-		addEventListener(MouseEvent.MOUSE_WHEEL, onMouseScroll);
+		Lib.current.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseScroll);
 		addEventListener(Event.ENTER_FRAME, onEnterFrame);
 	}
 
@@ -31,7 +31,7 @@ class ScrollableArea extends HGroup<HSprite> {
 	}
 
 	override public function destroy() {
-		removeEventListener(MouseEvent.MOUSE_WHEEL, onMouseScroll);
+		Lib.current.stage.removeEventListener(MouseEvent.MOUSE_WHEEL, onMouseScroll);
 		super.destroy();
 	}
 }
