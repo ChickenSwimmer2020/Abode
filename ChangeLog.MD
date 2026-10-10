@@ -2,6 +2,14 @@
 <!--markdownlint-disable MD033 -->
 # CHANGELOG
 
+> ## 0.8.1 (The fucky hotfix!) -- Build 1
+>
+> * `PULL_REQUEST_TEMPLATE.MD` was reformated/updated.
+> * `AVOIDS.MD` was removed.
+> * `CONTRIBUTING.MD` was added.
+> * `LICENSE`->`LICENSE.MD` (so it actually shows on the github)
+> * `README.MD` was updated to be *hopefully* more legally protective
+>
 > ## 0.8.1 (The fucky hotfix!)
 >
 > * Sadly removed the ability to compile to HTML5, due to cne-lime problems. :/ (this angers me.)
@@ -178,7 +186,7 @@ compiled method *in the codebase*(not in libraries or scripts). Used for error h
 > * `InitState` now enables the `F11` key to toggle fullscreen.
 > * `InitState`'s entire `new` function is now a `try`-`catch(e)` system.
 > * More keys in `en_US.locale`
-> * Added the `general` preferences section from `Adobe animate` to `uPrefs`
+> * Added the `general` preferences section from `Adobe® Animate®` to `uPrefs`
 > * `InitState` big updates
 >
 >> ## Main
